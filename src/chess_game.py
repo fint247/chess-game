@@ -9,7 +9,7 @@ from chess_classes import *
 r = tk.Tk() 
 r.title('Chess') 
 r.geometry('600x600')
-size = 50 
+
 
 valid_move = [True]
 position_start = []
