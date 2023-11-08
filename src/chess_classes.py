@@ -10,9 +10,13 @@ from chess_setting import *
 class EmptySquare():
     def __init__(self):
         self.name = 'empty_square'
+        self.color = None
         self.image = Image.open(f"trans_bg.png")
         self.image = ImageTk.PhotoImage(self.image.resize((size,size)))
-
+    def is_legal(self, valid_move, whites_turn, *arg):
+        valid_move[0] = False
+        print("Cant move an empty square")
+        return valid_move[0], whites_turn[0]
 
 class Piece():
     def __init__(self):
@@ -20,27 +24,31 @@ class Piece():
         pass
 
     def is_pieces_turn(self, valid_move, whites_turn):
-        if whites_turn[0] == True and self.color == 'white':
+        if whites_turn[0] == True and self.color == 'white' and valid_move[0] == True:
             whites_turn[0] = False
             return valid_move[0], whites_turn[0]
 
-        elif whites_turn[0] == False and self.color == 'black':
+        elif whites_turn[0] == False and self.color == 'black' and valid_move[0] == True:
             whites_turn[0] = True
             return valid_move[0], whites_turn[0]
 
         else:
-            print(f"Its not your turn")
+            if valid_move[0] == True:
+                print(f"Bad move: Its not your turn")
             valid_move[0] = False
             return valid_move[0], whites_turn[0]
         
         
 
-    def is_taking_enemy_piece():
-        #might need moved to the 'pressed' function
-        pass
+    def not_taking_own_piece(self, valid_move, board, position_start, position_end):
+        if self.color == board[position_end[0]][position_end[1]].color:
+            print("Bad move: cant take your own pieces")
+            valid_move[0] = False
+        return valid_move[0]
 
-    def is_legal(self, valid_move, whites_turn):
-        valid_move[0], whites_turn[0] = self.is_pieces_turn(valid_move, whites_turn)
+    def is_legal(self, valid_move, whites_turn, board, position_start, position_end):
+        valid_move[0] = self.not_taking_own_piece(valid_move, board, position_start, position_end)
+        valid_move[0], whites_turn[0] = self.is_pieces_turn(valid_move, whites_turn) #this must be the last method called because of whites_turn variable
         return valid_move[0] , whites_turn[0]
 
 
@@ -70,12 +78,53 @@ class Rook(Piece):
         self.image = Image.open(f"{color}_rook.png")
         self.image = ImageTk.PhotoImage(self.image.resize((size,size)))
 
-    def is_on_col_row():
-        pass
+    def is_on_col_row(self, valid_move, position_start, position_end):
+        if position_start[0] != position_end[0] and position_start[1] != position_end[1]:
+            valid_move[0] = False
+            print(f"{self.name}s can only move in columns or rows")
+        return valid_move[0]
 
-    def is_moving_thru_piece_col_row():
-        pass
+    def is_moving_thru_piece_col_row(self, valid_move, board, position_start, position_end):
+        # if position_start[1] == position_end[1]: #checks on columns
+        #     print('first if')
+        #     if position_end[1] > position_start[1]:
+        #         pos_neg = 1
+        #     elif position_end[1] < position_start[1]:
+        #         pos_neg = -1
+            
+        #     for i in range(position_start[0] + pos_neg, position_end[0], pos_neg):
+                
+        #         if board[i][position_end[1]].name != 'empty_square':
+        #             print("cant move through pieces")
+        #             valid_move[0] = False
+        #             return valid_move[0]
+        
+        # elif position_start[0] == position_end[0]: #checks on rows
+        #     print('second if')
+        #     if position_end[0] > position_start[0]:
+        #         pos_neg = 1
+        #     else:
+        #         pos_neg = -1
+        #     print('pos_neg = ',pos_neg)
+        #     print(position_start[0] + pos_neg)
+        #     for i in range(position_start[0] + pos_neg, position_end[1], pos_neg):
+        #         print('i = ',i)
+        #         if board[position_end[1]][i].name != 'empty_square':
+        #             print("cant move through pieces")
+        #             valid_move[0] = False
+        #             #return valid_move[0]
+        # else:
+        #     print('else if')
+        return valid_move[0]
+                
+                
 
+    def is_legal(self, valid_move, whites_turn, board, position_start, position_end):
+        valid_move[0] = self.is_on_col_row(valid_move, position_start, position_end)
+        valid_move[0] = self.is_moving_thru_piece_col_row(valid_move, board, position_start, position_end)
+
+        super().is_legal(valid_move, whites_turn, board, position_start, position_end)# must be called last
+        return valid_move[0], whites_turn[0]
 
 class Bishop(Piece):
     def __init__(self, color):
@@ -97,8 +146,6 @@ class Queen(Rook, Bishop):
         self.color = color
         self.image = Image.open(f"{color}_queen.png")
         self.image = ImageTk.PhotoImage(self.image.resize((size,size)))
-
-    pass
 
 
 class Knight(Piece):
