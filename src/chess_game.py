@@ -8,8 +8,9 @@ from chess_classes import *
 
 r = tk.Tk() 
 r.title('Chess') 
-r.geometry('600x600')
+r.geometry('700x600-0+0')
 
+#r.state('zoomed')
 
 valid_move = [True]
 position_start = []
@@ -71,7 +72,6 @@ h = [w_rook1, w_knigt1, w_bishop1, w_queen, w_king, w_bishop2, w_knigt2, w_rook2
 board = [a,b,c,d,e,f,g,h]
 
 
-
 def update_buttons():
     for x in range(1,9):
         for y in range(1,9):
@@ -131,6 +131,8 @@ def pressed(button,a,b,position_start,position_end, board):
 button = tk.Button(r, text='Stop', width=7, height=3,font=('Helvatical bold',20), bg = 'teal', fg = 'black', command=r.destroy) 
 button.grid(row = 0, column = 0) 
 
+button = tk.Button(r, text='Settings', width=7, height=3,font=('Helvatical bold',20), bg = 'teal', fg = 'black', command= lambda: open_settings(r)) 
+button.grid(row = 0, column = 9) 
 
 
 for x in range(1,9):
