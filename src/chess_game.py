@@ -128,12 +128,29 @@ def pressed(button,a,b,position_start,position_end, board):
     # print(f"row = {a}, col = {b}")
     # highlight.grid(row=a, column=b)
 
-button = tk.Button(r, text='Stop', width=7, height=3,font=('Helvatical bold',20), bg = 'teal', fg = 'black', command=r.destroy) 
-button.grid(row = 0, column = 0) 
+button_stop = Button(r, text='Stop', width=int(.25*1.3*size), height=int(.1*1.3*size),font=('Helvatical bold',int(.2*size)), bg = 'teal', fg = 'black', command=r.destroy) 
+button_stop.grid(row = 0, column = 0) 
 
-button = tk.Button(r, text='Settings', width=7, height=3,font=('Helvatical bold',20), bg = 'teal', fg = 'black', command= lambda: open_settings(r)) 
-button.grid(row = 0, column = 9) 
+button_setting = Button(r, text='Settings', width=int(.25*1.3*size), height=int(.1*1.3*size),font=('Helvatical bold',int(.2*size)), bg = 'teal', fg = 'black', command= lambda: open_settings(r, from_rgb)) 
+button_setting.grid(row = 0, column = 9) 
 
+# filler_corner_1 = Label(r, bg = 'teal', border=2, relief='ridge') 
+# filler_corner_1.grid(row = 9, column = 0, sticky='nse') 
+
+# filler_corner_2 = tk.Button(r, bg = 'teal', border=2, relief='ridge') 
+# filler_corner_2.grid(row = 9, column = 9, sticky='nsw') 
+
+filler_1 = Label(r, bg = 'grey', borderwidth=2, relief='ridge')
+filler_1.grid(row = 0, column = 1, columnspan = 8 ,sticky='nsew') 
+
+# filler_2 = Label(r, bg = 'grey', borderwidth=2, relief='ridge')
+# filler_2.grid(row = 1, column = 0, rowspan = 8 ,sticky='nsew') 
+
+# filler_3 = Label(r, bg = 'grey', borderwidth=2, relief='ridge')
+# filler_3.grid(row = 1, column = 9, rowspan = 8 ,sticky='nsew') 
+
+# filler_4 = Label(r, bg = 'grey', borderwidth=2, relief='ridge')
+# filler_4.grid(row = 9, column = 1, columnspan = 8 ,sticky='nsew') 
 
 for x in range(1,9):
     for y in range(1,9):
