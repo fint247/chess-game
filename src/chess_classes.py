@@ -93,7 +93,7 @@ class Rook(Piece):
         elif position_end[index_num] < position_start[index_num]:
             pos_neg = -1
         else:
-            pos_neg = 0
+            raise Exception('problem with pos_neg variable')
 
         if index_num == 0 and op_index_num == 1:
             for i in range(position_start[index_num] + pos_neg, position_end[index_num], pos_neg):
