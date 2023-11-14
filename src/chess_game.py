@@ -8,7 +8,7 @@ from chess_classes import *
 
 r = tk.Tk() 
 r.title('Chess') 
-r.geometry('700x600-0+0')
+r.geometry('800x700-0+0')
 
 #r.state('zoomed')
 
@@ -71,8 +71,27 @@ h = [w_rook1, w_knigt1, w_bishop1, w_queen, w_king, w_bishop2, w_knigt2, w_rook2
 
 board = [a,b,c,d,e,f,g,h]
 
+def exit_settings(r,s):
+    # update_buttons(button_setting, button_stop)
+    
+    s.destroy()
+    r.state('zoomed')
+    r.state('normal')
 
-def update_buttons():
+def open_settings(r, from_rgb, exit_settings):
+    settings.open_settings_window(r, from_rgb, exit_settings)
+
+def update_buttons(settings, *args):
+        print(f"HERE{settings.size}")
+        for arg in args:
+            arg.config(width=int(.25*1.3*int(settings.size)), height=int(.1*1.3*int(settings.size)),font=('Helvatical bold',int(.2*int(settings.size))), bg = 'teal', fg = 'black')
+            arg.config(width=int(.25*1.3*int(settings.size)), height=int(.1*1.3*int(settings.size)),font=('Helvatical bold',int(.2*int(settings.size))), bg = 'teal', fg = 'black')
+            
+        for x in range(1,9):
+            for y in range(1,9):
+                exec(f"button_{x}_{y}.config(image = board[x-1][y-1].image)")
+
+def update_board():
     for x in range(1,9):
         for y in range(1,9):
             exec(f"button_{x}_{y}.config(image = board[x-1][y-1].image)")
@@ -109,7 +128,7 @@ def pressed(button,a,b,position_start,position_end, board):
             # print(f"position start: {position_start} --> position end: {position_end}\n")
             board[position_end[0]][position_end[1]] = board[position_start[0]][position_start[1]]
             board[position_start[0]][position_start[1]] = empty_square
-            update_buttons()
+            update_board()
         else:
             #resets valid move to be true but doesnt move the piece
             valid_move[0] = True
@@ -128,10 +147,10 @@ def pressed(button,a,b,position_start,position_end, board):
     # print(f"row = {a}, col = {b}")
     # highlight.grid(row=a, column=b)
 
-button_stop = Button(r, text='Stop', width=int(.25*1.3*size), height=int(.1*1.3*size),font=('Helvatical bold',int(.2*size)), bg = 'teal', fg = 'black', command=r.destroy) 
+button_stop = Button(r, text='Stop', width=int(.25*1.3*settings.size), height=int(.1*1.3*settings.size),font=('Helvatical bold',int(.2*settings.size)), bg = 'teal', fg = 'black', command=r.destroy) 
 button_stop.grid(row = 0, column = 0) 
 
-button_setting = Button(r, text='Settings', width=int(.25*1.3*size), height=int(.1*1.3*size),font=('Helvatical bold',int(.2*size)), bg = 'teal', fg = 'black', command= lambda: open_settings(r, from_rgb)) 
+button_setting = Button(r, text='Settings', width=int(.25*1.3*settings.size), height=int(.1*1.3*settings.size),font=('Helvatical bold',int(.2*settings.size)), bg = 'teal', fg = 'black', command= lambda: open_settings(r, from_rgb, exit_settings)) 
 button_setting.grid(row = 0, column = 9) 
 
 # filler_corner_1 = Label(r, bg = 'teal', border=2, relief='ridge') 
@@ -158,12 +177,12 @@ for x in range(1,9):
             bg_color = from_rgb((238,238,210))
         else:
             bg_color = from_rgb((118,150,86))
-        exec(f"button_{x}_{y} = tk.Button(r,image = board[x-1][y-1].image, bg = bg_color, width = size, height = size, border=0, command= lambda: pressed(button_{x}_{y},{x},{y},position_start,position_end, board))")
+        exec(f"button_{x}_{y} = tk.Button(r,image = board[x-1][y-1].image, bg = bg_color, width = settings.size, height = settings.size, border=0, command= lambda: pressed(button_{x}_{y},{x},{y},position_start,position_end, board))")
         exec(f"button_{x}_{y}.grid(row=x,column=y)")
 
 highlight_img = Image.open(f"black_50.png")
-highlight_img = ImageTk.PhotoImage(highlight_img.resize((size,size)))
-highlight = Label(r,image = highlight_img, width = size, height = size, border=0)
+highlight_img = ImageTk.PhotoImage(highlight_img.resize((settings.size,settings.size)))
+highlight = Label(r,image = highlight_img, width = settings.size, height = settings.size, border=0)
 
 
 
