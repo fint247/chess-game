@@ -53,6 +53,7 @@ class Settings():
         s = tk.Tk() 
         s.title('Settings') 
         s.geometry('700x600-0+0')
+        s.config(bg = 'black')
 
         bg_color = [169,169,169]
 

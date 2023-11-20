@@ -8,7 +8,8 @@ from chess_classes import *
 
 r = tk.Tk() 
 r.title('Chess') 
-r.geometry('800x700-0+0')
+r.geometry('700x600-0+0')
+r.config(bg = 'black')
 
 #r.state('zoomed')
 
@@ -63,8 +64,8 @@ w_pawn8 = Pawn('white')
 a = [b_rook1, b_knigt1, b_bishop1, b_queen, b_king, b_bishop2, b_knigt2, b_rook2]
 b = [b_pawn1, b_pawn2, b_pawn3, b_pawn4, b_pawn5, b_pawn6, b_pawn7, b_pawn8]
 c = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
-d = [empty_square, w_knigt1, empty_square, w_queen, empty_square, empty_square, empty_square, empty_square]
-e = [w_rook1, empty_square, w_bishop1, empty_square, w_king, empty_square, empty_square, empty_square]
+d = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
+e = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
 f = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
 g = [w_pawn1, w_pawn2, w_pawn3, w_pawn4, w_pawn5, w_pawn6, w_pawn7, w_pawn8]
 h = [w_rook1, w_knigt1, w_bishop1, w_queen, w_king, w_bishop2, w_knigt2, w_rook2]
@@ -87,14 +88,20 @@ def update_buttons(settings, *args):
             arg.config(width=int(.25*1.3*int(settings.size)), height=int(.1*1.3*int(settings.size)),font=('Helvatical bold',int(.2*int(settings.size))), bg = 'teal', fg = 'black')
             arg.config(width=int(.25*1.3*int(settings.size)), height=int(.1*1.3*int(settings.size)),font=('Helvatical bold',int(.2*int(settings.size))), bg = 'teal', fg = 'black')
             
-        for x in range(8):
-            for y in range(8):
-                board_of_buttons[x][y].config(image = board[x-1][y-1].image)
+        for x in range(1,9):
+            for y in range(1,9):
+                exec(f"button_{x}_{y}.config(image = board[x-1][y-1].image)")
 
-def update_board():
+def update_ampasant():
     for x in range(8):
         for y in range(8):
-            board_of_buttons.config(image = board[x-1][y-1].image)
+            if board[x][y].ampasant > 0:
+                board[x][y].ampasant += -1
+
+def update_board():
+    for x in range(1,9):
+        for y in range(1,9):
+            exec(f"button_{x}_{y}.config(image = board[x-1][y-1].image)")
 
 def from_rgb(rgb):
     """
@@ -103,32 +110,35 @@ def from_rgb(rgb):
     r, g, b = rgb
     return f'#{r:02x}{g:02x}{b:02x}'
 
-def pressed(board_of_buttons,a,b,position_start,position_end, board):
-    for x in range(8):
-        for y in range(8):
+def pressed(button,a,b,position_start,position_end, board):
+    for x in range(1,9):
+        for y in range(1,9):
             if x%2 == 0 and y%2 == 0 or x%2 != 0 and y%2 != 0:
-                board_of_buttons[x][y].config(bg = from_rgb((238,238,210)))
+                exec(f"button_{x}_{y}.config(bg = from_rgb((238,238,210)))")
             else:
-                board_of_buttons[x][y].config(bg = from_rgb((118,150,86)))
+                exec(f"button_{x}_{y}.config(bg = from_rgb((118,150,86)))")
 
     if len(position_start) == 0:
-        print('position_start before = ', position_start)
-        position_start.append(a)
-        position_start.append(b)
-        print('position start after = ',position_start)
+        # print('position_start before = ', position_start)
+        position_start.append(a-1)
+        position_start.append(b-1)
+        # print('position start after = ',position_start)
         
     elif len(position_start) == 2:
-        position_end.append(a)
-        position_end.append(b)
+        position_end.append(a-1)
+        position_end.append(b-1)
 
-        print(board[position_start[0]][position_start[1]].name)
+        #print(board[position_start[0]][position_start[1]].name)
 
         valid_move[0], whites_turn[0] = board[position_start[0]][position_start[1]].is_legal(valid_move, whites_turn, board, position_start, position_end)
         if valid_move[0] == True:
-            print(f"position start: {position_start} --> position end: {position_end}\n")
+            update_ampasant()
+            # print(f"position start: {position_start} --> position end: {position_end}\n")
             board[position_end[0]][position_end[1]] = board[position_start[0]][position_start[1]]
             board[position_start[0]][position_start[1]] = empty_square
             update_board()
+
+
         else:
             #resets valid move to be true but doesnt move the piece
             valid_move[0] = True
@@ -142,8 +152,8 @@ def pressed(board_of_buttons,a,b,position_start,position_end, board):
     else:
         raise Exception(f"position start({position_start}) is not a valid legth")
         
-    print('rgb func gets called')
-    board_of_buttons[x][y].config(bg = from_rgb((238-50,238-50,210-50)))
+
+    button.config(bg = from_rgb((238-50,238-50,210-50)))
     # print(f"row = {a}, col = {b}")
     # highlight.grid(row=a, column=b)
 
@@ -170,20 +180,15 @@ filler_1.grid(row = 0, column = 1, columnspan = 8 ,sticky='nsew')
 
 # filler_4 = Label(r, bg = 'grey', borderwidth=2, relief='ridge')
 # filler_4.grid(row = 9, column = 1, columnspan = 8 ,sticky='nsew') 
-board_of_buttons = []
 
-for x in range(8):
-    row_of_buttons = []
-    for y in range(8):
+for x in range(1,9):
+    for y in range(1,9):
         if x%2 == 0 and y%2 == 0 or x%2 != 0 and y%2 != 0:
             bg_color = from_rgb((238,238,210))
         else:
             bg_color = from_rgb((118,150,86))
-
-        button_board = tk.Button(r,image = board[x][y].image, bg = bg_color, width = settings.size, height = settings.size, border=0, command= lambda: pressed(board_of_buttons, x, y,position_start, position_end, board))
-        button_board.grid(row=x+1,column=y+1)
-        row_of_buttons.append(button_board)
-    board_of_buttons.append(row_of_buttons)
+        exec(f"button_{x}_{y} = tk.Button(r,image = board[x-1][y-1].image, bg = bg_color, width = settings.size, height = settings.size, border=0, command= lambda: pressed(button_{x}_{y},{x},{y},position_start,position_end, board))")
+        exec(f"button_{x}_{y}.grid(row=x,column=y)")
 
 highlight_img = Image.open(f"black_50.png")
 highlight_img = ImageTk.PhotoImage(highlight_img.resize((settings.size,settings.size)))

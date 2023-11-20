@@ -12,6 +12,7 @@ class EmptySquare():
     def __init__(self):
         self.name = 'empty_square'
         self.color = None
+        self.ampasant = 0
         self.image = Image.open(f"trans_bg.png")
         self.image = ImageTk.PhotoImage(self.image.resize((settings.size,settings.size)))
     def is_legal(self, valid_move, whites_turn, *arg):
@@ -19,10 +20,11 @@ class EmptySquare():
         print("Cant move an empty square")
         return valid_move[0], whites_turn[0]
 
+
+
 class Piece():
     def __init__(self):
-        # self.image = None
-        pass
+        self.ampasant = 0
 
     def is_pieces_turn(self, valid_move, whites_turn):
         if whites_turn[0] == True and self.color == 'white' and valid_move[0] == True:
@@ -62,15 +64,100 @@ class King(Piece):
         self.image = ImageTk.PhotoImage(self.image.resize((settings.size,settings.size)))
         count = 0
 
+
+    def is_king_move(self, valid_move, whites_turn, board, position_start, position_end):
+        if abs(position_start[0] - position_end[0]) <= 1 and abs(position_start[1] - position_end[1]) <= 1:
+            pass
+        else:
+            print("king can only move one square at a time")
+            valid_move[0] = False
+            return valid_move[0]
         
-    def is_moving_one_square():
-        pass
+        return valid_move[0]
 
     def is_castleing():
         pass
 
     def is_moving_into_check():
         pass
+
+    def is_legal(self, valid_move, whites_turn, board, position_start, position_end):
+        valid_move[0] = self.is_king_move(valid_move, whites_turn, board, position_start, position_end)
+
+        valid_move[0], whites_turn[0] = super().is_legal(valid_move, whites_turn, board, position_start, position_end)# must be called last
+        return valid_move[0], whites_turn[0]
+
+
+
+class Pawn(Piece):
+    def __init__(self, color):
+        self.name = f"{color}_pawn"
+        self.ampasant = False
+        self.color = color
+        self.image = Image.open(f"{color}_pawn.png")
+        self.image = ImageTk.PhotoImage(self.image.resize((settings.size,settings.size)))
+
+    def is_one_square_forward(self, valid_move, whites_turn, board, position_start, position_end, pos_neg):
+        temp_valid_move = valid_move.copy()
+        if position_start[0] == 1 and position_end[0] == 3 and self.color == 'black' and position_start[1] - position_end[1] == 0 and board[position_start[0]-pos_neg][position_start[1]].name == 'empty_square' and board[position_start[0]-pos_neg-pos_neg][position_start[1]].name == 'empty_square' or position_start[0] == 6 and position_end[0] == 4 and self.color == 'white' and position_start[1] - position_end[1] == 0 and board[position_start[0]-pos_neg][position_start[1]].name == 'empty_square' and board[position_start[0]-pos_neg-pos_neg][position_start[1]].name == 'empty_square':
+            pass
+            # if position_start[1] - position_end[1] == 0 and board[position_start[0]-pos_neg][position_start[1]].name == 'empty_square' and board[position_start[0]-pos_neg-pos_neg][position_start[1]].name == 'empty_square':
+           
+        elif position_start[0] - position_end[0] == 1*pos_neg and position_start[1] - position_end[1] == 0 and board[position_end[0]][position_end[1]].name == 'empty_square':
+            pass
+
+        else:
+            temp_valid_move[0] = False
+        
+        # print(position_start[0] - position_end[0] , 1*pos_neg ,'and', position_start[1] - position_end[1] , 0 ,'and', board[position_end[0]][position_end[1]].name , 'empty_square')
+        return temp_valid_move[0]
+    
+    def is_taking_one_square_diagonal(self, valid_move, whites_turn, board, position_start, position_end, pos_neg):
+        temp_valid_move = valid_move.copy()
+        if board[position_end[0]][position_end[1]].name != 'empty_square' and abs(position_start[1] - position_end[1]) == 1 and position_start[0] - position_end[0] == 1*pos_neg:
+            pass
+        
+        elif True == False:#awpasant rule
+            pass
+        else:
+            temp_valid_move[0] = False
+        return temp_valid_move[0]
+
+    def is_ampasant(self, valid_move, whites_turn, board, position_start, position_end, pos_neg):
+        print(board[position_end[0]+pos_neg][position_end[1]].name ,'==', 'white_pawn' ,'and', self.color ,'!=', board[position_end[0]+pos_neg][position_end[1]].color ,'or', board[position_end[0]+pos_neg][position_end[1]].name ,'==', 'black_pawn' ,'and', self.color ,'!=', board[position_end[0]+pos_neg][position_end[1]].color)
+        print(board[position_end[0]+pos_neg][position_end[1]].ampasant, f"({position_end[0]+pos_neg},{position_end[1]})" ,'==', True , 'and', abs(position_start[1] - position_end[1]) ,'==', 1 ,'and', position_start[0] - position_end[0] ,'==', 1*pos_neg)
+        if board[position_end[0]+pos_neg][position_end[1]].name == 'white_pawn' and self.color != board[position_end[0]+pos_neg][position_end[1]].color or board[position_end[0]+pos_neg][position_end[1]].name == 'black_pawn' and self.color != board[position_end[0]+pos_neg][position_end[1]].color:
+            if board[position_end[0]+pos_neg][position_end[1]].ampasant == True and abs(position_start[1] - position_end[1]) == 1 and position_start[0] - position_end[0] == 1*pos_neg:
+                board[position_end[0]+pos_neg][position_end[1]] = board[position_end[0]][position_end[1]]
+            else:
+                valid_move[0] = False
+        else:
+            valid_move[0] = False
+        return valid_move[0]
+
+    def is_queening():
+        pass #when queening add a window that pops up asking what piece you want to promote to
+    
+    def is_pawn_move(self, valid_move, whites_turn, board, position_start, position_end):
+        if self.color == 'white':
+            pos_neg = 1
+        elif self.color == 'black':
+            pos_neg = -1
+
+        if self.is_one_square_forward(valid_move, whites_turn, board, position_start, position_end, pos_neg) == True or self.is_taking_one_square_diagonal(valid_move, whites_turn, board, position_start, position_end, pos_neg) == True or self.is_ampasant(valid_move, whites_turn, board, position_start, position_end, pos_neg) == True:
+            pass
+        else:
+            valid_move[0] = False
+            return valid_move[0]
+        return valid_move[0]
+
+    def is_legal(self, valid_move, whites_turn, board, position_start, position_end):
+        valid_move[0] = self.is_pawn_move(valid_move, whites_turn, board, position_start, position_end)
+        
+        valid_move[0], whites_turn[0] = super().is_legal(valid_move, whites_turn, board, position_start, position_end)# must be called last
+    
+        return valid_move[0], whites_turn[0]
+
 
 
 
@@ -124,6 +211,7 @@ class Rook(Piece):
     def is_legal(self, valid_move, whites_turn, board, position_start, position_end):
         valid_move[0] = self.is_on_col_row(valid_move, position_start, position_end)
         valid_move[0] = self.is_moving_thru_piece_col_row(valid_move, board, position_start, position_end)
+        
         valid_move[0], whites_turn[0] = super().is_legal(valid_move, whites_turn, board, position_start, position_end)# must be called last
         return valid_move[0], whites_turn[0]
 
@@ -143,12 +231,46 @@ class Bishop(Piece):
             valid_move[0] = False
         return valid_move[0]
 
-    def is_moving_thru_piece_diagonal():
-        pass
+    def is_moving_thru_piece_diagonal(self, valid_move, board, position_start, position_end):
+        if position_end[1] > position_start[1]:
+            pos_neg = 1
+        elif position_end[1] < position_start[1]:
+            pos_neg = -1
+        else:
+            print('problem with pos_neg diagonal variable')
+            pos_neg = False
+            valid_move[0] = False
+
+        if position_end[0] > position_start[0]:
+            neg_pos = 1
+        elif position_end[0] < position_start[0]:
+            neg_pos = -1
+        else:
+            print('problem with pos_neg diagonal variable')
+            neg_pos = False
+            valid_move[0] = False
+
+
+        if pos_neg != False and neg_pos != False:
+        #    print('loop number = ',abs(position_start[0] - position_end[0])-1)
+           for x in range(1,abs(position_start[0] - position_end[0])):
+                # print('')
+                # print(f"x = {x}")
+                # print(f"{position_start[0]+x*neg_pos}, {position_start[1]+x*pos_neg}")
+                # print(f"{position_start[0]}+{x}*{neg_pos}, {position_start[1]}+{x}*{pos_neg}")
+                # print(board[position_start[0]+x*neg_pos][position_start[1]+x*pos_neg].name)
+                if board[position_start[0]+x*neg_pos][position_start[1]+x*pos_neg].name != 'empty_square':
+                    print("Cant move thru your own peices")
+                    valid_move[0] = False
+                    return valid_move[0]
+
+        return valid_move[0]
+
 
     def is_legal(self, valid_move, whites_turn, board, position_start, position_end):
         valid_move[0] = self.is_on_diagonal(valid_move, position_start, position_end)
-
+        valid_move[0] = self.is_moving_thru_piece_diagonal(valid_move, board, position_start, position_end)
+        
         valid_move[0], whites_turn[0] = super().is_legal(valid_move, whites_turn, board, position_start, position_end)
         return valid_move[0], whites_turn[0]
     
@@ -161,6 +283,18 @@ class Queen(Rook, Bishop):
         self.image = Image.open(f"{color}_queen.png")
         self.image = ImageTk.PhotoImage(self.image.resize((settings.size,settings.size)))
 
+    def is_legal(self, valid_move, whites_turn, board, position_start, position_end):
+        if self.is_on_col_row(valid_move, position_start, position_end) == True:
+            valid_move[0] = self.is_moving_thru_piece_col_row(valid_move, board, position_start, position_end)
+        
+        elif self.is_on_diagonal(valid_move, position_start, position_end) == True:
+            valid_move[0] = self.is_moving_thru_piece_diagonal(valid_move, board, position_start, position_end)
+        
+        valid_move[0] = self.not_taking_own_piece(valid_move, board, position_start, position_end)
+        valid_move[0], whites_turn[0] = self.is_pieces_turn(valid_move, whites_turn) #this must be the last method called because of whites_turn variable
+        return valid_move[0], whites_turn[0]
+
+
 
 class Knight(Piece):
     def __init__(self, color):
@@ -169,28 +303,19 @@ class Knight(Piece):
         self.image = Image.open(f"{color}_knight.png")
         self.image = ImageTk.PhotoImage(self.image.resize((settings.size,settings.size)))
 
-    def is_knight_move():
-        pass
+    def is_knight_move(self, valid_move, whites_turn, board, position_start, position_end):
+        # print(abs(position_end[1]-position_start[1]) , abs(position_end[0] - position_start[0]) , 'or',  abs(position_end[1]-position_start[1]) , abs(position_end[0] - position_start[0]))
+        if abs(position_end[1]-position_start[1]) == 1 and abs(position_end[0] - position_start[0]) == 2 or abs(position_end[1]-position_start[1]) == 2 and abs(position_end[0] - position_start[0]) == 1:
+            pass
+        else:
+            print("knight can only move in an 'L' shape")
+            valid_move[0] = False
+        return valid_move[0]
 
+    def is_legal(self, valid_move, whites_turn, board, position_start, position_end):
+        valid_move[0] = self.is_knight_move(valid_move, whites_turn, board, position_start, position_end)
 
-class Pawn(Piece):
-    def __init__(self, color):
-        self.name = f"{color}_pawn"
-        self.color = color
-        self.image = Image.open(f"{color}_pawn.png")
-        self.image = ImageTk.PhotoImage(self.image.resize((settings.size,settings.size)))
-
-    def is_one_square_forward():
-        pass
-    
-    def is_taking_one_square_diagonal():
-        pass
-
-    def is_ampasant():
-        pass
-
-    def is_queening():
-        pass
-
+        valid_move[0], whites_turn[0] = super().is_legal(valid_move, whites_turn, board, position_start, position_end)# must be called last
+        return valid_move[0], whites_turn[0]
 
 
