@@ -12,10 +12,10 @@ class EmptySquare():
     def __init__(self):
         self.name = 'empty_square'
         self.color = None
-        self.ampasant = 0
+        self.ampasant = False
         self.image = Image.open(f"trans_bg.png")
         self.image = ImageTk.PhotoImage(self.image.resize((settings.size,settings.size)))
-    def is_legal(self, valid_move, whites_turn, *arg):
+    def is_legal(self, valid_move, whites_turn):
         valid_move[0] = False
         print("Cant move an empty square")
         return valid_move[0], whites_turn[0]
@@ -23,8 +23,9 @@ class EmptySquare():
 
 
 class Piece():
-    def __init__(self):
-        self.ampasant = 0
+    def __init__(self, color):
+        self.ampasant = False
+        self.color = color
 
     def is_pieces_turn(self, valid_move, whites_turn):
         if whites_turn[0] == True and self.color == 'white' and valid_move[0] == True:
@@ -58,8 +59,8 @@ class Piece():
 
 class King(Piece):
     def __init__(self, color):
+        super().__init__(color)
         self.name = f"{color}_king"
-        self.color = color
         self.image = Image.open(f"{color}_king.png")
         self.image = ImageTk.PhotoImage(self.image.resize((settings.size,settings.size)))
         count = 0
@@ -91,16 +92,17 @@ class King(Piece):
 
 class Pawn(Piece):
     def __init__(self, color):
+        super().__init__(color)
         self.name = f"{color}_pawn"
         self.ampasant = False
-        self.color = color
         self.image = Image.open(f"{color}_pawn.png")
         self.image = ImageTk.PhotoImage(self.image.resize((settings.size,settings.size)))
 
     def is_one_square_forward(self, valid_move, whites_turn, board, position_start, position_end, pos_neg):
         temp_valid_move = valid_move.copy()
         if position_start[0] == 1 and position_end[0] == 3 and self.color == 'black' and position_start[1] - position_end[1] == 0 and board[position_start[0]-pos_neg][position_start[1]].name == 'empty_square' and board[position_start[0]-pos_neg-pos_neg][position_start[1]].name == 'empty_square' or position_start[0] == 6 and position_end[0] == 4 and self.color == 'white' and position_start[1] - position_end[1] == 0 and board[position_start[0]-pos_neg][position_start[1]].name == 'empty_square' and board[position_start[0]-pos_neg-pos_neg][position_start[1]].name == 'empty_square':
-            pass
+            #moved two squares forward
+            self.ampasant = True
             # if position_start[1] - position_end[1] == 0 and board[position_start[0]-pos_neg][position_start[1]].name == 'empty_square' and board[position_start[0]-pos_neg-pos_neg][position_start[1]].name == 'empty_square':
            
         elif position_start[0] - position_end[0] == 1*pos_neg and position_start[1] - position_end[1] == 0 and board[position_end[0]][position_end[1]].name == 'empty_square':
@@ -124,8 +126,8 @@ class Pawn(Piece):
         return temp_valid_move[0]
 
     def is_ampasant(self, valid_move, whites_turn, board, position_start, position_end, pos_neg):
-        print(board[position_end[0]+pos_neg][position_end[1]].name ,'==', 'white_pawn' ,'and', self.color ,'!=', board[position_end[0]+pos_neg][position_end[1]].color ,'or', board[position_end[0]+pos_neg][position_end[1]].name ,'==', 'black_pawn' ,'and', self.color ,'!=', board[position_end[0]+pos_neg][position_end[1]].color)
-        print(board[position_end[0]+pos_neg][position_end[1]].ampasant, f"({position_end[0]+pos_neg},{position_end[1]})" ,'==', True , 'and', abs(position_start[1] - position_end[1]) ,'==', 1 ,'and', position_start[0] - position_end[0] ,'==', 1*pos_neg)
+        # print(board[position_end[0]+pos_neg][position_end[1]].name ,'==', 'white_pawn' ,'and', self.color ,'!=', board[position_end[0]+pos_neg][position_end[1]].color ,'or', board[position_end[0]+pos_neg][position_end[1]].name ,'==', 'black_pawn' ,'and', self.color ,'!=', board[position_end[0]+pos_neg][position_end[1]].color)
+        # print(board[position_end[0]+pos_neg][position_end[1]].ampasant, f"({position_end[0]+pos_neg},{position_end[1]})" ,'==', True , 'and', abs(position_start[1] - position_end[1]) ,'==', 1 ,'and', position_start[0] - position_end[0] ,'==', 1*pos_neg)
         if board[position_end[0]+pos_neg][position_end[1]].name == 'white_pawn' and self.color != board[position_end[0]+pos_neg][position_end[1]].color or board[position_end[0]+pos_neg][position_end[1]].name == 'black_pawn' and self.color != board[position_end[0]+pos_neg][position_end[1]].color:
             if board[position_end[0]+pos_neg][position_end[1]].ampasant == True and abs(position_start[1] - position_end[1]) == 1 and position_start[0] - position_end[0] == 1*pos_neg:
                 board[position_end[0]+pos_neg][position_end[1]] = board[position_end[0]][position_end[1]]
@@ -135,9 +137,11 @@ class Pawn(Piece):
             valid_move[0] = False
         return valid_move[0]
 
-    def is_queening():
-        pass #when queening add a window that pops up asking what piece you want to promote to
-    
+    def is_queening(self, valid_move, whites_turn, board, position_start, position_end):
+        if position_end[0] == 0 and self.color == 'white' or position_end[0] == 7 and self.color == 'black':
+            pass
+        return valid_move[0]
+
     def is_pawn_move(self, valid_move, whites_turn, board, position_start, position_end):
         if self.color == 'white':
             pos_neg = 1
@@ -163,8 +167,8 @@ class Pawn(Piece):
 
 class Rook(Piece):
     def __init__(self, color):
+        super().__init__(color)
         self.name = f"{color}_rook"
-        self.color = color
         self.image = Image.open(f"{color}_rook.png")
         self.image = ImageTk.PhotoImage(self.image.resize((settings.size,settings.size)))
 
@@ -219,10 +223,11 @@ class Rook(Piece):
 
 class Bishop(Piece):
     def __init__(self, color):
+        super().__init__(color)
         self.name = f"{color}_bishop"
-        self.color = color
         self.image = Image.open(f"{color}_bishop.png")
         self.image = ImageTk.PhotoImage(self.image.resize((settings.size,settings.size)))
+        
 
     def is_on_diagonal(self, valid_move, position_start, position_end):
         # print(f"({(position_start[0])}-{(position_end[0])})/({(position_start[1])}-{(position_end[1])}) = {(abs((position_start[0]) - (position_end[0]))+1)}/{(abs((position_start[1]) - (position_end[1]))+1)}")
@@ -278,8 +283,8 @@ class Bishop(Piece):
 
 class Queen(Rook, Bishop):
     def __init__(self, color):
+        super().__init__(color)
         self.name = f"{color}_queen"
-        self.color = color
         self.image = Image.open(f"{color}_queen.png")
         self.image = ImageTk.PhotoImage(self.image.resize((settings.size,settings.size)))
 
@@ -298,8 +303,8 @@ class Queen(Rook, Bishop):
 
 class Knight(Piece):
     def __init__(self, color):
+        super().__init__(color)
         self.name = f"{color}_knight"
-        self.color = color
         self.image = Image.open(f"{color}_knight.png")
         self.image = ImageTk.PhotoImage(self.image.resize((settings.size,settings.size)))
 
