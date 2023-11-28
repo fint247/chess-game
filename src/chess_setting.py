@@ -11,7 +11,7 @@ from PIL import Image, ImageTk
 class Settings():
     def __init__(self):
         self.size = 50
-        self.auto_queen = False
+        self.auto_queen = True #change default to False later
 
         self.scale_buttons = .3
         self.scale_labels = .3
