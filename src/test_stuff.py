@@ -1,107 +1,227 @@
-from chess_classes import *
 
+class Bang():
+    pass
 
-r = tk.Tk() 
-r.title('Chess') 
-r.geometry('800x600-0+0')
-r.config(bg = 'white')
-
-# r.state('zoomed')
-
-valid_move = [True]
-position_start = []
-position_end = []
-whites_turn= [True]
+B = Bang()
+print(isinstance(B, Bang))
 
 
 
-#maybe add a name variable to the instences that specifies what pawn/rook/bishop/knight it is rather than making 24 unique instances 
-
-empty_square = EmptySquare()
-
-b_rook1 = Rook('black')
-b_knigt1 = Knight('black')
-b_bishop1 = Bishop('black')
-b_queen = Queen('black')
-b_king = King('black')
-b_bishop2 = Bishop('black')
-b_knigt2 = Knight('black')
-b_rook2 = Rook('black')
-b_pawn1 = Pawn('black')
-b_pawn2 = Pawn('black')
-b_pawn3 = Pawn('black')
-b_pawn4 = Pawn('black')
-b_pawn5 = Pawn('black')
-b_pawn6 = Pawn('black')
-b_pawn7 = Pawn('black')
-b_pawn8 = Pawn('black')
-w_rook1 = Rook('white')
-
-w_knigt1 = Knight('white')
-w_bishop1 = Bishop('white')
-w_queen = Queen('white')
-w_king = King('white')
-w_bishop2 = Bishop('white')
-w_knigt2 = Knight('white')
-w_rook2 = Rook('white')
-w_pawn1 = Pawn('white')
-w_pawn2 = Pawn('white')
-w_pawn3 = Pawn('white')
-w_pawn4 = Pawn('white')
-w_pawn5 = Pawn('white')
-w_pawn6 = Pawn('white')
-w_pawn7 = Pawn('white')
-w_pawn8 = Pawn('white')
 
 
-a = [b_rook1, b_knigt1, b_bishop1, b_queen, b_king, b_bishop2, b_knigt2, b_rook2]
-b = [b_pawn1, b_pawn2, b_pawn3, b_pawn4, b_pawn5, b_pawn6, b_pawn7, b_pawn8]
-c = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
-d = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
-e = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
-f = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
-g = [w_pawn1, w_pawn2, w_pawn3, w_pawn4, w_pawn5, w_pawn6, w_pawn7, w_pawn8]
-h = [w_rook1, w_knigt1, w_bishop1, w_queen, w_king, w_bishop2, w_knigt2, w_rook2]
+# #I never learned how to use kivy but i do know tkinter
 
-# a = [b_rook1, b_king, empty_square, empty_square, empty_square, empty_square, empty_square, b_rook2]
-# b = [b_pawn1, b_pawn2, b_pawn3, b_pawn4, b_pawn5, b_pawn6, b_pawn7, b_pawn8]
-# c = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
-# d = [empty_square, empty_square, empty_square, w_king, empty_square, empty_square, empty_square, empty_square]
-# e = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
-# f = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
-# g = [w_pawn1, w_pawn2, w_pawn3, w_pawn4, w_pawn5, w_pawn6, w_pawn7, w_pawn8]
-# h = [w_rook1, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, w_rook2]
 
-board = [a,b,c,d,e,f,g,h]
+# from tkinter import *
+# import tkinter as tk
 
-temp_board = [ row.copy() for row in board]
-temp_empty_square = EmptySquare()
+# r = tk.Tk() 
+# r.title('Chess') 
+# r.geometry('800x600-0+0')
+# r.config(bg = 'white')
+# counter = 0
+# for x in range(3):
+#     for y in range(3):
+#       counter += 1
+#       button1 = Button(r, text=f'{counter}', bg = 'white', fg = 'black') 
+#       button1.grid(row = x+1, column = y+1) 
 
-for a in range(8):
-   for b in range(8):
-      print(temp_board[a][b].name,end=' - ')
-   print('')
 
-print('\n')
 
-for a in range(8):
-   for b in range(8):
-      print(board[a][b].name,end=' - ')
-   print('')
+# r.mainloop() 
 
-temp_board[1][1] = temp_board[0][1]
-temp_board[0][1] = temp_empty_square
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+# import functools
 
-print('\n')
 
-for a in range(8):
-   for b in range(8):
-      print(temp_board[a][b].name,end=' - ')
-   print('')
+# def fibonacci(n):
+#     if n < 2:
+#         return 1
+#     return fibonacci(n-1) + fibonacci(n-2)
 
-print('\n')
+# def is_even(x):
+#     return x % 2 == 0
 
-for a in range(8):
-   for b in range(8):
-      print(board[a][b].name,end=' - ')
-   print('')
+# def print_string(x,y):
+#    string_num = ''
+#    string_num += (str(x)+'\n')
+#    string_num += (str(y))
+#    return string_num
+
+# numbers = [x+1 for x in range(20)]
+
+# fibonacci_seq = list(map(fibonacci, numbers))
+# print(fibonacci_seq)
+
+# fibonacci_seq = list(filter(is_even, fibonacci_seq))
+# print(fibonacci_seq)
+
+# fibonacci_seq = functools.reduce(print_string, fibonacci_seq)
+# print(fibonacci_seq)
+
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+# # d is a Directory object
+# class D():
+#    def __init__(self, first_names, last_names):
+#       self.first_names = first_names
+#       self.last_names = last_names
+#       self.index = 0
+
+#    def __iter__(self):
+#       return self
+   
+#    def __next__(self):
+#       if self.index < len(self.first_names):
+#          result = f"{self.last_names[self.index]}, {self.first_names[self.index]}"
+#          self.index += 1
+#          return result
+#       else:
+#          raise StopIteration
+
+
+# d = D(['caden','ben','jackson'],['Brooks','Parker', 'Meril'])
+
+# for val in d:
+#     print(val)
+
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+# def is_prime(num: int):
+   
+#    for n in range(num):
+#       prime_num = True
+#       for x in range(n):
+#          for y in range(n):
+#             if x*y == n:
+#                prime_num = False
+#       if prime_num == True:
+#          yield n
+
+
+# prime_gen = is_prime(50)
+# for num in prime_gen:
+#     print(num)
+
+
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+
+# def my_decorator(f):
+#    def wrapper_function(*args):
+#       result = f(*args)
+#       print('All done!')
+#       print('One more time!')
+#       result = f(*args)
+#       print('All done!')
+#       return result
+#    return wrapper_function
+   
+
+# @my_decorator
+# def say_hello():
+#     print("Hello!")
+
+
+
+# say_hello()
+
+
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+
+# from typing import Protocol
+
+# class Drivable(Protocol):
+#   mileage: int
+#   def drive(self, distance: int) -> None:
+#     ...
+
+
+
+
+# class Car():
+#   def drive(self, distance: int) -> None: 
+#       print(f"you drove {distance} meters")
+
+# class Golfer():
+#   def drive(self, distance: int) -> None:
+#     print(f"you drove {distance} meters")
+
+
+# bus_driver = Car()
+# golfer = Golfer()
+
+# bus_driver.drive(100_000)
+# golfer.drive(123)
+
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+# from typing import List, Tuple
+
+# def create_adjacency_list(edges: List[Tuple[int, int]]) -> List[set]:
+#    nodes = set()
+#    for edge in edges:
+#       nodes.add(edge[0])
+#       nodes.add(edge[1])
+#    adj_list = [set() for i in range(len(nodes))]
+#    for edge in edges:
+#       u = edge[0]
+#       v = edge[1]
+#       adj_list[u].add(v)
+#       adj_list[v].add(u)
+#    return adj_list
+
+# edges = [(0, 1), (0, 2), (1, 2)]
+# g = create_adjacency_list(edges)I
+# print(g)
+
+
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+
+# class Car:
+#   def __init__(self, make, model, year):
+#     self.make = make
+#     self.model = model
+#     self.year = year 
+
+    
+# car1 = Car('toyota', 'avalon', 1995)
+# car2 = Car('tesla','cyber_truck', 2023)
+# car3 = Car('BMW','328I', 2011)
+
+# cars = [car1, car2, car3]
+
+# def sort_year_L_to_H(cars):
+#    sorted_cars = []
+#    for x in cars:
+#       sorted_cars.append(x.year)
+#    sorted_cars.sort()
+#    return sorted_cars
+
+# def sort_make_L_to_H(cars):
+#    sorted_cars = []
+#    for x in cars:
+#       sorted_cars.append(x.make)
+#    sorted_cars.sort()
+#    return sorted_cars
+
+# def sort_model_H_to_L(cars):
+#    sorted_cars = []
+#    for x in cars:
+#       sorted_cars.append(x.model)
+#    sorted_cars.sort()
+#    sorted_cars2 = []
+#    for x in range(len(sorted_cars)):
+#       sorted_cars2.append(sorted_cars[-1*(x+1)])
+
+#    return sorted_cars2
+
+# sorted_year = sort_year_L_to_H(cars)
+# sorted_make = sort_make_L_to_H(cars)
+# sorted_model = sort_model_H_to_L(cars)
+
+# print(sorted_year)
+# print(sorted_make)
+# print(sorted_model)

@@ -73,11 +73,11 @@ w_pawn8 = Pawn('white')
 a = [b_rook1, b_knigt1, b_bishop1, b_queen, b_king, b_bishop2, b_knigt2, b_rook2]
 b = [b_pawn1, b_pawn2, b_pawn3, b_pawn4, b_pawn5, b_pawn6, b_pawn7, b_pawn8]
 c = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
-d = [empty_square, empty_square, w_king, empty_square, empty_square, empty_square, empty_square, empty_square]
+d = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
 e = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
 f = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
 g = [w_pawn1, w_pawn2, w_pawn3, w_pawn4, w_pawn5, w_pawn6, w_pawn7, w_pawn8]
-h = [w_rook1, w_knigt1, w_bishop1, w_queen, empty_square, w_bishop2, w_knigt2, w_rook2]
+h = [w_rook1, w_knigt1, w_bishop1, w_queen, w_king, w_bishop2, w_knigt2, w_rook2]
 
 board = [a,b,c,d,e,f,g,h]
 
@@ -132,10 +132,11 @@ def update_ampasant():
     for x in range(8):
         # print('')
         for y in range(8):
-            # if board[x][y].ampasant == False:
-            #     print(0,end = '')
-            # else:
-            #     print(1,end='')
+        #     if board[x][y].ampasant == False:
+        #         print(0,end = '')
+        #     else:
+        #         print(1,end='')
+        
         
             if board[x][y].color == 'white' and whites_turn[0] == True:
                 board[x][y].ampasant = False
@@ -186,7 +187,7 @@ def pressed(button,a,b,position_start,position_end, board):
         valid_move[0] = board[position_start[0]][position_start[1]].is_legal(valid_move, whites_turn, board, position_start, position_end)
         if valid_move[0] == True:
             check_if_promoting()
-            check_if_castling()
+            # check_if_castling()
 
         if valid_move[0] == True:
             board[position_end[0]][position_end[1]] = board[position_start[0]][position_start[1]]

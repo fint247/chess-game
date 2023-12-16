@@ -104,7 +104,7 @@ class King(Piece):
                     for y in range(x+1, king_pos):
                         print(y,':',board[colors_row][y].name)
                         if board[colors_row][y].name != 'empty_square':
-                            print('Rule Break: cant castle thru ',board[colors_row][y].name)
+                            # print('Rule Break: cant castle thru ',board[colors_row][y].name)
                             temp_valid_move[0] = False
                    
                 elif position_end[1] > position_start[1] and x > king_pos:
@@ -147,7 +147,7 @@ class King(Piece):
                 if self.name == "white_king" and temp_board[temp_position_start[0]][temp_position_start[1]].name == 'black_king' or self.name == "black_king" and temp_board[temp_position_start[0]][temp_position_start[1]].name == 'white_king':
                     print('found a king',temp_position_start, position_end)
                     if abs(temp_position_start[0] - position_end[0]) <= 1 and abs(temp_position_start[1] - position_end[1]) <= 1:
-                        print('NONONONONONONONON')
+                        print('NONONONONONONONON') 
                         z = True
                 elif temp_position_start == position_end:
                     pass
@@ -166,12 +166,12 @@ class King(Piece):
     def is_legal(self, valid_move, whites_turn, board, position_start, position_end):
         print('\n\n===============',position_start,position_end,'=========================\n\n')
         
-        if self.is_king_move(valid_move, whites_turn, board, position_start, position_end) == True:
-            pass
-        elif self.is_castleing(valid_move, whites_turn, board, position_start, position_end) == True:
-            pass
-        else:
-            valid_move[0] = False
+        # if self.is_king_move(valid_move, whites_turn, board, position_start, position_end) == True:
+        #     pass
+        # elif self.is_castleing(valid_move, whites_turn, board, position_start, position_end) == True:
+        #     pass
+        # else:
+        #     valid_move[0] = False
         valid_move[0] = super().is_legal(valid_move, whites_turn, board, position_start, position_end)
         return valid_move[0]
 
@@ -198,7 +198,7 @@ class Pawn(Piece):
             pass
 
         else:
-            print(f"Rule Break: bad pawn move - {position_start, position_end}")
+            # print(f"Rule Break: bad pawn move - {position_start, position_end}")
             temp_valid_move[0] = False
         
         # print(position_start[0] - position_end[0] , 1*pos_neg ,'and', position_start[1] - position_end[1] , 0 ,'and', board[position_end[0]][position_end[1]].name , 'empty_square')
@@ -222,6 +222,15 @@ class Pawn(Piece):
             if board[position_end[0]+pos_neg][position_end[1]].ampasant == True and abs(position_start[1] - position_end[1]) == 1 and position_start[0] - position_end[0] == 1*pos_neg:
                 board[position_end[0]+pos_neg][position_end[1]] = board[position_end[0]][position_end[1]]
             else:
+                # if board[position_end[0]+pos_neg][position_end[1]].ampasant == False:
+                #     for x in range(8):
+                #         print('')
+                #         for y in range(8):
+                #             if board[x][y].ampasant == False:
+                #                 print(0,end = '')
+                #             else:
+                #                 print(1,end='')
+
                 valid_move[0] = False
         else:
             valid_move[0] = False
@@ -247,15 +256,9 @@ class Pawn(Piece):
 
     def is_legal(self, valid_move, whites_turn, board, position_start, position_end):
         valid_move[0] = self.is_pawn_move(valid_move, whites_turn, board, position_start, position_end)
-        if valid_move[0] == False:
-            print('Bad move one')
         valid_move[0] = self.is_queening(valid_move, whites_turn, board, position_start, position_end)
-        if valid_move[0] == False:
-            print('Bad move two')
 
         valid_move[0] = super().is_legal(valid_move, whites_turn, board, position_start, position_end)
-        if valid_move[0] == False:
-            print('Bad move three')
 
 
         if self.promoted == True and valid_move[0] == False:
