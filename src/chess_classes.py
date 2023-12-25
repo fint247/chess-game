@@ -20,6 +20,10 @@ class EmptySquare():
         # print("Rule Break: Cant move an empty square")
         return valid_move[0]
 
+    def rescale_img(self):
+        self.image = Image.open(f"trans_bg.png")
+        self.image = ImageTk.PhotoImage(self.image.resize((int(settings.size),int(settings.size))))
+        return self.image
 
 
 class Piece():
@@ -28,6 +32,11 @@ class Piece():
         self.color = color
         self.has_moved = False
 
+    def rescale_img(self):
+        self.image = Image.open(f"{self.name}.png")
+        self.image = ImageTk.PhotoImage(self.image.resize((int(settings.size),int(settings.size))))
+        return self.image
+   
     def is_pieces_turn(self, valid_move, whites_turn):
         if whites_turn[0] == True and self.color == 'white' and valid_move[0] == True:
             return valid_move[0]
@@ -66,7 +75,7 @@ class King(Piece):
         self.image = ImageTk.PhotoImage(self.image.resize((settings.size,settings.size)))
         count = 0
 
-
+    
     def is_king_move(self, valid_move, whites_turn, board, position_start, position_end):
         temp_valid_move = valid_move.copy()
         if abs(position_start[0] - position_end[0]) <= 1 and abs(position_start[1] - position_end[1]) <= 1:
@@ -159,6 +168,7 @@ class King(Piece):
                     valid_move[0] = False
         
         # print('HERE = ', valid_move)
+        valid_move[0] = True
         return valid_move[0]
 
 
@@ -186,9 +196,9 @@ class Pawn(Piece):
         self.image = Image.open(f"{color}_pawn.png")
         self.image = ImageTk.PhotoImage(self.image.resize((settings.size,settings.size)))
 
+    
     def is_one_square_forward(self, valid_move, whites_turn, board, position_start, position_end, pos_neg):
         temp_valid_move = valid_move.copy()
-        #DEBUG THIS IF STATMENT
         if position_start[0] == 1 and position_end[0] == 3 and self.color == 'black' and position_start[1] - position_end[1] == 0 and board[position_start[0]-pos_neg][position_start[1]].name == 'empty_square' and board[position_start[0]-pos_neg-pos_neg][position_start[1]].name == 'empty_square' or position_start[0] == 6 and position_end[0] == 4 and self.color == 'white' and position_start[1] - position_end[1] == 0 and board[position_start[0]-pos_neg][position_start[1]].name == 'empty_square' and board[position_start[0]-pos_neg-pos_neg][position_start[1]].name == 'empty_square':
             #moved two squares forward
             self.ampasant = True
@@ -198,7 +208,6 @@ class Pawn(Piece):
             pass
 
         else:
-            print(f"Rule Break: bad pawn move - {position_start, position_end}")
             temp_valid_move[0] = False
         
         # print(position_start[0] - position_end[0] , 1*pos_neg ,'and', position_start[1] - position_end[1] , 0 ,'and', board[position_end[0]][position_end[1]].name , 'empty_square')
@@ -247,16 +256,11 @@ class Pawn(Piece):
 
     def is_legal(self, valid_move, whites_turn, board, position_start, position_end):
         valid_move[0] = self.is_pawn_move(valid_move, whites_turn, board, position_start, position_end)
-        if valid_move[0] == False:
-            print('Bad move one')
+        
         valid_move[0] = self.is_queening(valid_move, whites_turn, board, position_start, position_end)
-        if valid_move[0] == False:
-            print('Bad move two')
-
+       
         valid_move[0] = super().is_legal(valid_move, whites_turn, board, position_start, position_end)
-        if valid_move[0] == False:
-            print('Bad move three')
-
+        
 
         if self.promoted == True and valid_move[0] == False:
             self.promoted = False
@@ -271,6 +275,7 @@ class Rook(Piece):
         self.image = Image.open(f"{color}_rook.png")
         self.image = ImageTk.PhotoImage(self.image.resize((settings.size,settings.size)))
 
+    
     def is_on_col_row(self, valid_move, position_start, position_end):
         temp_valid_move = valid_move.copy()
         if position_start[0] != position_end[0] and position_start[1] != position_end[1]:
@@ -328,7 +333,7 @@ class Bishop(Piece):
         self.image = Image.open(f"{color}_bishop.png")
         self.image = ImageTk.PhotoImage(self.image.resize((settings.size,settings.size)))
         
-
+    
     def is_on_diagonal(self, valid_move, position_start, position_end):
         temp_valid_move = valid_move.copy()
         # print(f"({(position_start[0])}-{(position_end[0])})/({(position_start[1])}-{(position_end[1])}) = {(abs((position_start[0]) - (position_end[0]))+1)}/{(abs((position_start[1]) - (position_end[1]))+1)}")
@@ -389,6 +394,7 @@ class Queen(Rook, Bishop):
         self.image = Image.open(f"{color}_queen.png")
         self.image = ImageTk.PhotoImage(self.image.resize((settings.size,settings.size)))
 
+   
     def is_legal(self, valid_move, whites_turn, board, position_start, position_end):
         if self.is_on_col_row(valid_move, position_start, position_end) == True:
             pass
@@ -411,6 +417,7 @@ class Knight(Piece):
         self.image = Image.open(f"{color}_knight.png")
         self.image = ImageTk.PhotoImage(self.image.resize((settings.size,settings.size)))
 
+    
     def is_knight_move(self, valid_move, whites_turn, board, position_start, position_end):
         # print(abs(position_end[1]-position_start[1]) , abs(position_end[0] - position_start[0]) , 'or',  abs(position_end[1]-position_start[1]) , abs(position_end[0] - position_start[0]))
         if abs(position_end[1]-position_start[1]) == 1 and abs(position_end[0] - position_start[0]) == 2 or abs(position_end[1]-position_start[1]) == 2 and abs(position_end[0] - position_start[0]) == 1:

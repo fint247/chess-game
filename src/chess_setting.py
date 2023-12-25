@@ -55,6 +55,7 @@ class Settings():
         s.title('Settings') 
         s.geometry('700x600-0+0')
         s.config(bg = 'black')
+        s.overrideredirect(True)
 
         s.protocol("WM_DELETE_WINDOW", lambda: exit_settings(r,s))
 

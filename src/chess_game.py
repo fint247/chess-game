@@ -12,6 +12,7 @@ r = tk.Tk()
 r.title('Chess') 
 r.geometry('800x600-0+0')
 r.config(bg = 'white')
+# r.overrideredirect(True)
 
 # r.state('zoomed')
 
@@ -61,15 +62,6 @@ w_pawn7 = Pawn('white')
 w_pawn8 = Pawn('white')
 
 
-# a = [b_rook1, b_knigt1, b_bishop1, b_queen, b_king, b_bishop2, b_knigt2, b_rook2]
-# b = [b_pawn1, b_pawn2, b_pawn3, b_pawn4, b_pawn5, b_pawn6, b_pawn7, b_pawn8]
-# c = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
-# d = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
-# e = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
-# f = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
-# g = [w_pawn1, w_pawn2, w_pawn3, w_pawn4, w_pawn5, w_pawn6, w_pawn7, w_pawn8]
-# h = [w_rook1, w_knigt1, w_bishop1, w_queen, w_king, w_bishop2, w_knigt2, w_rook2]
-
 a = [b_rook1, b_knigt1, b_bishop1, b_queen, b_king, b_bishop2, b_knigt2, b_rook2]
 b = [b_pawn1, b_pawn2, b_pawn3, b_pawn4, b_pawn5, b_pawn6, b_pawn7, b_pawn8]
 c = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
@@ -79,7 +71,67 @@ f = [empty_square, empty_square, empty_square, empty_square, empty_square, empty
 g = [w_pawn1, w_pawn2, w_pawn3, w_pawn4, w_pawn5, w_pawn6, w_pawn7, w_pawn8]
 h = [w_rook1, w_knigt1, w_bishop1, w_queen, empty_square, w_bishop2, w_knigt2, w_rook2]
 
+# a = [b_rook1, b_knigt1, b_bishop1, b_queen, b_king, b_bishop2, b_knigt2, b_rook2]
+# b = [b_pawn1, b_pawn2, b_pawn3, b_pawn4, b_pawn5, b_pawn6, b_pawn7, b_pawn8]
+# c = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
+# d = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
+# e = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
+# f = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
+# g = [w_pawn1, w_pawn2, w_pawn3, w_pawn4, w_pawn5, w_pawn6, w_pawn7, w_pawn8]
+# h = [w_rook1, w_knigt1, w_bishop1, w_queen, w_king, w_bishop2, w_knigt2, w_rook2]
+
 board = [a,b,c,d,e,f,g,h]
+
+
+class Tracker():
+    """ windows resize event tracker """
+
+    def __init__(self, root):
+        self.root = root
+        self.width, self.height = root.winfo_width(), root.winfo_height()
+        self._func_id = None
+
+    def bind_config(self, board):
+        self._func_id = self.root.bind("<Configure>", lambda event: self.resize(event, board))
+
+    def unbind_config(self):  # Untested.
+        if self._func_id: 
+            self.root.unbind("<Configure>", self._func_id)
+            self._func_id = None
+
+    def resize(self, event, board):
+        if(event.widget == self.root and
+           (self.width != event.width or self.height != event.height)):
+            # print(f'{event.height}, {event.width}')
+            self.width, self.height = event.width, event.height
+
+            # scale = min(self.width, self.height)
+            if self.width >= self.height:
+                side_bar_width = self.width * 0.10
+                chess_board_width = self.width * 0.80
+                rescale_game(board,side_bar_width,chess_board_width)
+                print(self.width)
+
+
+            elif self.width * 0.80 < self.height:
+                ...
+
+            else:
+                print('something else')
+
+           
+
+def rescale_game(board,side_bar_width,chess_board_width):
+    button_stop.config(width=int(side_bar_width), height=int(side_bar_width))
+    button_setting.config(width=int(side_bar_width), height=int(side_bar_width))
+    val = 2*int(side_bar_width)
+    for x in range(1,9):
+        val += int(chess_board_width*(1/8))
+
+        for y in range(1,9):
+            exec(f"button_{x}_{y}.config(width=int(chess_board_width*(1/8)), height=int(chess_board_width*(1/8)), image=board[x-1][y-1].rescale_img())")
+
+    print(f"{val=}")
 
 def exit_settings(r,s):
     # update_buttons(button_setting, button_stop)
@@ -100,7 +152,7 @@ def update_buttons(settings, *args):
         for x in range(1,9):
             for y in range(1,9):
                 exec(f"button_{x}_{y}.config(image = board[x-1][y-1].image)")
-
+                
 def check_if_promoting():
     if board[position_end[0]][position_end[1]].name == 'white_pawn' or board[position_end[0]][position_end[1]].name == 'black_pawn':
                 if board[position_end[0]][position_end[1]].promoted == True:
@@ -111,22 +163,23 @@ def check_if_promoting():
                         pass
 
 def check_if_castling():
-        if position_start[1] > position_end[1]:
-            for i in range(0, position_end[1]):
-                if board[position_start[0]][i].name == 'black_rook' and board[position_start[0]][position_start[1]].name == 'black_king' or board[position_start[0]][i].name == 'white_rook' and board[position_start[0]][position_start[1]].name == 'white_king':
-                    print('here')
-                    break
+        if board[position_start[0]][position_start[1]].name == 'white_king' or board[position_start[0]][position_start[1]].name == 'black_king':
+            if position_start[1] > position_end[1]:
+                for i in range(0, position_end[1]):
+                    if board[position_start[0]][i].name == 'black_rook' and board[position_start[0]][position_start[1]].name == 'black_king' or board[position_start[0]][i].name == 'white_rook' and board[position_start[0]][position_start[1]].name == 'white_king':
+                        print('here')
+                        break
 
-            board[position_end[0]][position_end[1]+1] = board[position_start[0]][i]
-            board[position_start[0]][i] = empty_square
+                board[position_end[0]][position_end[1]+1] = board[position_start[0]][i]
+                board[position_start[0]][i] = empty_square
 
-        elif position_start[1] < position_end[1]:
-            for i in range(7, position_end[1], -1):
-                if board[position_start[0]][i].name == 'black_rook' and board[position_start[0]][position_start[1]].name == 'black_king' or board[position_start[0]][i].name == 'white_rook' and board[position_start[0]][position_start[1]].name == 'white_king':
-                    break
-                
-            board[position_end[0]][position_end[1]-1] = board[position_start[0]][i]
-            board[position_start[0]][i] = empty_square
+            elif position_start[1] < position_end[1]:
+                for i in range(7, position_end[1], -1):
+                    if board[position_start[0]][i].name == 'black_rook' and board[position_start[0]][position_start[1]].name == 'black_king' or board[position_start[0]][i].name == 'white_rook' and board[position_start[0]][position_start[1]].name == 'white_king':
+                        break
+                    
+                board[position_end[0]][position_end[1]-1] = board[position_start[0]][i]
+                board[position_start[0]][i] = empty_square
 
 def update_ampasant():
     for x in range(8):
@@ -137,10 +190,10 @@ def update_ampasant():
             # else:
             #     print(1,end='')
         
-            if board[x][y].color == 'white' and whites_turn[0] == True:
+            if board[x][y].color == 'white' and whites_turn[0] == False:
                 board[x][y].ampasant = False
                 
-            elif board[x][y].color == 'black' and whites_turn[0] == False:
+            elif board[x][y].color == 'black' and whites_turn[0] == True:
                 board[x][y].ampasant = False
                 
     # print('\n')
@@ -182,13 +235,14 @@ def pressed(button,a,b,position_start,position_end, board):
         position_end.append(b-1)
 
         #print(board[position_start[0]][position_start[1]].name)
-
+        
         valid_move[0] = board[position_start[0]][position_start[1]].is_legal(valid_move, whites_turn, board, position_start, position_end)
+        
         if valid_move[0] == True:
             check_if_promoting()
             check_if_castling()
+            update_ampasant()
 
-        if valid_move[0] == True:
             board[position_end[0]][position_end[1]] = board[position_start[0]][position_start[1]]
             board[position_start[0]][position_start[1]] = empty_square
             
@@ -196,7 +250,6 @@ def pressed(button,a,b,position_start,position_end, board):
             
 
             update_board()
-            update_ampasant()
             update_turn()
 
         else:
@@ -217,29 +270,26 @@ def pressed(button,a,b,position_start,position_end, board):
     # print(f"row = {a}, col = {b}")
     # highlight.grid(row=a, column=b)
 
-button_stop = Button(r, text='Stop', width=int(.25*1.3*settings.size), height=int(.1*1.3*settings.size),font=('Helvatical bold',int(.2*settings.size)), bg = 'teal', fg = 'black', command=r.destroy) 
-button_stop.grid(row = 0, column = 0) 
+tracker = Tracker(r)
+tracker.bind_config(board)
 
-button_setting = Button(r, text='Settings', width=int(.25*1.3*settings.size), height=int(.1*1.3*settings.size),font=('Helvatical bold',int(.2*settings.size)), bg = 'teal', fg = 'black', command= lambda: open_settings(r, from_rgb, exit_settings)) 
-button_setting.grid(row = 0, column = 9) 
+pixel = tk.PhotoImage(width=1, height=1)
 
-# filler_corner_1 = Label(r, bg = 'teal', border=2, relief='ridge') 
-# filler_corner_1.grid(row = 9, column = 0, sticky='nse') 
+r.columnconfigure(0, weight=1)
+r.columnconfigure(9, weight=1)
 
-# filler_corner_2 = tk.Button(r, bg = 'teal', border=2, relief='ridge') 
-# filler_corner_2.grid(row = 9, column = 9, sticky='nsw') 
+button_stop = Button(r, text='Stop', padx=0, pady=0, font=('Helvatical bold',int(.2*settings.size)), bg = 'teal', fg = 'black', image=pixel, compound="c", command=r.destroy) 
+button_stop.grid(row=0, column=0, sticky="nsew") 
 
-filler_1 = Label(r, bg = 'grey', borderwidth=2, relief='ridge')
-filler_1.grid(row = 0, column = 1, columnspan = 8 ,sticky='nsew') 
+button_setting = Button(r, text='Settings', padx=0, pady=0, font=('Helvatical bold',int(.2*settings.size)), bg = 'teal', fg = 'black', image=pixel, compound="c", command= lambda: open_settings(r, from_rgb, exit_settings)) 
+button_setting.grid(row=0, column=9, sticky="nsew") 
 
-# filler_2 = Label(r, bg = 'grey', borderwidth=2, relief='ridge')
-# filler_2.grid(row = 1, column = 0, rowspan = 8 ,sticky='nsew') 
+filler_2 = Label(r, bg = 'grey', borderwidth=2, relief='ridge')
+filler_2.grid(row = 1, column = 0, rowspan = 8 ,sticky='nsew') 
 
-# filler_3 = Label(r, bg = 'grey', borderwidth=2, relief='ridge')
-# filler_3.grid(row = 1, column = 9, rowspan = 8 ,sticky='nsew') 
+filler_3 = Label(r, bg = 'grey', borderwidth=2, relief='ridge')
+filler_3.grid(row = 1, column = 9, rowspan = 8 ,sticky='nsew') 
 
-# filler_4 = Label(r, bg = 'grey', borderwidth=2, relief='ridge')
-# filler_4.grid(row = 9, column = 1, columnspan = 8 ,sticky='nsew') 
 
 for x in range(1,9):
     for y in range(1,9):
@@ -247,8 +297,8 @@ for x in range(1,9):
             bg_color = from_rgb((238,238,210))
         else:
             bg_color = from_rgb((118,150,86))
-        exec(f"button_{x}_{y} = tk.Button(r,image = board[x-1][y-1].image, bg = bg_color, width = settings.size, height = settings.size, border=0, command= lambda: pressed(button_{x}_{y},{x},{y},position_start,position_end, board))")
-        exec(f"button_{x}_{y}.grid(row=x,column=y)")
+        exec(f"button_{x}_{y} = tk.Button(r,image = board[x-1][y-1].image, bg = bg_color, width = settings.size, height = settings.size, border=0, padx=0, pady=0, command= lambda: pressed(button_{x}_{y},{x},{y},position_start,position_end, board))")
+        exec(f"button_{x}_{y}.grid(row=x-1,column=y)")
 
 highlight_img = Image.open(f"black_50.png")
 highlight_img = ImageTk.PhotoImage(highlight_img.resize((settings.size,settings.size)))
