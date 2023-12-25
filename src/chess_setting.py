@@ -14,7 +14,7 @@ class Settings():
         self.auto_queen = True #change default to False later
 
         self.scale_buttons = .3
-        self.scale_labels = .3
+        self.scale_labels = .4
         self.scale_font = .2
 
     #state = 'normal', 'iconic', 'withdrawn', or 'zoomed'
@@ -67,6 +67,36 @@ class Settings():
         exit_button = Button(main_frame, text='Exit', width=7, height=3,font=('Helvatical bold',20), bg = 'teal', fg = 'black', command= lambda: exit_settings(r,s)) 
         exit_button.pack(fill=X) 
         
-        self.add_setting(s,'auto_queen', 3, self.scale_buttons, self.scale_labels, self.scale_font, from_rgb, bg_color)
-        self.add_setting(s,'full_screen', 3, self.scale_buttons, self.scale_labels, self.scale_font, from_rgb, bg_color)
-        self.add_setting(s,'color', 3, self.scale_buttons, self.scale_labels, self.scale_font, from_rgb, bg_color)
+        # self.add_setting(s,'auto_queen', 3, self.scale_buttons, self.scale_labels, self.scale_font, from_rgb, bg_color)
+        # self.add_setting(s,'full_screen', 3, self.scale_buttons, self.scale_labels, self.scale_font, from_rgb, bg_color)
+        # self.add_setting(s,'color', 3, self.scale_buttons, self.scale_labels, self.scale_font, from_rgb, bg_color)
+
+
+        setting_frame1 = Frame(s, bg = from_rgb(bg_color),bd = 10)
+        setting_frame1.pack(side=TOP, fill=X)
+        setting_lbl = Label(setting_frame1, text = f"{'AUTO QUEEN'}: ", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
+        setting_lbl.pack(side=LEFT)
+        bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
+        auto_queen_b1 = tk.Button(setting_frame1, text = 'On', width=int(9), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10,)
+        auto_queen_b1.pack(side=LEFT, padx=5)
+        auto_queen_b2 = tk.Button(setting_frame1, text = 'Off', width=int(9), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10,)
+        auto_queen_b2.pack(side=LEFT, padx=5)
+
+
+        setting_frame2 = Frame(s, bg = from_rgb(bg_color),bd = 10)
+        setting_frame2.pack(side=TOP, fill=X)
+        setting_lbl = Label(setting_frame2, text = f"{'WINDOWED'}: ", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
+        setting_lbl.pack(side=LEFT)
+        bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
+        windowed_b1 = tk.Button(setting_frame2, text = 'Window', width=int(9), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10,)
+        windowed_b1.pack(side=LEFT, padx=5)
+        windowed_b2 = tk.Button(setting_frame2, text = 'Full Screen', width=int(9), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10,)
+        windowed_b2.pack(side=LEFT, padx=5)
+
+
+        setting_frame3 = Frame(s, bg = from_rgb(bg_color),bd = 10)
+        setting_frame3.pack(side=TOP, fill=X)
+
+        setting_lbl = Label(setting_frame3, text = f"{'COLOR'}: ", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
+        setting_lbl.pack(side=LEFT)
+        bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)

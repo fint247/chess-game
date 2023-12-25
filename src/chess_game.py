@@ -185,10 +185,11 @@ def update_ampasant():
     for x in range(8):
         # print('')
         for y in range(8):
-            # if board[x][y].ampasant == False:
-            #     print(0,end = '')
-            # else:
-            #     print(1,end='')
+        #     if board[x][y].ampasant == False:
+        #         print(0,end = '')
+        #     else:
+        #         print(1,end='')
+        
         
             if board[x][y].color == 'white' and whites_turn[0] == False:
                 board[x][y].ampasant = False
