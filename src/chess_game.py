@@ -106,32 +106,45 @@ class Tracker():
             self.width, self.height = event.width, event.height
 
             # scale = min(self.width, self.height)
-            if self.width >= self.height:
-                side_bar_width = self.width * 0.10
-                chess_board_width = self.width * 0.80
-                rescale_game(board,side_bar_width,chess_board_width)
-                print(self.width)
+            if self.width*(8/12) >= self.height*(8/12):
+                chess_board_width = self.height * (10/12)
+                side_bar_width = (self.width-chess_board_width)/2
+                settings.size = chess_board_width*(1/10)
 
 
-            elif self.width * 0.80 < self.height:
-                ...
+            elif self.width*(8/12) < self.height*(8/12):
+                chess_board_width = self.width * (10/12)
+                side_bar_width = (self.width-chess_board_width)/2
+                settings.size = chess_board_width*(1/10)
 
             else:
                 print('something else')
 
-           
+            rescale_game(board,int(side_bar_width), int(chess_board_width))
+
+      
 
 def rescale_game(board,side_bar_width,chess_board_width):
-    button_stop.config(width=int(side_bar_width), height=int(side_bar_width))
-    button_setting.config(width=int(side_bar_width), height=int(side_bar_width))
-    val = 2*int(side_bar_width)
-    for x in range(1,9):
-        val += int(chess_board_width*(1/8))
+    left_frame.place(x=0, y=0, width=side_bar_width, height=tracker.height)
+    right_frame.place(x=side_bar_width+chess_board_width, y=0, width=side_bar_width+1, height=tracker.height)
+    center_frame.place(x=side_bar_width, y=0, width=chess_board_width, height=tracker.height)
 
-        for y in range(1,9):
-            exec(f"button_{x}_{y}.config(width=int(chess_board_width*(1/8)), height=int(chess_board_width*(1/8)), image=board[x-1][y-1].rescale_img())")
+    button_stop.config(width=side_bar_width)
+    button_setting.config(width=side_bar_width)
+    
+    for x in range(8):
+        for y in range(8):
+            exec(f"button_{x}_{y}.config(width=int(chess_board_width*(1/8))-1, height=int(chess_board_width*(1/8)), image=board[x][y].rescale_img())")
 
-    print(f"{val=}")
+    # print(f"{tracker.width=}")
+
+def enter(event, button): # function to be called when mouse enters in a frame
+    button.config(bg=from_rgb((0, 100, 100)))
+	# print('Button-2 pressed at x = % d, y = % d'%(event.x, event.y))
+
+def exit_(event, button): # function to be called when mouse exits the frame
+    button.config(bg=from_rgb((0, 128, 128)))
+	# print('Button-3 pressed at x = % d, y = % d'%(event.x, event.y))  
 
 def exit_settings(r,s):
     # update_buttons(button_setting, button_stop)
@@ -149,8 +162,8 @@ def update_buttons(settings, *args):
             arg.config(width=int(.25*1.3*int(settings.size)), height=int(.1*1.3*int(settings.size)),font=('Helvatical bold',int(.2*int(settings.size))), bg = 'teal', fg = 'black')
             arg.config(width=int(.25*1.3*int(settings.size)), height=int(.1*1.3*int(settings.size)),font=('Helvatical bold',int(.2*int(settings.size))), bg = 'teal', fg = 'black')
             
-        for x in range(1,9):
-            for y in range(1,9):
+        for x in range(8):
+            for y in range(8):
                 exec(f"button_{x}_{y}.config(image = board[x-1][y-1].image)")
                 
 def check_if_promoting():
@@ -200,8 +213,8 @@ def update_ampasant():
     # print('\n')
 
 def update_board():
-    for x in range(1,9):
-        for y in range(1,9):
+    for x in range(8):
+        for y in range(8):
             exec(f"button_{x}_{y}.config(image = board[x-1][y-1].image)")
 
 def update_turn():
@@ -218,8 +231,8 @@ def from_rgb(rgb):
     return f'#{r:02x}{g:02x}{b:02x}'
 
 def pressed(button,a,b,position_start,position_end, board):
-    for x in range(1,9):
-        for y in range(1,9):
+    for x in range(8):
+        for y in range(8):
             if x%2 == 0 and y%2 == 0 or x%2 != 0 and y%2 != 0:
                 exec(f"button_{x}_{y}.config(bg = from_rgb((238,238,210)))")
             else:
@@ -271,39 +284,54 @@ def pressed(button,a,b,position_start,position_end, board):
     # print(f"row = {a}, col = {b}")
     # highlight.grid(row=a, column=b)
 
-tracker = Tracker(r)
-tracker.bind_config(board)
 
+#used to make buttons with text resize according to pixels
 pixel = tk.PhotoImage(width=1, height=1)
 
-r.columnconfigure(0, weight=1)
-r.columnconfigure(9, weight=1)
+#game is made of 3 main frames: left, right, and center
+left_frame = Frame(r, bg = from_rgb((0, 128, 128)))
+left_frame.place(x=0, y=0, width=100, height=600)
 
-button_stop = Button(r, text='Stop', padx=0, pady=0, font=('Helvatical bold',int(.2*settings.size)), bg = 'teal', fg = 'black', image=pixel, compound="c", command=r.destroy) 
-button_stop.grid(row=0, column=0, sticky="nsew") 
+right_frame = Frame(r, bg = from_rgb((0, 128, 128)))
+right_frame.place(x=500, y=0, width=100, height=600)
 
-button_setting = Button(r, text='Settings', padx=0, pady=0, font=('Helvatical bold',int(.2*settings.size)), bg = 'teal', fg = 'black', image=pixel, compound="c", command= lambda: open_settings(r, from_rgb, exit_settings)) 
-button_setting.grid(row=0, column=9, sticky="nsew") 
+center_frame = Frame(r, bg = 'grey25')
+center_frame.place(x=100, y=0, width=400, height=600)
 
-filler_2 = Label(r, bg = 'grey', borderwidth=2, relief='ridge')
-filler_2.grid(row = 1, column = 0, rowspan = 8 ,sticky='nsew') 
+#stuff inside center frame: chess board, opponents username, and users unsername
+center_frame.rowconfigure(0, weight=1)
+top_bar = Label(center_frame, bg = 'grey25')
+top_bar.grid(column=0, row=0, columnspan=8, sticky=NSEW)
 
-filler_3 = Label(r, bg = 'grey', borderwidth=2, relief='ridge')
-filler_3.grid(row = 1, column = 9, rowspan = 8 ,sticky='nsew') 
-
-
-for x in range(1,9):
-    for y in range(1,9):
+for x in range(8):
+    for y in range(8):
         if x%2 == 0 and y%2 == 0 or x%2 != 0 and y%2 != 0:
             bg_color = from_rgb((238,238,210))
         else:
             bg_color = from_rgb((118,150,86))
-        exec(f"button_{x}_{y} = tk.Button(r,image = board[x-1][y-1].image, bg = bg_color, width = settings.size, height = settings.size, border=0, padx=0, pady=0, command= lambda: pressed(button_{x}_{y},{x},{y},position_start,position_end, board))")
-        exec(f"button_{x}_{y}.grid(row=x-1,column=y)")
+        exec(f"button_{x}_{y} = tk.Button(center_frame,image = board[x][y].image, bg = bg_color, width = (400/8)-2, height = (400/8)-2, border=0, command= lambda: pressed(button_{x}_{y},{x},{y},position_start,position_end, board))")
+        exec(f"button_{x}_{y}.grid(row=x+1,column=y)")
 
-highlight_img = Image.open(f"black_50.png")
-highlight_img = ImageTk.PhotoImage(highlight_img.resize((settings.size,settings.size)))
-highlight = Label(r,image = highlight_img, width = settings.size, height = settings.size, border=0)
+center_frame.rowconfigure(9, weight=1)
+bottom_bar = Label(center_frame, bg = 'grey25')
+bottom_bar.grid(column=0, row=9, columnspan=8, sticky=NSEW)
+
+#stuff inside left side bar: exit game, setting, and ...
+button_stop = Button(left_frame, text='Exit',width=100-2,padx=0, pady=10, border=0, font=('Helvatical bold',int(10)), bg = from_rgb((0, 128, 128)), fg = 'black', image=pixel, compound="c", command=r.destroy) 
+button_stop.grid(row=0, column=0, sticky="nsew") 
+button_stop.bind('<Enter>', lambda event: enter(event, button_stop))             
+button_stop.bind('<Leave>', lambda event: exit_(event, button_stop))
+
+button_setting = Button(left_frame, text='Settings', width=100-2,padx=0, pady=10, border=0, font=('Helvatical bold',int(10)), bg = from_rgb((0, 128, 128)), fg = 'black', image=pixel, compound="c", command= lambda: open_settings(r, from_rgb, exit_settings)) 
+button_setting.grid(row=1, column=0, sticky="nsew") 
+button_setting.bind('<Enter>', lambda event: enter(event, button_setting))             
+button_setting.bind('<Leave>', lambda event: exit_(event, button_setting))
+
+
+
+tracker = Tracker(r)
+tracker.bind_config(board)
+
 
 
 

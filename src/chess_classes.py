@@ -265,11 +265,16 @@ class Pawn(Piece):
 
     def is_legal(self, valid_move, whites_turn, board, position_start, position_end):
         valid_move[0] = self.is_pawn_move(valid_move, whites_turn, board, position_start, position_end)
-        
+        if valid_move[0] == False:
+            print('Bad move one')
         valid_move[0] = self.is_queening(valid_move, whites_turn, board, position_start, position_end)
-       
+        if valid_move[0] == False:
+            print('Bad move two')
+
         valid_move[0] = super().is_legal(valid_move, whites_turn, board, position_start, position_end)
-        
+        if valid_move[0] == False:
+            print('Bad move three')
+
 
         if self.promoted == True and valid_move[0] == False:
             self.promoted = False
