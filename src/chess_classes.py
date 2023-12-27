@@ -13,16 +13,16 @@ class EmptySquare():
         self.name = 'empty_square'
         self.color = None
         self.ampasant = False
-        self.image = Image.open(f"trans_bg.png")
-        self.image = ImageTk.PhotoImage(self.image.resize((settings.size,settings.size)))
+        self.image = PhotoImage(f"black_pawn.png")
+        # self.image.resize((settings.size,settings.size))
     def is_legal(self, valid_move, whites_turn, board, position_start, position_end):
         valid_move[0] = False
         # print("Rule Break: Cant move an empty square")
         return valid_move[0]
 
     def rescale_img(self):
-        self.image = Image.open(f"trans_bg.png")
-        self.image = ImageTk.PhotoImage(self.image.resize((int(settings.size),int(settings.size))))
+        # self.image = Image.open(f"black_pawn.png")
+        # self.image = self.image.resize((int(settings.size),int(settings.size)))
         return self.image
 
 
@@ -32,9 +32,12 @@ class Piece():
         self.color = color
         self.has_moved = False
 
+        self.image = PhotoImage(f"{self.name}.png")
+        # self.image = self.image.resize((settings.size,settings.size))
+
     def rescale_img(self):
-        self.image = Image.open(f"{self.name}.png")
-        self.image = ImageTk.PhotoImage(self.image.resize((int(settings.size),int(settings.size))))
+        # self.image = Image.open(f"{self.name}.png")
+        # self.image.resize((int(settings.size),int(settings.size)))
         return self.image
    
     def is_pieces_turn(self, valid_move, whites_turn):
@@ -69,11 +72,9 @@ class Piece():
 
 class King(Piece):
     def __init__(self, color):
-        super().__init__(color)
         self.name = f"{color}_king"
-        self.image = Image.open(f"{color}_king.png")
-        self.image = ImageTk.PhotoImage(self.image.resize((settings.size,settings.size)))
         count = 0
+        super().__init__(color)
 
     
     def is_king_move(self, valid_move, whites_turn, board, position_start, position_end):
@@ -189,12 +190,10 @@ class King(Piece):
 
 class Pawn(Piece):
     def __init__(self, color):
-        super().__init__(color)
         self.name = f"{color}_pawn"
         self.ampasant = False
         self.promoted = False
-        self.image = Image.open(f"{color}_pawn.png")
-        self.image = ImageTk.PhotoImage(self.image.resize((settings.size,settings.size)))
+        super().__init__(color)
 
     
     def is_one_square_forward(self, valid_move, whites_turn, board, position_start, position_end, pos_neg):
@@ -284,10 +283,8 @@ class Pawn(Piece):
 
 class Rook(Piece):
     def __init__(self, color):
-        super().__init__(color)
         self.name = f"{color}_rook"
-        self.image = Image.open(f"{color}_rook.png")
-        self.image = ImageTk.PhotoImage(self.image.resize((settings.size,settings.size)))
+        super().__init__(color)
 
     
     def is_on_col_row(self, valid_move, position_start, position_end):
@@ -342,11 +339,9 @@ class Rook(Piece):
 
 class Bishop(Piece):
     def __init__(self, color):
-        super().__init__(color)
         self.name = f"{color}_bishop"
-        self.image = Image.open(f"{color}_bishop.png")
-        self.image = ImageTk.PhotoImage(self.image.resize((settings.size,settings.size)))
-        
+        super().__init__(color)
+
     
     def is_on_diagonal(self, valid_move, position_start, position_end):
         temp_valid_move = valid_move.copy()
@@ -403,10 +398,8 @@ class Bishop(Piece):
 
 class Queen(Rook, Bishop):
     def __init__(self, color):
-        super().__init__(color)
         self.name = f"{color}_queen"
-        self.image = Image.open(f"{color}_queen.png")
-        self.image = ImageTk.PhotoImage(self.image.resize((settings.size,settings.size)))
+        Piece.__init__(self, color)
 
    
     def is_legal(self, valid_move, whites_turn, board, position_start, position_end):
@@ -426,10 +419,8 @@ class Queen(Rook, Bishop):
 
 class Knight(Piece):
     def __init__(self, color):
-        super().__init__(color)
         self.name = f"{color}_knight"
-        self.image = Image.open(f"{color}_knight.png")
-        self.image = ImageTk.PhotoImage(self.image.resize((settings.size,settings.size)))
+        super().__init__(color)
 
     
     def is_knight_move(self, valid_move, whites_turn, board, position_start, position_end):
