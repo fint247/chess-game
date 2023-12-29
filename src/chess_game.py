@@ -9,6 +9,7 @@ auto flip (settings - local games)
 
 """
 
+#activebackground='blue'
 
 
 from tkinter import *
@@ -95,7 +96,7 @@ h = [empty_square, empty_square, empty_square, w_queen, w_king, w_bishop2, w_kni
 board = [a,b,c,d,e,f,g,h]
 
 
-class Tracker():
+class WindowTracker():
     """ windows resize event tracker """
 
     def __init__(self, root):
@@ -121,13 +122,13 @@ class Tracker():
             if self.width*(8/12) >= self.height*(8/12):
                 chess_board_width = self.height * (10/12)
                 side_bar_width = (self.width-chess_board_width)/2
-                settings.size = chess_board_width*(1/10)
+                settings.size = int(chess_board_width*(1/10))
 
 
             elif self.width*(8/12) < self.height*(8/12):
                 chess_board_width = self.width * (10/12)
                 side_bar_width = (self.width-chess_board_width)/2
-                settings.size = chess_board_width*(1/10)
+                settings.size = int(chess_board_width*(1/10))
 
             else:
                 print('something else')
@@ -144,9 +145,15 @@ def rescale_game(board,side_bar_width,chess_board_width):
     button_stop.config(width=side_bar_width)
     button_setting.config(width=side_bar_width)
     
+    resized_empty_square = 0
     for x in range(8):
         for y in range(8):
-            exec(f"button_{x}_{y}.config(width=int(chess_board_width*(1/8))-1, height=int(chess_board_width*(1/8)), image=board[x][y].rescale_img())")
+            if board[x][y].name == 'empty_square':
+                resized_empty_square += 1
+            if board[x][y].name != 'empty_square' or resized_empty_square == 1:
+                exec(f"button_{x}_{y}.config(width=int(chess_board_width*(1/8))-1, height=int(chess_board_width*(1/8)), image=board[x][y].rescale_img())")
+            else:
+                exec(f"button_{x}_{y}.config(width=int(chess_board_width*(1/8))-1, height=int(chess_board_width*(1/8)), image=board[x][y].new_scaled_image)")
 
     # print(f"{tracker.width=}")
 
@@ -176,7 +183,7 @@ def update_buttons(settings, *args):
             
         for x in range(8):
             for y in range(8):
-                exec(f"button_{x}_{y}.config(image = board[x-1][y-1].image)")
+                exec(f"button_{x}_{y}.config(image = board[x-1][y-1].new_scaled_image)")
                 
 def check_if_promoting():
     if board[position_end[0]][position_end[1]].name == 'white_pawn' or board[position_end[0]][position_end[1]].name == 'black_pawn':
@@ -227,7 +234,7 @@ def update_ampasant():
 def update_board():
     for x in range(8):
         for y in range(8):
-            exec(f"button_{x}_{y}.config(image = board[x][y].image)")
+            exec(f"button_{x}_{y}.config(image = board[x][y].new_scaled_image)")
 
 def update_turn():
     if whites_turn[0] == True:
@@ -246,21 +253,21 @@ def pressed(button,a,b,position_start,position_end, board):
     for x in range(8):
         for y in range(8):
             if x%2 == 0 and y%2 == 0 or x%2 != 0 and y%2 != 0:
-                 bg_color = 'lightgrey'#from_rgb((238,238,210))
+                 bg_color = from_rgb((238,238,210))
             else:
-                 bg_color = 'darkgrey'#from_rgb((118,150,86))
+                 bg_color = from_rgb((118,150,86))
             exec(f"button_{x}_{y}.config(bg = bg_color)")
             exec(f"button_{x}_{y}.config(bg = bg_color)")
 
     if len(position_start) == 0:
         # print('position_start before = ', position_start)
-        position_start.append(a-1)
-        position_start.append(b-1)
+        position_start.append(a)
+        position_start.append(b)
         # print('position start after = ',position_start)
         
     elif len(position_start) == 2:
-        position_end.append(a-1)
-        position_end.append(b-1)
+        position_end.append(a)
+        position_end.append(b)
 
         #print(board[position_start[0]][position_start[1]].name)
         
@@ -299,7 +306,7 @@ def pressed(button,a,b,position_start,position_end, board):
     # highlight.grid(row=a, column=b)
 
 
-#used to make buttons with text resize according to pixels
+#used to make buttons with text resize according to pixels not text
 pixel = PhotoImage(width=1, height=1)
 
 #game is made of 3 main frames: left, right, and center
@@ -312,7 +319,7 @@ right_frame.place(x=500, y=0, width=100, height=600)
 center_frame = Frame(r, bg = 'grey25')
 center_frame.place(x=100, y=0, width=400, height=600)
 
-#stuff inside center frame: chess board, opponents username, and users unsername
+#stuff inside center frame: chess board, opponents username, and users name
 center_frame.rowconfigure(0, weight=1)
 top_bar = Label(center_frame, bg = 'grey25')
 top_bar.grid(column=0, row=0, columnspan=8, sticky=NSEW)
@@ -323,7 +330,7 @@ for x in range(8):
             bg_color = from_rgb((238,238,210))
         else:
             bg_color = from_rgb((118,150,86))
-        exec(f"button_{x}_{y} = tk.Button(center_frame,image = board[x][y].image, bg = bg_color, width = (400/8)-2, height = (400/8)-2, border=0, command= lambda: pressed(button_{x}_{y},{x},{y},position_start,position_end, board))")
+        exec(f"button_{x}_{y} = tk.Button(center_frame,image = board[x][y].new_scaled_image, bg = bg_color, width = (400/8)-2, height = (400/8)-2, border=0, command= lambda: pressed(button_{x}_{y},{x},{y},position_start,position_end, board))")
         exec(f"button_{x}_{y}.grid(row=x+1,column=y)")
 
 center_frame.rowconfigure(9, weight=1)
@@ -342,8 +349,8 @@ button_setting.bind('<Enter>', lambda event: enter(event, button_setting))
 button_setting.bind('<Leave>', lambda event: exit_(event, button_setting))
 
 
-
-tracker = Tracker(r)
+#tracks the screen size
+tracker = WindowTracker(r)
 tracker.bind_config(board)
 
 

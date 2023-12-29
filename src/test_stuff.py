@@ -1,23 +1,36 @@
-# Import all files from
-# tkinter and overwrite
-# all the tkinter files
-# by tkinter.ttk
 from tkinter import *
-import tkinter as tk   
-# from PIL import Image,ImageDraw as D
+from PIL import Image, ImageTk
 
-
-# creates tkinter window or root window
 root = Tk()
-root.geometry('400x200')
+root.geometry('400x400')
 
-img = PhotoImage(file='black_king.png')
-# img = img.zoom(2,2)
-img = img.subsample(4,4)
-thing = Button(root,height= 200, width=200, image = img, command=root.destroy)
-thing.grid(row=0, column=2)
+class ImageClass():
+    def __init__(self):
+        self.image= (Image.open(f"black_knight.png"))
+        self.scaled_image= ImageTk.PhotoImage(self.image.resize((100,100)))
 
-button_stop = Button(root, text='Exit',width=20,padx=0, pady=10, border=0, font=('Helvatical bold',int(10)), bg = 'green', fg = 'black', command=root.destroy) 
-button_stop.grid(row=0, column=1) 
 
-mainloop()
+    def rescale_img(self):
+        self.scaled_image= ImageTk.PhotoImage(self.image.resize((int(self.scaled_image.width())+10,int(self.scaled_image.height())+10)))
+        return self.scaled_image
+    
+
+img = ImageClass()
+
+def resize(img):
+    button.config(image=img.rescale_img(), width=int(button['width'])+10, height=int(button['height'])+10)
+
+def change_bg(button):
+    if button['bg'] == 'green':
+        button.config(bg = 'blue')
+    else:
+        button.config(bg = 'green')
+
+button = Button(root, height=100, width=100, bg='green', image=img.scaled_image, command=lambda: resize(img))
+button.grid(row=0, column=2)
+
+
+button2 = Button(root, height=10, width=20, bg='grey',text='change\nbg color', command=lambda: change_bg(button))
+button2.grid(row=0, column=1)
+
+root.mainloop()

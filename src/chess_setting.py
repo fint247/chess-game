@@ -8,6 +8,7 @@ from tkinter import *
 import tkinter as tk                                                       
 from PIL import Image, ImageTk
 
+
 class Settings():
     def __init__(self):
         self.size = 40

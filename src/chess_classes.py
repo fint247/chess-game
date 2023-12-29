@@ -13,17 +13,21 @@ class EmptySquare():
         self.name = 'empty_square'
         self.color = None
         self.ampasant = False
-        self.image = PhotoImage(f"black_pawn.png")
-        # self.image.resize((settings.size,settings.size))
+
+        self.image= (Image.open(f"trans_bg.png"))
+        self.new_scaled_image= ImageTk.PhotoImage(self.image)
+       
+
+       
     def is_legal(self, valid_move, whites_turn, board, position_start, position_end):
         valid_move[0] = False
-        # print("Rule Break: Cant move an empty square")
+        print("Rule Break: Cant move an empty square")
         return valid_move[0]
 
     def rescale_img(self):
-        # self.image = Image.open(f"black_pawn.png")
-        # self.image = self.image.resize((int(settings.size),int(settings.size)))
-        return self.image
+        self.scaled_image =self.image.resize((settings.size,settings.size), Image.LANCZOS)
+        self.new_scaled_image = ImageTk.PhotoImage(self.scaled_image)
+        return self.new_scaled_image
 
 
 class Piece():
@@ -32,13 +36,13 @@ class Piece():
         self.color = color
         self.has_moved = False
 
-        self.image = PhotoImage(f"{self.name}.png")
-        # self.image = self.image.resize((settings.size,settings.size))
-
+        self.image= Image.open(f"{self.name}.png")
+        self.new_scaled_image= ImageTk.PhotoImage(self.image)
+       
     def rescale_img(self):
-        # self.image = Image.open(f"{self.name}.png")
-        # self.image.resize((int(settings.size),int(settings.size)))
-        return self.image
+        self.scaled_image = self.image.resize((settings.size,settings.size), Image.LANCZOS)
+        self.new_scaled_image = ImageTk.PhotoImage(self.scaled_image)
+        return self.new_scaled_image
    
     def is_pieces_turn(self, valid_move, whites_turn):
         if whites_turn[0] == True and self.color == 'white' and valid_move[0] == True:
@@ -53,8 +57,6 @@ class Piece():
             valid_move[0] = False
             return valid_move[0]
         
-        
-
     def not_taking_own_piece(self, valid_move, board, position_start, position_end):
         if self.color == board[position_end[0]][position_end[1]].color:
             # print("Cant take your own pieces")
@@ -81,12 +83,12 @@ class King(Piece):
         temp_valid_move = valid_move.copy()
         if abs(position_start[0] - position_end[0]) <= 1 and abs(position_start[1] - position_end[1]) <= 1:
             if self.is_moving_into_check(temp_valid_move, whites_turn, board, position_start, position_end) == False:
-                # print("Rule Break: cant move into check")
+                print("Rule Break: cant move into check")
                 temp_valid_move[0] = False
             print('valid move should = True --> ',valid_move)
             
         else:
-            # print("Rule Break: king can only move one square at a time")
+            print("Rule Break: king can only move one square at a time")
             temp_valid_move[0] = False
             return temp_valid_move[0]
         
@@ -114,7 +116,7 @@ class King(Piece):
                     for y in range(x+1, king_pos):
                         print(y,':',board[colors_row][y].name)
                         if board[colors_row][y].name != 'empty_square':
-                            # print('Rule Break: cant castle thru ',board[colors_row][y].name)
+                            print('Rule Break: cant castle thru ',board[colors_row][y].name)
                             temp_valid_move[0] = False
                    
                 elif position_end[1] > position_start[1] and x > king_pos:
@@ -347,7 +349,7 @@ class Bishop(Piece):
         temp_valid_move = valid_move.copy()
         # print(f"({(position_start[0])}-{(position_end[0])})/({(position_start[1])}-{(position_end[1])}) = {(abs((position_start[0]) - (position_end[0]))+1)}/{(abs((position_start[1]) - (position_end[1]))+1)}")
         if (abs(position_start[0] - position_end[0]) + 1) / (abs(position_start[1] - position_end[1]) + 1) != 1:
-            # print(f'Rule Break: {self.name}s can only move on a diagonal')
+            print(f'Rule Break: {self.name}s can only move on a diagonal')
             temp_valid_move[0] = False
         return temp_valid_move[0]
 
@@ -380,7 +382,7 @@ class Bishop(Piece):
                 # print(f"{position_start[0]}+{x}*{neg_pos}, {position_start[1]}+{x}*{pos_neg}")
                 # print(board[position_start[0]+x*neg_pos][position_start[1]+x*pos_neg].name)
                 if board[position_start[0]+x*neg_pos][position_start[1]+x*pos_neg].name != 'empty_square':
-                    # print("Rule Break: Cant move thru your own peices")
+                    print("Rule Break: Cant move thru your own peices")
                     valid_move[0] = False
                     return valid_move[0]
 
@@ -428,7 +430,7 @@ class Knight(Piece):
         if abs(position_end[1]-position_start[1]) == 1 and abs(position_end[0] - position_start[0]) == 2 or abs(position_end[1]-position_start[1]) == 2 and abs(position_end[0] - position_start[0]) == 1:
             pass
         else:
-            # print("Rule Break: knight can only move in an 'L' shape")
+            print("Rule Break: knight can only move in an 'L' shape")
             valid_move[0] = False
         return valid_move[0]
 
