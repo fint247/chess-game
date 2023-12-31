@@ -15,7 +15,7 @@ class EmptySquare():
         self.ampasant = False
 
         self.image= (Image.open(f"trans_bg.png"))
-        self.new_scaled_image= ImageTk.PhotoImage(self.image)
+        self.new_image= ImageTk.PhotoImage(self.image)
        
 
        
@@ -25,9 +25,9 @@ class EmptySquare():
         return valid_move[0]
 
     def rescale_img(self):
-        self.scaled_image =self.image.resize((settings.size,settings.size), Image.LANCZOS)
-        self.new_scaled_image = ImageTk.PhotoImage(self.scaled_image)
-        return self.new_scaled_image
+        # self.scaled_image =self.image.resize((settings.size,settings.size), Image.LANCZOS)
+        self.new_image = ImageTk.PhotoImage(self.image.resize((settings.size,settings.size), Image.LANCZOS))
+        return self.new_image
 
 
 class Piece():
@@ -37,12 +37,20 @@ class Piece():
         self.has_moved = False
 
         self.image= Image.open(f"{self.name}.png")
-        self.new_scaled_image= ImageTk.PhotoImage(self.image)
+        self.new_image= ImageTk.PhotoImage(self.image)
        
     def rescale_img(self):
-        self.scaled_image = self.image.resize((settings.size,settings.size), Image.LANCZOS)
-        self.new_scaled_image = ImageTk.PhotoImage(self.scaled_image)
-        return self.new_scaled_image
+        # self.scaled_image = self.image.resize((settings.size,settings.size), Image.LANCZOS)
+        self.new_image = ImageTk.PhotoImage(self.image.resize((settings.size,settings.size), Image.LANCZOS))
+        return self.new_image
+    
+    def show_legal_move_img(self):
+        self.new_image = ImageTk.PhotoImage(self.image.resize((settings.size,settings.size), Image.LANCZOS))
+
+    def hide_legal_move_img(self):
+        self.new_image = ImageTk.PhotoImage(self.image.resize((settings.size,settings.size), Image.LANCZOS))
+
+
    
     def is_pieces_turn(self, valid_move, whites_turn):
         if whites_turn[0] == True and self.color == 'white' and valid_move[0] == True:
@@ -266,15 +274,10 @@ class Pawn(Piece):
 
     def is_legal(self, valid_move, whites_turn, board, position_start, position_end):
         valid_move[0] = self.is_pawn_move(valid_move, whites_turn, board, position_start, position_end)
-        if valid_move[0] == False:
-            print('Bad move one')
+        
         valid_move[0] = self.is_queening(valid_move, whites_turn, board, position_start, position_end)
-        if valid_move[0] == False:
-            print('Bad move two')
-
+       
         valid_move[0] = super().is_legal(valid_move, whites_turn, board, position_start, position_end)
-        if valid_move[0] == False:
-            print('Bad move three')
 
 
         if self.promoted == True and valid_move[0] == False:

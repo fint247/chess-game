@@ -14,6 +14,20 @@ class Settings():
         self.size = 40
         self.auto_queen = True #change default to False later
 
+        self.dark_square_color = (119, 153, 84)
+        self.light_square_color = (233, 237, 204)
+        self.highlight_square_color = (188, 188, 160)
+        self.primary_move_color = (244, 246, 128)
+        self.secondary_move_color = (187, 204, 68)
+
+        self.menu_button_color = (0, 128, 128)
+        self.menu_button_highlight_color = (0, 100, 100)
+
+        self.left_side_bar_bg_color = (0, 128, 128)
+        self.right_side_bar_bg_color = (0, 128, 128)
+        self.top_top_bar_bg_color = (64, 64 ,64)
+        self.bottom_bottom_bar_bg_color = (64, 64 ,64)
+
         self.scale_buttons = .3
         self.scale_labels = .4
         self.scale_font = .2
@@ -56,7 +70,7 @@ class Settings():
         s.title('Settings') 
         s.geometry('700x600-0+0')
         s.config(bg = 'black')
-        s.overrideredirect(True)
+        # s.overrideredirect(True)
 
         s.protocol("WM_DELETE_WINDOW", lambda: exit_settings(r,s))
 
