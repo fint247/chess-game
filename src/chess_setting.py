@@ -14,15 +14,23 @@ class Settings():
         self.size = 40
         self.auto_queen = True #change default to False later
 
+    
+
+        #board interaction colors
         self.dark_square_color = (119, 153, 84)
         self.light_square_color = (233, 237, 204)
         self.highlight_square_color = (188, 188, 160)
         self.primary_move_color = (244, 246, 128)
         self.secondary_move_color = (187, 204, 68)
 
+        #menu button colors
         self.menu_button_color = (0, 128, 128)
         self.menu_button_highlight_color = (0, 100, 100)
+        #maybe add a activebackground color for these menu buttons
+        #activebackground is the color of the button when you click and hold
+    
 
+        #back ground colors
         self.left_side_bar_bg_color = (0, 128, 128)
         self.right_side_bar_bg_color = (0, 128, 128)
         self.top_top_bar_bg_color = (64, 64 ,64)

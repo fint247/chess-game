@@ -5,11 +5,14 @@ play computer(home page)
 play online (home page)
 play local (home page)
 
-auto flip (settings - local games)
+full screen exclusive - windowed (settings)
+auto queen (settings)
+click show legal moves - hover show legal moves - dont show legal moves (settings)
+auto flip (settings - local games only)
+show/hide opponents colors/skins (maybe add to settings)
 
 """
 
-#activebackground='blue'
 
 
 from tkinter import *
@@ -37,6 +40,8 @@ whites_turn= [True]
 
 
 #maybe add a name variable to the instences that specifies what pawn/rook/bishop/knight it is rather than making 24 unique instances 
+
+# list_of_pieces_classes = [Rook, Knight, Bishop, Queen, King, Pawn, EmptySquare]
 
 empty_square = EmptySquare()
 
@@ -166,8 +171,21 @@ def exit_(event, button): # function to be called when mouse exits the frame
     button.config(bg=rgb_to_hex(settings.menu_button_color))
 	# print('Button-3 pressed at x = % d, y = % d'%(event.x, event.y))  
 
+
+
+# def show_legal_moves(board, position_start):
+#     # for x in range(8):
+#     #     for y in range(8):
+#     #         temp_valid_move = True
+#     #         temp_position_end = [x,y]
+#     #         #make sure function (.is_legal) doesn't manipulate the global var valid_move
+#     #         #its definitly changing valid move
+#     #         if board[position_start[0]][position_start[1]].is_legal(temp_valid_move, whites_turn, board, position_start, temp_position_end) == True:
+#     #             board_of_buttons[x][y].config(image=board[x][y].show_legal_move_img)
+#     pass
+
 def exit_settings(r,s):
-    # update_buttons(button_setting, button_stop)
+    # update_buttons_from_settings(button_setting, button_stop)
     
     s.destroy()
     r.state('zoomed')
@@ -176,7 +194,7 @@ def exit_settings(r,s):
 def open_settings(r, rgb_to_hex, exit_settings):
     settings.open_settings_window(r, rgb_to_hex, exit_settings)
 
-def update_buttons(settings, *args):
+def update_buttons_from_settings(settings, *args):
         print(f"HERE{settings.size}")
         for arg in args:
             arg.config(width=int(.25*1.3*int(settings.size)), height=int(.1*1.3*int(settings.size)),font=('Helvatical bold',int(.2*int(settings.size))), bg = 'teal', fg = 'black')
@@ -266,24 +284,21 @@ def reset_board_bg(wipe=''):
         # print('\n')
         for y in range(8):
             # print(x,y,board_of_buttons[x][y]['bg'] , rgb_to_hex(settings.primary_move_color) , rgb_to_hex(settings.secondary_move_color))
-            
-            #clears everything if wipe == 'wipe' - doesnt clear yellow highlight from moving a piece if wipe != 'wipe
+
+            #clears everything if wipe == 'wipe' 
             if wipe == 'wipe':
                 if x%2 == 0 and y%2 == 0 or x%2 != 0 and y%2 != 0:
                     board_of_buttons[x][y].config(bg = rgb_to_hex(settings.dark_square_color))
                 else:
                     board_of_buttons[x][y].config(bg = rgb_to_hex(settings.light_square_color))
 
+            #doesnt clear yellow highlight from moving a piece if wipe != 'wipe 
             elif not (board_of_buttons[x][y]['bg'] == rgb_to_hex(settings.primary_move_color) or board_of_buttons[x][y]['bg'] == rgb_to_hex(settings.secondary_move_color)):
                 if x%2 == 0 and y%2 == 0 or x%2 != 0 and y%2 != 0:
                     board_of_buttons[x][y].config(bg = rgb_to_hex(settings.dark_square_color))
                 else:
                     board_of_buttons[x][y].config(bg = rgb_to_hex(settings.light_square_color))
-                 
-            else:
-                pass
-                # print(x,y)
-
+            
 def pressed(a, b, position_start, position_end, board):
     button = board_of_buttons[a][b]
 
@@ -302,6 +317,8 @@ def pressed(a, b, position_start, position_end, board):
             position_start.append(a)
             position_start.append(b)
             # print('position start after = ',position_start)
+
+            show_legal_moves(board, position_start)
         
     elif len(position_start) == 2:
         position_end.append(a)
@@ -309,12 +326,11 @@ def pressed(a, b, position_start, position_end, board):
         # print('position end after = ',position_end)
 
         #print(board[position_start[0]][position_start[1]].name)
-        
         valid_move[0] = board[position_start[0]][position_start[1]].is_legal(valid_move, whites_turn, board, position_start, position_end)
         
         if valid_move[0] == True:
             check_if_promoting()
-            # check_if_castling()
+            check_if_castling()
             update_ampasant()
 
             board[position_end[0]][position_end[1]] = board[position_start[0]][position_start[1]]
@@ -327,7 +343,8 @@ def pressed(a, b, position_start, position_end, board):
             #highlights the square a piece moved from and to
             board_of_buttons[position_end[0]][position_end[1]].config(bg = rgb_to_hex(settings.primary_move_color))
 
-            if abs(position_start[0]-position_end[0]) <= 1 and abs(position_start[1]-position_end[1]) <= 1:
+            if (abs(position_start[0]-position_end[0]) == 1 and abs(position_start[1]-position_end[1]) == 0
+                or abs(position_start[0]-position_end[0]) == 0 and abs(position_start[1]-position_end[1]) == 1):
                 board_of_buttons[position_start[0]][position_start[1]].config(bg = rgb_to_hex(settings.secondary_move_color))
 
             else:
@@ -353,7 +370,11 @@ def pressed(a, b, position_start, position_end, board):
     
     
     # print(f"row = {a}, col = {b}")
-    
+
+
+#tracks the screen size
+tracker = WindowTracker(r)
+tracker.bind_config(board)
 
 #used to make buttons with text resize according to pixels not text
 pixel = PhotoImage(width=1, height=1)
@@ -385,7 +406,7 @@ for x in range(8):
             bg_color = rgb_to_hex(settings.dark_square_color)
         else:
             bg_color = rgb_to_hex(settings.light_square_color)
-        button_on_board = tk.Button(center_frame,image = board[x][y].new_image, bg = bg_color, width = (400/8)-2, height = (400/8)-2, border=0)
+        button_on_board = tk.Button(center_frame,image = board[x][y].new_image, bg = bg_color, activebackground=bg_color, width = (400/8)-2, height = (400/8)-2, border=0)
         button_on_board.x, button_on_board.y = int(x), int(y)
         button_on_board.grid(row=x+1,column=y)
 
@@ -417,9 +438,7 @@ button_setting.bind('<Enter>', lambda event: enter(event, button_setting))
 button_setting.bind('<Leave>', lambda event: exit_(event, button_setting))
 
 
-#tracks the screen size
-tracker = WindowTracker(r)
-tracker.bind_config(board)
+
 
 
 

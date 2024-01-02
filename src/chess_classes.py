@@ -8,26 +8,7 @@ from chess_setting import *
 settings = Settings()
 
 
-class EmptySquare():
-    def __init__(self):
-        self.name = 'empty_square'
-        self.color = None
-        self.ampasant = False
 
-        self.image= (Image.open(f"trans_bg.png"))
-        self.new_image= ImageTk.PhotoImage(self.image)
-       
-
-       
-    def is_legal(self, valid_move, whites_turn, board, position_start, position_end):
-        valid_move[0] = False
-        print("Rule Break: Cant move an empty square")
-        return valid_move[0]
-
-    def rescale_img(self):
-        # self.scaled_image =self.image.resize((settings.size,settings.size), Image.LANCZOS)
-        self.new_image = ImageTk.PhotoImage(self.image.resize((settings.size,settings.size), Image.LANCZOS))
-        return self.new_image
 
 
 class Piece():
@@ -38,17 +19,35 @@ class Piece():
 
         self.image= Image.open(f"{self.name}.png")
         self.new_image= ImageTk.PhotoImage(self.image)
-       
+
+        self.black_cirlce_img = Image.open(f"black_circle.png")
+        self.show_legal_move_img = ImageTk.PhotoImage(Image.blend(self.image.resize((settings.size,settings.size)), self.black_cirlce_img.resize((settings.size,settings.size)), alpha=0.5))
+
     def rescale_img(self):
         # self.scaled_image = self.image.resize((settings.size,settings.size), Image.LANCZOS)
         self.new_image = ImageTk.PhotoImage(self.image.resize((settings.size,settings.size), Image.LANCZOS))
+        self.show_legal_move_img = ImageTk.PhotoImage(Image.blend(self.image.resize((settings.size,settings.size), Image.LANCZOS), self.black_cirlce_img.resize((settings.size,settings.size), Image.LANCZOS), alpha=0.5))
+
         return self.new_image
     
-    def show_legal_move_img(self):
-        self.new_image = ImageTk.PhotoImage(self.image.resize((settings.size,settings.size), Image.LANCZOS))
+    # def __copy__(self, list_of_pieces_classes):
+    #     for piece_class in list_of_pieces_classes:
+    #         if isinstance(self, piece_class):
+    #             temp_piece = piece_class(str(self.color))
+    #             temp_piece.name = str(self.name)
+    #             temp_piece.ampasant = bool(self.ampasant)
+    #             temp_piece.has_moved = bool(self.has_moved)
+                
+    #             temp_piece.rescale_img()
 
-    def hide_legal_move_img(self):
-        self.new_image = ImageTk.PhotoImage(self.image.resize((settings.size,settings.size), Image.LANCZOS))
+
+    #     return temp_piece
+    
+    # def show_legal_moves(self):
+    #     self.show_legal_move_img = ImageTk.PhotoImage(Image.blend(self.image.resize((settings.size,settings.size), Image.LANCZOS), self.black_cirlce_img.resize((settings.size,settings.size), Image.LANCZOS), alpha=0.5))
+
+    # def hide_legal_move_img(self):
+    #     self.new_image = ImageTk.PhotoImage(self.image.resize((settings.size,settings.size), Image.LANCZOS))
 
 
    
@@ -80,6 +79,28 @@ class Piece():
 
 
 
+class EmptySquare(Piece):
+    def __init__(self):
+        self.name = 'empty_square'
+        self.color = 'None'
+
+        super().__init__(self.color)
+
+       
+    def is_legal(self, valid_move, whites_turn, board, position_start, position_end):
+        valid_move[0] = False
+        print("Rule Break: Cant move an empty square")
+        return valid_move[0]
+
+    def rescale_img(self):
+        # self.scaled_image =self.image.resize((settings.size,settings.size), Image.LANCZOS)
+        self.new_image = ImageTk.PhotoImage(self.image.resize((settings.size,settings.size), Image.LANCZOS))
+        self.show_legal_move_img = ImageTk.PhotoImage(Image.blend(self.image.resize((settings.size,settings.size), Image.LANCZOS), self.black_cirlce_img.resize((settings.size,settings.size), Image.LANCZOS), alpha=0.5))
+
+        return self.new_image
+    
+
+
 class King(Piece):
     def __init__(self, color):
         self.name = f"{color}_king"
@@ -90,10 +111,11 @@ class King(Piece):
     def is_king_move(self, valid_move, whites_turn, board, position_start, position_end):
         temp_valid_move = valid_move.copy()
         if abs(position_start[0] - position_end[0]) <= 1 and abs(position_start[1] - position_end[1]) <= 1:
-            if self.is_moving_into_check(temp_valid_move, whites_turn, board, position_start, position_end) == False:
-                print("Rule Break: cant move into check")
-                temp_valid_move[0] = False
-            print('valid move should = True --> ',valid_move)
+            # if self.is_moving_into_check(temp_valid_move, whites_turn, board, position_start, position_end) == False:
+            #     print("Rule Break: cant move into check")
+            #     temp_valid_move[0] = False
+            # print('valid move should = True --> ',valid_move)
+            pass
             
         else:
             print("Rule Break: king can only move one square at a time")
@@ -185,14 +207,14 @@ class King(Piece):
 
 
     def is_legal(self, valid_move, whites_turn, board, position_start, position_end):
-        print('\n\n===============',position_start,position_end,'=========================\n\n')
+        # print('\n\n===============',position_start,position_end,'=========================\n\n')
         
-        # if self.is_king_move(valid_move, whites_turn, board, position_start, position_end) == True:
-        #     pass
-        # elif self.is_castleing(valid_move, whites_turn, board, position_start, position_end) == True:
-        #     pass
-        # else:
-        #     valid_move[0] = False
+        if self.is_king_move(valid_move, whites_turn, board, position_start, position_end) == True:
+            pass
+        elif self.is_castleing(valid_move, whites_turn, board, position_start, position_end) == True:
+            pass
+        else:
+            valid_move[0] = False
         valid_move[0] = super().is_legal(valid_move, whites_turn, board, position_start, position_end)
         return valid_move[0]
 
@@ -207,6 +229,7 @@ class Pawn(Piece):
 
     
     def is_one_square_forward(self, valid_move, whites_turn, board, position_start, position_end, pos_neg):
+        print(valid_move)
         temp_valid_move = valid_move.copy()
         if position_start[0] == 1 and position_end[0] == 3 and self.color == 'black' and position_start[1] - position_end[1] == 0 and board[position_start[0]-pos_neg][position_start[1]].name == 'empty_square' and board[position_start[0]-pos_neg-pos_neg][position_start[1]].name == 'empty_square' or position_start[0] == 6 and position_end[0] == 4 and self.color == 'white' and position_start[1] - position_end[1] == 0 and board[position_start[0]-pos_neg][position_start[1]].name == 'empty_square' and board[position_start[0]-pos_neg-pos_neg][position_start[1]].name == 'empty_square':
             #moved two squares forward
@@ -259,7 +282,7 @@ class Pawn(Piece):
             pos_neg = 1
         elif self.color == 'black':
             pos_neg = -1
-
+        print(valid_move)
         if self.is_one_square_forward(valid_move, whites_turn, board, position_start, position_end, pos_neg) == True or self.is_taking_one_square_diagonal(valid_move, whites_turn, board, position_start, position_end, pos_neg) == True or self.is_ampasant(valid_move, whites_turn, board, position_start, position_end, pos_neg) == True:
             pass
         else:
@@ -273,6 +296,7 @@ class Pawn(Piece):
         return valid_move[0]
 
     def is_legal(self, valid_move, whites_turn, board, position_start, position_end):
+        print(valid_move)
         valid_move[0] = self.is_pawn_move(valid_move, whites_turn, board, position_start, position_end)
         
         valid_move[0] = self.is_queening(valid_move, whites_turn, board, position_start, position_end)
