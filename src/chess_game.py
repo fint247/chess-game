@@ -37,10 +37,7 @@ position_end = []
 whites_turn= [True]
 
 
-
-#maybe add a name variable to the instences that specifies what pawn/rook/bishop/knight it is rather than making 24 unique instances 
-
-# list_of_pieces_classes = [Rook, Knight, Bishop, Queen, King, Pawn, EmptySquare]
+list_of_pieces_classes = [Rook, Knight, Bishop, Queen, King, Pawn, EmptySquare]
 
 empty_square = EmptySquare()
 
@@ -140,8 +137,6 @@ class WindowTracker():
 
             rescale_game(board,int(side_bar_width), int(chess_board_width))
 
-      
-
 def rescale_game(board,side_bar_width,chess_board_width):
     left_frame.place(x=0, y=0, width=side_bar_width, height=tracker.height)
     right_frame.place(x=side_bar_width+chess_board_width, y=0, width=side_bar_width+3, height=tracker.height)
@@ -158,7 +153,7 @@ def rescale_game(board,side_bar_width,chess_board_width):
             if board[x][y].name != 'empty_square' or resized_empty_square == 1:
                 board_of_buttons[x][y].config(width=int(chess_board_width*(1/8))-1, height=int(chess_board_width*(1/8)), image=board[x][y].rescale_img())
             else:
-                board_of_buttons[x][y].config(width=int(chess_board_width*(1/8))-1, height=int(chess_board_width*(1/8)), image=board[x][y].new_image)
+                board_of_buttons[x][y].config(width=int(chess_board_width*(1/8))-1, height=int(chess_board_width*(1/8)), image=board[x][y].image)
 
     # print(f"{tracker.width=}")
 
@@ -170,19 +165,16 @@ def exit_(event, button): # function to be called when mouse exits the frame
     button.config(bg=rgb_to_hex(settings.menu_button_color))
 	# print('Button-3 pressed at x = % d, y = % d'%(event.x, event.y))  
 
-
-
-# def show_legal_moves(board, position_start):
-#     # for x in range(8):
-#     #     for y in range(8):
-#     #         temp_valid_move = True
-#     #         temp_position_end = [x,y]
-#     #         #make sure function (.is_legal) doesn't manipulate the global var valid_move
-#     #         #its definitly changing valid move
-#     #         if board[position_start[0]][position_start[1]].is_legal(temp_valid_move, whites_turn, board, position_start, temp_position_end) == True:
-#     #             board_of_buttons[x][y].config(image=board[x][y].show_legal_move_img)
-#     pass
-
+def show_legal_moves(board, position_start):
+    for x in range(8):
+        for y in range(8):
+            
+            temp_position_end = [x,y]
+            #make sure function (.is_legal) doesn't manipulate any global variables
+           
+            if board[position_start[0]][position_start[1]].is_legal(whites_turn, board, position_start, temp_position_end) == True:
+                board_of_buttons[x][y].config(image=board[x][y].show_legal_move_img)
+    
 def exit_settings(r,s):
     # update_buttons_from_settings(button_setting, button_stop)
     
@@ -201,7 +193,7 @@ def update_buttons_from_settings(settings, *args):
             
         for x in range(8):
             for y in range(8):
-                board_of_buttons[x][y].config(image = board[x-1][y-1].new_image)
+                board_of_buttons[x][y].config(image = board[x-1][y-1].image)
                 
 def check_if_promoting():
     if board[position_start[0]][position_start[1]].name == 'white_pawn' or board[position_start[0]][position_start[1]].name == 'black_pawn':
@@ -256,7 +248,7 @@ def update_ampasant():
 def update_board():
     for x in range(8):
         for y in range(8):
-            board_of_buttons[x][y].config(image = board[x][y].new_image)
+            board_of_buttons[x][y].config(image = board[x][y].image)
 
 def update_turn():
     if whites_turn[0] == True:
@@ -282,7 +274,8 @@ def reset_board_bg(wipe=''):
     for x in range(8):
         # print('\n')
         for y in range(8):
-            # print(x,y,board_of_buttons[x][y]['bg'] , rgb_to_hex(settings.primary_move_color) , rgb_to_hex(settings.secondary_move_color))
+            #clears all overlays
+            board_of_buttons[x][y].config(image=board[x][y].image)
 
             #clears everything if wipe == 'wipe' 
             if wipe == 'wipe':
@@ -298,11 +291,12 @@ def reset_board_bg(wipe=''):
                 else:
                     board_of_buttons[x][y].config(bg = rgb_to_hex(settings.light_square_color))
             
+     
 def pressed(a, b, position_start, position_end, board):
     button = board_of_buttons[a][b]
 
     #resets the boards backgrounds to remove button click highlights
-    reset_board_bg('clear button clicked highlights')
+    reset_board_bg('soft wipe')
 
     #highlights the square you clicked on
     button.config(bg = rgb_to_hex(settings.highlight_square_color))
@@ -317,7 +311,7 @@ def pressed(a, b, position_start, position_end, board):
             position_start.append(b)
             # print('position start after = ',position_start)
 
-            # show_legal_moves(board, position_start)
+            show_legal_moves(board, position_start)
         
     elif len(position_start) == 2:
         position_end.append(a)
@@ -405,7 +399,7 @@ for x in range(8):
             bg_color = rgb_to_hex(settings.dark_square_color)
         else:
             bg_color = rgb_to_hex(settings.light_square_color)
-        button_on_board = tk.Button(center_frame,image = board[x][y].new_image, bg = bg_color, activebackground=bg_color, width = (400/8)-2, height = (400/8)-2, border=0)
+        button_on_board = tk.Button(center_frame,image = board[x][y].image, bg = bg_color, activebackground=bg_color, width = (400/8)-2, height = (400/8)-2, border=0)
         button_on_board.x, button_on_board.y = int(x), int(y)
         button_on_board.grid(row=x+1,column=y)
 

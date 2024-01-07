@@ -1,19 +1,30 @@
 from tkinter import *
 from PIL import Image, ImageTk
 
-import copy
 
-class MyClass():
-    pass
-# Create an instance
-my_instance = MyClass()
+valid_move = True
 
-# Check the class using type()
-instance_class = type(my_instance)
-print(instance_class)
+def test(valid_move):
+    valid_move = False
+    return valid_move
 
-is_instance = isinstance(my_instance, MyClass)
-print(is_instance)
+x = True
+x = test(x)
+print(valid_move,x)
+
+# import copy
+
+# class MyClass():
+#     pass
+# # Create an instance
+# my_instance = MyClass()
+
+# # Check the class using type()
+# instance_class = type(my_instance)
+# print(instance_class)
+
+# is_instance = isinstance(my_instance, MyClass)
+# print(is_instance)
 
 
 # img1 = Image.open(f"black_knight.png")
