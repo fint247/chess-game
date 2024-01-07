@@ -24,15 +24,15 @@ class Settings():
         self.secondary_move_color = (187, 204, 68)
 
         #menu button colors
-        self.menu_button_color = (0, 128, 128)
-        self.menu_button_highlight_color = (0, 100, 100)
+        self.menu_button_color = (128, 128, 128)
+        self.menu_button_highlight_color = (128, 100, 100)
         #maybe add a activebackground color for these menu buttons
         #activebackground is the color of the button when you click and hold
     
 
         #back ground colors
-        self.left_side_bar_bg_color = (0, 128, 128)
-        self.right_side_bar_bg_color = (0, 128, 128)
+        self.left_side_bar_bg_color = (128, 128, 128)
+        self.right_side_bar_bg_color = (128, 128, 128)
         self.top_top_bar_bg_color = (64, 64 ,64)
         self.bottom_bottom_bar_bg_color = (64, 64 ,64)
 

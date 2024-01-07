@@ -32,7 +32,6 @@ r.config(bg = 'white')
 # r.overrideredirect(True)
 # r.state('zoomed')
 
-valid_move = [True]
 position_start = []
 position_end = []
 whites_turn= [True]
@@ -80,23 +79,23 @@ w_pawn7 = Pawn('white')
 w_pawn8 = Pawn('white')
 
 
-a = [empty_square, empty_square, empty_square, b_queen, b_king, b_bishop2, b_knigt2, b_rook2]
-b = [b_pawn1, b_pawn2, b_pawn3, empty_square, empty_square, empty_square, empty_square, empty_square]
-c = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
-d = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
-e = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
-f = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
-g = [w_pawn1, w_pawn2, w_pawn3, empty_square, empty_square, empty_square, empty_square, empty_square]
-h = [empty_square, empty_square, empty_square, w_queen, w_king, w_bishop2, w_knigt2, w_rook2]
-
-# a = [b_rook1, b_knigt1, b_bishop1, b_queen, b_king, b_bishop2, b_knigt2, b_rook2]
-# b = [b_pawn1, b_pawn2, b_pawn3, b_pawn4, b_pawn5, b_pawn6, b_pawn7, b_pawn8]
+# a = [empty_square, empty_square, empty_square, b_queen, b_king, b_bishop2, b_knigt2, b_rook2]
+# b = [b_pawn1, b_pawn2, b_pawn3, empty_square, empty_square, empty_square, empty_square, empty_square]
 # c = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
 # d = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
 # e = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
 # f = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
-# g = [w_pawn1, w_pawn2, w_pawn3, w_pawn4, w_pawn5, w_pawn6, w_pawn7, w_pawn8]
-# h = [w_rook1, w_knigt1, w_bishop1, w_queen, w_king, w_bishop2, w_knigt2, w_rook2]
+# g = [w_pawn1, w_pawn2, w_pawn3, empty_square, empty_square, empty_square, empty_square, empty_square]
+# h = [empty_square, empty_square, empty_square, w_queen, w_king, w_bishop2, w_knigt2, w_rook2]
+
+a = [b_rook1, b_knigt1, b_bishop1, b_queen, b_king, b_bishop2, b_knigt2, b_rook2]
+b = [b_pawn1, b_pawn2, b_pawn3, b_pawn4, b_pawn5, b_pawn6, b_pawn7, b_pawn8]
+c = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
+d = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
+e = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
+f = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
+g = [w_pawn1, w_pawn2, w_pawn3, w_pawn4, w_pawn5, w_pawn6, w_pawn7, w_pawn8]
+h = [w_rook1, w_knigt1, w_bishop1, w_queen, w_king, w_bishop2, w_knigt2, w_rook2]
 
 board = [a,b,c,d,e,f,g,h]
 
@@ -318,7 +317,7 @@ def pressed(a, b, position_start, position_end, board):
             position_start.append(b)
             # print('position start after = ',position_start)
 
-            show_legal_moves(board, position_start)
+            # show_legal_moves(board, position_start)
         
     elif len(position_start) == 2:
         position_end.append(a)
@@ -326,9 +325,9 @@ def pressed(a, b, position_start, position_end, board):
         # print('position end after = ',position_end)
 
         #print(board[position_start[0]][position_start[1]].name)
-        valid_move[0] = board[position_start[0]][position_start[1]].is_legal(valid_move, whites_turn, board, position_start, position_end)
+        valid_move = board[position_start[0]][position_start[1]].is_legal(whites_turn, board, position_start, position_end)
         
-        if valid_move[0] == True:
+        if valid_move == True:
             check_if_promoting()
             check_if_castling()
             update_ampasant()
@@ -354,8 +353,8 @@ def pressed(a, b, position_start, position_end, board):
             update_turn()
 
         else:
-            #resets valid move to be true but doesnt move the piece
-            valid_move[0] = True
+            pass
+            #doesnt move the piece
             
             
         for i in range(len(position_start)):
@@ -436,11 +435,6 @@ button_setting = Button(left_frame, text='Settings', width=100-2,padx=0, pady=10
 button_setting.grid(row=1, column=0, sticky="nsew") 
 button_setting.bind('<Enter>', lambda event: enter(event, button_setting))             
 button_setting.bind('<Leave>', lambda event: exit_(event, button_setting))
-
-
-
-
-
 
 
 r.mainloop() 
