@@ -2,15 +2,35 @@ from tkinter import *
 from PIL import Image, ImageTk
 
 
-valid_move = True
+from PIL import Image, ImageDraw
 
-def test(valid_move):
-    valid_move = False
-    return valid_move
+# Open the image
+image_path = "white_knight.png"  # Replace with the actual path to your image
+original_image = Image.open(image_path)
 
-x = True
-x = test(x)
-print(valid_move,x)
+# Create a new image with RGBA mode
+new_image = Image.new("RGBA", original_image.size, (0, 0, 0, 0))
+
+# Paste the original image onto the new image
+new_image.paste(original_image, (0, 0))
+
+# Create a drawing object for the new image
+draw = ImageDraw.Draw(new_image)
+
+# Define the circle parameters
+center = (25, 25)  # Replace with the desired center coordinates
+radius = 10  # Replace with the desired radius
+color = (0, 0, 255, 50)  # RGB color with alpha (transparency) value
+
+# Draw the circle on the new image
+draw.ellipse([(center[0] - radius, center[1] - radius), (center[0] + radius, center[1] + radius)], fill=color, outline=None)
+
+# Save or display the modified image
+new_image.show()
+
+
+
+
 
 # import copy
 

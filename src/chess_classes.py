@@ -104,7 +104,6 @@ class EmptySquare(Piece):
 class King(Piece):
     def __init__(self, color):
         self.name = f"{color}_king"
-        count = 0
         super().__init__(color)
 
     
@@ -125,40 +124,44 @@ class King(Piece):
         return temp_valid_move
 
     def is_castleing(self, valid_move, whites_turn, board, position_start, position_end):
-        temp_valid_move = bool(valid_move)
-        if abs(position_start[1] - position_end[1]) == 2 and position_start[0] - position_end[0] == 0:
-            rook_pos = []
-            if whites_turn[0] == True:
-                colors_row = 7
+        if board[position_start[0]][position_start[1]].has_moved == False:
+            temp_valid_move = bool(valid_move)
+            if abs(position_start[1] - position_end[1]) == 2 and position_start[0] - position_end[0] == 0:
+                rook_pos = []
+                if whites_turn[0] == True:
+                    colors_row = 7
+                else:
+                    colors_row = 0
+
+                for i in range(8):
+                    if board[colors_row][i].name == f"{self.color}_king":
+                        king_pos = i
+                    elif board[colors_row][i].name == f"{self.color}_rook" and board[colors_row][i].has_moved == False:
+                        rook_pos.append(i)
+        
+                # print(rook_pos, king_pos)
+                if len(rook_pos) > 0:
+                    for x in rook_pos:
+                        if position_end[1] < position_start[1] and x < king_pos:
+                            for y in range(x+1, king_pos):
+                                print(y,':',board[colors_row][y].name)
+                                if board[colors_row][y].name != 'empty_square':
+                                    # print('Rule Break: cant castle thru ',board[colors_row][y].name)
+                                    temp_valid_move = False
+                        
+                        elif position_end[1] > position_start[1] and x > king_pos:
+                            for y in range(king_pos+1 , x):
+                                print(y,': ',board[colors_row][y].name)
+                                if board[colors_row][y].name != 'empty_square':
+                                    # print('Rule Break: cant castle thru ',board[colors_row][y].name)
+                                    temp_valid_move = False
+                else:
+                    temp_valid_move = False
             else:
-                colors_row = 0
-
-            for i in range(8):
-                if board[colors_row][i].name == f"{self.color}_king":
-                    king_pos = i
-                elif board[colors_row][i].name == f"{self.color}_rook" and board[colors_row][i].has_moved == False:
-                    rook_pos.append(i)
-    
-            # print(rook_pos, king_pos)
-
-            for x in rook_pos:
-                if position_end[1] < position_start[1] and x < king_pos:
-                    for y in range(x+1, king_pos):
-                        print(y,':',board[colors_row][y].name)
-                        if board[colors_row][y].name != 'empty_square':
-                            # print('Rule Break: cant castle thru ',board[colors_row][y].name)
-                            temp_valid_move = False
-                   
-                elif position_end[1] > position_start[1] and x > king_pos:
-                    for y in range(king_pos+1 , x):
-                        print(y,': ',board[colors_row][y].name)
-                        if board[colors_row][y].name != 'empty_square':
-                            # print('Rule Break: cant castle thru ',board[colors_row][y].name)
-                            temp_valid_move = False
-                
-
+                temp_valid_move = False
         else:
             temp_valid_move = False
+
         return temp_valid_move
                 
             
@@ -214,7 +217,9 @@ class King(Piece):
             pass
         else:
             valid_move = False
-        valid_move = super().is_legal(valid_move, whites_turn, board, position_start, position_end)
+
+        if valid_move == True:
+            valid_move = super().is_legal(valid_move, whites_turn, board, position_start, position_end)
         return valid_move
 
 
@@ -258,7 +263,7 @@ class Pawn(Piece):
         # print(board[position_end[0]+pos_neg][position_end[1]].name ,'==', 'white_pawn' ,'and', self.color ,'!=', board[position_end[0]+pos_neg][position_end[1]].color ,'or', board[position_end[0]+pos_neg][position_end[1]].name ,'==', 'black_pawn' ,'and', self.color ,'!=', board[position_end[0]+pos_neg][position_end[1]].color)
         # print(board[position_end[0]+pos_neg][position_end[1]].ampasant, f"({position_end[0]+pos_neg},{position_end[1]})" ,'==', True , 'and', abs(position_start[1] - position_end[1]) ,'==', 1 ,'and', position_start[0] - position_end[0] ,'==', 1*pos_neg)
         
-        if not(pos_neg + position_end[0] < 0 or  pos_neg + position_end[0] > 7):#fix to a pawn bug due to pos_neg var and list index out of range
+        if not(pos_neg + position_end[0] < 0 or  pos_neg + position_end[0] > 7):#fix to a pawn bug due to pos_neg variable
             if board[position_end[0]+pos_neg][position_end[1]].name == 'white_pawn' and self.color != board[position_end[0]+pos_neg][position_end[1]].color or board[position_end[0]+pos_neg][position_end[1]].name == 'black_pawn' and self.color != board[position_end[0]+pos_neg][position_end[1]].color:
                 if board[position_end[0]+pos_neg][position_end[1]].ampasant == True and abs(position_start[1] - position_end[1]) == 1 and position_start[0] - position_end[0] == 1*pos_neg:
                     board[position_end[0]+pos_neg][position_end[1]] = board[position_end[0]][position_end[1]]
@@ -293,11 +298,12 @@ class Pawn(Piece):
 
     def is_legal(self, whites_turn, board, position_start, position_end):
         valid_move = True
-        valid_move = self.is_pawn_move(valid_move, whites_turn, board, position_start, position_end)
-        
-        valid_move = self.is_queening(valid_move, whites_turn, board, position_start, position_end)
-       
-        valid_move = super().is_legal(valid_move, whites_turn, board, position_start, position_end)
+        if valid_move == True:
+            valid_move = self.is_pawn_move(valid_move, whites_turn, board, position_start, position_end)
+        if valid_move == True:
+            valid_move = self.is_queening(valid_move, whites_turn, board, position_start, position_end)
+        if valid_move == True:
+            valid_move = super().is_legal(valid_move, whites_turn, board, position_start, position_end)
 
 
         if self.promoted == True and valid_move == False:
@@ -317,6 +323,8 @@ class Rook(Piece):
         if position_start[0] != position_end[0] and position_start[1] != position_end[1]:
             temp_valid_move = False
             # print(f"{self.name}s can only move in columns or rows")
+        if position_start == position_end:
+            temp_valid_move = False
         return temp_valid_move
     
     def thru_piece_col_row_helper(self, valid_move, board, position_start, position_end, index_num, op_index_num):
@@ -325,7 +333,8 @@ class Rook(Piece):
         elif position_end[index_num] < position_start[index_num]:
             pos_neg = -1
         else:
-            raise Exception('problem with pos_neg variable')
+            print(position_start, position_end)
+            raise Exception('not moving on a row/column which is breaking pos_neg variable')
 
         if index_num == 0 and op_index_num == 1:
             for i in range(position_start[index_num] + pos_neg, position_end[index_num], pos_neg):
@@ -356,9 +365,11 @@ class Rook(Piece):
     def is_legal(self, whites_turn, board, position_start, position_end):
         valid_move = True
         valid_move = self.is_on_col_row(valid_move, position_start, position_end)
-        valid_move = self.is_moving_thru_piece_col_row(valid_move, board, position_start, position_end)
+        if valid_move == True:
+            valid_move = self.is_moving_thru_piece_col_row(valid_move, board, position_start, position_end)
         
-        valid_move = super().is_legal(valid_move, whites_turn, board, position_start, position_end)
+        if valid_move == True:
+            valid_move = super().is_legal(valid_move, whites_turn, board, position_start, position_end)
         return valid_move
 
 
@@ -375,6 +386,9 @@ class Bishop(Piece):
         if (abs(position_start[0] - position_end[0]) + 1) / (abs(position_start[1] - position_end[1]) + 1) != 1:
             # print(f'Rule Break: {self.name}s can only move on a diagonal')
             temp_valid_move = False
+
+        if position_start == position_end:
+            temp_valid_move = False
         return temp_valid_move
 
     def is_moving_thru_piece_diagonal(self, valid_move, board, position_start, position_end):
@@ -383,9 +397,8 @@ class Bishop(Piece):
         elif position_end[1] < position_start[1]:
             pos_neg = -1
         else:
-            # print('problem with pos_neg diagonal variable')
-            pos_neg = False
-            valid_move = False
+            print(position_start, position_end)
+            raise Exception('not moving on diagonal which is breaking pos_neg variable')
 
         if position_end[0] > position_start[0]:
             neg_pos = 1
@@ -416,9 +429,10 @@ class Bishop(Piece):
     def is_legal(self, whites_turn, board, position_start, position_end):
         valid_move = True
         valid_move = self.is_on_diagonal(valid_move, position_start, position_end)
-        valid_move = self.is_moving_thru_piece_diagonal(valid_move, board, position_start, position_end)
-        
-        valid_move = super().is_legal(valid_move, whites_turn, board, position_start, position_end)
+        if valid_move == True:
+            valid_move = self.is_moving_thru_piece_diagonal(valid_move, board, position_start, position_end)
+        if valid_move == True:
+            valid_move = super().is_legal(valid_move, whites_turn, board, position_start, position_end)
         return valid_move
     
 
@@ -431,16 +445,21 @@ class Queen(Rook, Bishop):
    
     def is_legal(self, whites_turn, board, position_start, position_end):
         valid_move = True
-        if self.is_on_col_row(valid_move, position_start, position_end) == True and self.is_moving_thru_piece_col_row(valid_move, board, position_start, position_end) == True:
-            pass
-        elif self.is_on_diagonal(valid_move, position_start, position_end) == True and self.is_moving_thru_piece_diagonal(valid_move, board, position_start, position_end) == True:
-            pass
+        if self.is_on_col_row(valid_move, position_start, position_end) == True:
+            if not self.is_moving_thru_piece_col_row(valid_move, board, position_start, position_end) == True:
+                valid_move = False
+
+        elif self.is_on_diagonal(valid_move, position_start, position_end) == True:
+            if not self.is_moving_thru_piece_diagonal(valid_move, board, position_start, position_end) == True:
+                valid_move = False
         
         else:
             valid_move = False
 
-        valid_move = self.not_taking_own_piece(valid_move, board, position_start, position_end)
-        valid_move = self.is_pieces_turn(valid_move, whites_turn) 
+        if valid_move == True:
+            valid_move = self.not_taking_own_piece(valid_move, board, position_start, position_end)
+        if valid_move == True:
+            valid_move = self.is_pieces_turn(valid_move, whites_turn) 
         return valid_move
 
 
@@ -464,7 +483,8 @@ class Knight(Piece):
         valid_move = True
         valid_move = self.is_knight_move(valid_move, whites_turn, board, position_start, position_end)
 
-        valid_move = super().is_legal(valid_move, whites_turn, board, position_start, position_end)
+        if valid_move == True:
+            valid_move = super().is_legal(valid_move, whites_turn, board, position_start, position_end)
         return valid_move
 
 
