@@ -1,6 +1,6 @@
 from tkinter import *
 import tkinter as tk 
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk, ImageDraw
 
 from chess_setting import *
 
@@ -20,36 +20,43 @@ class Piece():
         self.open_image= Image.open(f"{self.name}.png")
         self.image= ImageTk.PhotoImage(self.open_image)
 
-        self.black_cirlce_img = Image.open(f"black_circle.png")
-        self.show_legal_move_img = ImageTk.PhotoImage(Image.blend(self.open_image.resize((settings.size,settings.size)), self.black_cirlce_img.resize((settings.size,settings.size)), alpha=0.5))
+
 
     def rescale_img(self):
-        # self.scaled_image = self.open_image.resize((settings.size,settings.size), Image.LANCZOS)
-        self.image = ImageTk.PhotoImage(self.open_image.resize((settings.size,settings.size), Image.LANCZOS))
-        self.show_legal_move_img = ImageTk.PhotoImage(Image.blend(self.open_image.resize((settings.size,settings.size), Image.LANCZOS), self.black_cirlce_img.resize((settings.size,settings.size), Image.LANCZOS), alpha=0.5))
+        self.scaled_image = self.open_image.resize((settings.size,settings.size), Image.LANCZOS)
+        self.image = ImageTk.PhotoImage(self.scaled_image)
+
+
+        # Create a new image with a transparent background
+        width, height = self.scaled_image.size  # Adjust as needed
+        self.image_overlay = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+        # Create a drawing object
+        draw = ImageDraw.Draw(self.image_overlay)
+
+        # Define circle parameters
+        circle_center = (width // 2, height // 2)
+        circle_radius = self.scaled_image.size[0] // 5
+
+        # Draw a circle with X % transparency
+        circle_color = (255, 0, 255, int(255 * 0.5))  # RGBA format (red, green, blue, alpha)
+        draw.ellipse(
+            [
+                circle_center[0] - circle_radius,
+                circle_center[1] - circle_radius,
+                circle_center[0] + circle_radius,
+                circle_center[1] + circle_radius,
+            ],
+            fill=circle_color,
+        )
+
+        # Apply the mask       
+        self.legal_move_image = Image.new("RGBA", self.scaled_image.size)
+        self.legal_move_image = Image.alpha_composite(self.legal_move_image, self.scaled_image)
+        self.legal_move_image = Image.alpha_composite(self.legal_move_image, self.image_overlay)
+        self.show_legal_move_img = ImageTk.PhotoImage(self.legal_move_image)
 
         return self.image
     
-    # def __copy__(self, list_of_pieces_classes):
-    #     for piece_class in list_of_pieces_classes:
-    #         if isinstance(self, piece_class):
-    #             temp_piece = piece_class(str(self.color))
-    #             temp_piece.name = str(self.name)
-    #             temp_piece.ampasant = bool(self.ampasant)
-    #             temp_piece.has_moved = bool(self.has_moved)
-                
-    #             temp_piece.rescale_img()
-
-
-    #     return temp_piece
-    
-    # def show_legal_moves(self):
-    #     self.show_legal_move_img = ImageTk.PhotoImage(Image.blend(self.open_image.resize((settings.size,settings.size), Image.LANCZOS), self.black_cirlce_img.resize((settings.size,settings.size), Image.LANCZOS), alpha=0.5))
-
-    # def hide_legal_move_img(self):
-    #     self.image = ImageTk.PhotoImage(self.open_image.resize((settings.size,settings.size), Image.LANCZOS))
-
-
    
     def is_pieces_turn(self, valid_move, whites_turn):
         if whites_turn[0] == True and self.color == 'white' and valid_move == True:
@@ -91,13 +98,6 @@ class EmptySquare(Piece):
         valid_move = False
         # print("Rule Break: Cant move an empty square")
         return valid_move
-
-    def rescale_img(self):
-        # self.scaled_image =self.image.resize((settings.size,settings.size), Image.LANCZOS)
-        self.image = ImageTk.PhotoImage(self.open_image.resize((settings.size,settings.size), Image.LANCZOS))
-        self.show_legal_move_img = ImageTk.PhotoImage(Image.blend(self.open_image.resize((settings.size,settings.size), Image.LANCZOS), self.black_cirlce_img.resize((settings.size,settings.size), Image.LANCZOS), alpha=0.5))
-
-        return self.image
     
 
 

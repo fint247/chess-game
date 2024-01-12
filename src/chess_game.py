@@ -291,7 +291,6 @@ def reset_board_bg(wipe=''):
                 else:
                     board_of_buttons[x][y].config(bg = rgb_to_hex(settings.light_square_color))
             
-     
 def pressed(a, b, position_start, position_end, board):
     button = board_of_buttons[a][b]
 
