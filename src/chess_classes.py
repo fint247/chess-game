@@ -1,6 +1,5 @@
-from tkinter import *
-import tkinter as tk 
-from PIL import Image, ImageTk, ImageDraw
+# from tkinter import *
+# from PIL import Image, ImageTk, ImageDraw
 
 from chess_setting import *
 

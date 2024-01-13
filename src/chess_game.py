@@ -15,11 +15,9 @@ show/hide opponents colors/skins (maybe add to settings)
 
 
 
-from tkinter import *
-import tkinter as tk                                                       
-from PIL import Image, ImageTk
-import time
-import threading
+# from tkinter import *
+# from PIL import Image, ImageTk
+
 
 from chess_classes import *
 
@@ -119,6 +117,7 @@ class WindowTracker():
            (self.width != event.width or self.height != event.height)):
             # print(f'{event.height}, {event.width}')
             self.width, self.height = event.width, event.height
+            
 
             # scale = min(self.width, self.height)
             if self.width*(8/12) >= self.height*(8/12):
@@ -179,11 +178,15 @@ def exit_settings(r,s):
     # update_buttons_from_settings(button_setting, button_stop)
     
     s.destroy()
+    for button in lyst_of_every_button:
+        button.config(state=NORMAL)
     r.state('zoomed')
     r.state('normal')
 
-def open_settings(r, rgb_to_hex, exit_settings):
-    settings.open_settings_window(r, rgb_to_hex, exit_settings)
+def open_settings(r, rgb_to_hex, exit_settings, pixel):
+    for button in lyst_of_every_button:
+        button.config(state=DISABLED)
+    settings.open_settings_window(r, rgb_to_hex, exit_settings, pixel)
 
 def update_buttons_from_settings(settings, *args):
         print(f"HERE{settings.size}")
@@ -424,10 +427,16 @@ button_stop.grid(row=0, column=0, sticky="nsew")
 button_stop.bind('<Enter>', lambda event: enter(event, button_stop))             
 button_stop.bind('<Leave>', lambda event: exit_(event, button_stop))
 
-button_setting = Button(left_frame, text='Settings', width=100-2,padx=0, pady=10, border=0, font=('Helvatical bold',int(10)), bg = rgb_to_hex(settings.menu_button_color), fg = 'black', image=pixel, compound="c", command= lambda: open_settings(r, rgb_to_hex, exit_settings)) 
+button_setting = Button(left_frame, text='Settings', width=100-2,padx=0, pady=10, border=0, font=('Helvatical bold',int(10)), bg = rgb_to_hex(settings.menu_button_color), fg = 'black', image=pixel, compound="c", command= lambda: open_settings(r, rgb_to_hex, exit_settings, pixel)) 
 button_setting.grid(row=1, column=0, sticky="nsew") 
 button_setting.bind('<Enter>', lambda event: enter(event, button_setting))             
 button_setting.bind('<Leave>', lambda event: exit_(event, button_setting))
+
+#usefull when i need to modify every single button
+lyst_of_every_button = [button_stop, button_setting]
+for x in board_of_buttons:
+    for y in x:
+        lyst_of_every_button.append(y)
 
 
 r.mainloop() 

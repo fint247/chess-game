@@ -5,16 +5,21 @@
 
 
 from tkinter import *
-import tkinter as tk                                                       
-from PIL import Image, ImageTk
+from tkinter import ttk
+import tkinter as tk                                                      
+from PIL import Image, ImageTk, ImageDraw
+
+
 
 
 class Settings():
     def __init__(self):
         self.size = 40
         self.auto_queen = True #change default to False later
+        self.display = 'window'
 
-    
+
+        
 
         #board interaction colors
         self.dark_square_color = (119, 153, 84)
@@ -36,18 +41,9 @@ class Settings():
         self.top_top_bar_bg_color = (64, 64 ,64)
         self.bottom_bottom_bar_bg_color = (64, 64 ,64)
 
-        self.scale_buttons = .3
-        self.scale_labels = .4
-        self.scale_font = .2
-
     #state = 'normal', 'iconic', 'withdrawn', or 'zoomed'
 
-    def update_setting_variables(self, key, value):
-        self.key = value
-
-
     
-
 
     def change_color(self, color):
         if color == [120,120,120]:
@@ -55,47 +51,69 @@ class Settings():
         elif color == [169,169,169]:
             color = [120,120,120]
         return color[0], color[1], color[2]
+   
 
-    
-
-    def add_setting(self, s, setting_name, num_settings, scale_buttons, scale_labels, scale_font, from_rgb, bg_color, *args):
-        setting_frame = Frame(s, bg = from_rgb(bg_color),bd = 10)
-        setting_frame.pack(side=TOP, fill=X)
-
-        setting_lbl = Label(setting_frame, text = f"{setting_name}: ", width=int(.5*scale_labels*self.size), height=int(.04*self.size),font=('Helvatical bold',int(2*scale_font*self.size)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
-        setting_lbl.pack(side=LEFT)
-        bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
-
-        for arg in args:
-            exec(f"{setting_name}_{arg} = tk.Button(setting_frame, text = '{arg}', width=int(scale_buttons*self.size), height=int(.03*self.size),font=('Helvatical bold',int(scale_font*self.size)), bg = 'teal', fg = 'black', pady = 10,)")# command= lambda: self.update_setting_variables({setting_name},40))")
-            exec(f"{setting_name}_{arg}.pack(side=LEFT, padx=5)")
-
-
-    def open_settings_window(self, r, from_rgb, exit_settings):
-        r.state('iconic')
+    def open_settings_window(self, r, from_rgb, exit_settings, pixel):
+        global pixeling
+        pixeling = PhotoImage(width=1,height=1)
+        # r.state('iconic')
         
         s = tk.Tk() 
-        s.title('Settings') 
-        s.geometry('700x600-0+0')
+        s.title('Settings')
+        if self.display == 'full_screen':
+            s.geometry(f'{r.winfo_width()}x{r.winfo_height()}+{int(r.winfo_rootx())-8}+{int(r.winfo_rooty())}')
+        else:
+            s.geometry(f'{r.winfo_width()}x{r.winfo_height()}+{int(r.winfo_rootx())-8}+{int(r.winfo_rooty())-30}')
+
+        # print(f"root window = {int(r.winfo_rootx())}+{int(r.winfo_rooty())}")
+        # print(f"settings window = {int(s.winfo_rootx())}+{int(s.winfo_rooty())}")
+            
         s.config(bg = 'black')
-        # s.overrideredirect(True)
 
         s.protocol("WM_DELETE_WINDOW", lambda: exit_settings(r,s))
 
         bg_color = [169,169,169]
 
-        main_frame = Label(s, bg = from_rgb((100,200,100)),bd = 10)
-        main_frame.pack(side=TOP, fill=X)
 
-        exit_button = Button(main_frame, text='Exit', width=7, height=3,font=('Helvatical bold',20), bg = 'teal', fg = 'black', command= lambda: exit_settings(r,s)) 
+        top_frame = Label(s, bg = from_rgb((100,200,100)),bd = 10)
+        top_frame.pack(side=TOP, fill=X)
+
+        exit_button = Button(top_frame, text='Exit', width=7, height=3,font=('Helvatical bold',20), bg = 'teal', fg = 'black', command= lambda: exit_settings(r,s)) 
         exit_button.pack(fill=X) 
+
+        # Create a main frame
+        over_arching_main_frame = Frame(s)
+        over_arching_main_frame.pack(fill=BOTH, expand=1)
+
+        # Create a canvas
+        my_canvas = Canvas(over_arching_main_frame)
+        my_canvas.pack(side=LEFT, fill=BOTH, expand=1)
+
+        #Add a scrollbar to the canvas
+        my_scrollbar = ttk.Scrollbar(over_arching_main_frame, orient=VERTICAL, command=my_canvas.yview)
+        my_scrollbar.pack(side=RIGHT, fill=Y)
+
+        #configure the canvas
+        my_canvas.configure(yscrollcommand=my_scrollbar.set)
+        my_canvas.bind('<Configure>', lambda e: my_canvas.configure(scrollregion=my_canvas.bbox("all")))
+
+        # create another frame inside the canvas
+        main_frame = Frame(my_canvas)
+        main_frame.pack(fill=BOTH, expand=1)
+
+        # add that new frame to a window in the canvas
+        # print(settings_window.width, settings_window.height)
+
+        my_canvas.create_window((0, 0), window=main_frame, anchor="nw", tags="main_frame_tag")
+        # my_canvas.itemconfig("main_frame_tag", width=1, height=1)
+
+
+        settings_window = SettingsWindowTracker(s, my_canvas)
         
-        # self.add_setting(s,'auto_queen', 3, self.scale_buttons, self.scale_labels, self.scale_font, from_rgb, bg_color)
-        # self.add_setting(s,'full_screen', 3, self.scale_buttons, self.scale_labels, self.scale_font, from_rgb, bg_color)
-        # self.add_setting(s,'color', 3, self.scale_buttons, self.scale_labels, self.scale_font, from_rgb, bg_color)
+        
+        
 
-
-        setting_frame1 = Frame(s, bg = from_rgb(bg_color),bd = 10)
+        setting_frame1 = Frame(main_frame, bg = from_rgb(bg_color),bd = 10)
         setting_frame1.pack(side=TOP, fill=X)
         setting_lbl = Label(setting_frame1, text = f"{'AUTO QUEEN'}: ", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
         setting_lbl.pack(side=LEFT)
@@ -106,9 +124,9 @@ class Settings():
         auto_queen_b2.pack(side=LEFT, padx=5)
 
 
-        setting_frame2 = Frame(s, bg = from_rgb(bg_color),bd = 10)
+        setting_frame2 = Frame(main_frame, bg = from_rgb(bg_color),bd = 10)
         setting_frame2.pack(side=TOP, fill=X)
-        setting_lbl = Label(setting_frame2, text = f"{'WINDOWED'}: ", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
+        setting_lbl = Label(setting_frame2, text = f"{'WINDOWED'}: ", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)#, image=pixeling, compound="c")
         setting_lbl.pack(side=LEFT)
         bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
         windowed_b1 = tk.Button(setting_frame2, text = 'Window', width=int(9), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10,)
@@ -117,9 +135,71 @@ class Settings():
         windowed_b2.pack(side=LEFT, padx=5)
 
 
-        setting_frame3 = Frame(s, bg = from_rgb(bg_color),bd = 10)
+        setting_frame3 = Frame(main_frame, bg = from_rgb(bg_color),bd = 10)
         setting_frame3.pack(side=TOP, fill=X)
 
         setting_lbl = Label(setting_frame3, text = f"{'COLOR'}: ", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
         setting_lbl.pack(side=LEFT)
         bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
+
+        
+
+
+
+
+
+        setting_frame4 = Frame(main_frame, bg = from_rgb(bg_color),bd = 10)
+        setting_frame4.pack(side=TOP, fill=X)
+
+        setting_lbl = Label(setting_frame4, text = f"{'one'}: ", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
+        setting_lbl.pack(side=LEFT)
+        bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
+
+        print(setting_frame4.winfo_reqheight())
+
+        setting_frame5= Frame(main_frame, bg = from_rgb(bg_color),bd = 10)
+        setting_frame5.pack(side=TOP, fill=X)
+
+        setting_lbl = Label(setting_frame5, text = f"{'two'}: ", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
+        setting_lbl.pack(side=LEFT)
+        bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
+
+
+        setting_frame6 = Frame(main_frame, bg = from_rgb(bg_color),bd = 10)
+        setting_frame6.pack(side=TOP, fill=X)
+
+        setting_lbl = Label(setting_frame6, text = f"{'three'}: ", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
+        setting_lbl.pack(side=LEFT)
+        bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
+
+
+        setting_frame7 = Frame(main_frame, bg = from_rgb(bg_color),bd = 10)
+        setting_frame7.pack(side=TOP, fill=X)
+
+        setting_lbl = Label(setting_frame7, text = f"{'Done'}: ", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
+        setting_lbl.pack(side=LEFT)
+        bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
+
+
+class SettingsWindowTracker():
+    """ windows resize event tracker """
+
+    def __init__(self, root, my_canvas):
+        self.root = root
+        self.width, self.height = root.winfo_width(), root.winfo_height()
+        self._func_id = None
+        
+
+        self._func_id = self.root.bind("<Configure>", lambda event: self.resize(event, my_canvas))
+
+
+
+    def resize(self, event, my_canvas):
+        if(event.widget == self.root and
+        (self.width != event.width or self.height != event.height)):
+            self.width, self.height = event.width, event.height
+            # print(f'{self.height}, {self.width}')
+
+            #calculate what the height should be depending on how many widgets i put in
+            my_canvas.itemconfig("main_frame_tag", width=self.width, height=self.height)
+            
