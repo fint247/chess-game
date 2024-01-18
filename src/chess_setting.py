@@ -42,15 +42,6 @@ class Settings():
         self.bottom_bottom_bar_bg_color = (64, 64 ,64)
 
     #state = 'normal', 'iconic', 'withdrawn', or 'zoomed'
-
-    
-
-    def change_color(self, color):
-        if color == [120,120,120]:
-            color = [169,169,169]
-        elif color == [169,169,169]:
-            color = [120,120,120]
-        return color[0], color[1], color[2]
    
 
     def open_settings_window(self, r, from_rgb, exit_settings, pixel):
@@ -58,7 +49,7 @@ class Settings():
         pixeling = PhotoImage(width=1,height=1)
         # r.state('iconic')
         
-        s = tk.Tk() 
+        s = tk.Toplevel(r) 
         s.title('Settings')
         if self.display == 'full_screen':
             s.geometry(f'{r.winfo_width()}x{r.winfo_height()}+{int(r.winfo_rootx())-8}+{int(r.winfo_rooty())}')
@@ -78,7 +69,7 @@ class Settings():
         top_frame = Label(s, bg = from_rgb((100,200,100)),bd = 10)
         top_frame.pack(side=TOP, fill=X)
 
-        exit_button = Button(top_frame, text='Exit', width=7, height=3,font=('Helvatical bold',20), bg = 'teal', fg = 'black', command= lambda: exit_settings(r,s)) 
+        exit_button = Button(top_frame, text='Save and Exit', width=7, height=3,font=('Helvatical bold',20), bg = 'teal', fg = 'black', command= lambda: exit_settings(r,s)) 
         exit_button.pack(fill=X) 
 
         # Create a main frame
@@ -108,7 +99,7 @@ class Settings():
         # my_canvas.itemconfig("main_frame_tag", width=1, height=1)
 
 
-        settings_window = SettingsWindowTracker(s, my_canvas)
+        settings_window = SettingsWindowTracker(s, my_canvas, main_frame)
         
         
         
@@ -118,9 +109,9 @@ class Settings():
         setting_lbl = Label(setting_frame1, text = f"{'AUTO QUEEN'}: ", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
         setting_lbl.pack(side=LEFT)
         bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
-        auto_queen_b1 = tk.Button(setting_frame1, text = 'On', width=int(9), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10,)
+        auto_queen_b1 = tk.Button(setting_frame1, text = 'On', width=int(9), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10, command=lambda: self.change_auto_queen(True))
         auto_queen_b1.pack(side=LEFT, padx=5)
-        auto_queen_b2 = tk.Button(setting_frame1, text = 'Off', width=int(9), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10,)
+        auto_queen_b2 = tk.Button(setting_frame1, text = 'Off', width=int(9), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10, command=lambda: self.change_auto_queen(False))
         auto_queen_b2.pack(side=LEFT, padx=5)
 
 
@@ -129,9 +120,9 @@ class Settings():
         setting_lbl = Label(setting_frame2, text = f"{'WINDOWED'}: ", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)#, image=pixeling, compound="c")
         setting_lbl.pack(side=LEFT)
         bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
-        windowed_b1 = tk.Button(setting_frame2, text = 'Window', width=int(9), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10,)
+        windowed_b1 = tk.Button(setting_frame2, text = 'Window', width=int(9), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10, command=lambda: self.change_display('window'))
         windowed_b1.pack(side=LEFT, padx=5)
-        windowed_b2 = tk.Button(setting_frame2, text = 'Full Screen', width=int(9), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10,)
+        windowed_b2 = tk.Button(setting_frame2, text = 'Full Screen', width=int(9), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10, command=lambda: self.change_display('full_screen'))
         windowed_b2.pack(side=LEFT, padx=5)
 
 
@@ -154,8 +145,6 @@ class Settings():
         setting_lbl = Label(setting_frame4, text = f"{'one'}: ", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
         setting_lbl.pack(side=LEFT)
         bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
-
-        print(setting_frame4.winfo_reqheight())
 
         setting_frame5= Frame(main_frame, bg = from_rgb(bg_color),bd = 10)
         setting_frame5.pack(side=TOP, fill=X)
@@ -181,25 +170,45 @@ class Settings():
         bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
 
 
+    def change_color(self, color):
+        if color == [120,120,120]:
+            color = [169,169,169]
+        elif color == [169,169,169]:
+            color = [120,120,120]
+        return color[0], color[1], color[2]
+
+    def change_auto_queen(self, on_off):
+        self.auto_queen = on_off
+        print(self.auto_queen)
+
+    def change_display(self, display_type):
+        if display_type == "full_screen":
+            self.display = 'full_screen'
+        elif display_type == "window":
+            self.display = 'window'
+        print(self.display)
+        
+
+
 class SettingsWindowTracker():
     """ windows resize event tracker """
 
-    def __init__(self, root, my_canvas):
+    def __init__(self, root, my_canvas, main_frame):
         self.root = root
         self.width, self.height = root.winfo_width(), root.winfo_height()
         self._func_id = None
         
 
-        self._func_id = self.root.bind("<Configure>", lambda event: self.resize(event, my_canvas))
+        self._func_id = self.root.bind("<Configure>", lambda event: self.resize(event, my_canvas, main_frame))
 
 
 
-    def resize(self, event, my_canvas):
+    def resize(self, event, my_canvas, main_frame):
         if(event.widget == self.root and
         (self.width != event.width or self.height != event.height)):
             self.width, self.height = event.width, event.height
             # print(f'{self.height}, {self.width}')
 
             #calculate what the height should be depending on how many widgets i put in
-            my_canvas.itemconfig("main_frame_tag", width=self.width, height=self.height)
+            my_canvas.itemconfig("main_frame_tag", width=self.width, height=main_frame.winfo_reqheight())
             

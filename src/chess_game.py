@@ -1,10 +1,12 @@
 """
+--HOME PAGE--
 ideas to add:
-flip board (home page)
-play computer(home page)
-play online (home page)
-play local (home page)
+flip board 
+play computer
+play online 
+play local 
 
+--SETTINGS PAGE--
 full screen exclusive - windowed (settings)
 auto queen (settings)
 click show legal moves - hover show legal moves - dont show legal moves (settings)
@@ -24,7 +26,7 @@ from chess_classes import *
 
 r = tk.Tk() 
 r.title('Chess') 
-r.geometry('800x600-0+0')
+r.geometry('800x600+0+0')
 r.config(bg = 'white')
 
 # r.overrideredirect(True)
@@ -175,29 +177,33 @@ def show_legal_moves(board, position_start):
                 board_of_buttons[x][y].config(image=board[x][y].show_legal_move_img)
     
 def exit_settings(r,s):
-    # update_buttons_from_settings(button_setting, button_stop)
-    
+    if settings.display == 'full_screen':
+        r.overrideredirect(True)
+        r.state('zoomed')
+        # r.geometry(f'{s.winfo_width()}x{s.winfo_height()}+{int(s.winfo_rootx())-8}+{int(s.winfo_rooty())}')
+    else:
+        r.overrideredirect(False)
+        # r.geometry('500x500+300+0')
+        print(f'{s.winfo_width()}x{s.winfo_height()}+{int(s.winfo_rootx())}+{int(s.winfo_rooty())}')
+        print(s.geometry())
+        r.geometry(s.geometry())
+        print(f'\n{r.winfo_width()}x{r.winfo_height()}+{int(r.winfo_rootx())}+{int(r.winfo_rooty())}')
+        print(r.geometry())
+        r.lift()
+        r.state('normal')
     s.destroy()
     for button in lyst_of_every_button:
         button.config(state=NORMAL)
-    r.state('zoomed')
-    r.state('normal')
+
+
+        
+    
 
 def open_settings(r, rgb_to_hex, exit_settings, pixel):
     for button in lyst_of_every_button:
         button.config(state=DISABLED)
     settings.open_settings_window(r, rgb_to_hex, exit_settings, pixel)
 
-def update_buttons_from_settings(settings, *args):
-        print(f"HERE{settings.size}")
-        for arg in args:
-            arg.config(width=int(.25*1.3*int(settings.size)), height=int(.1*1.3*int(settings.size)),font=('Helvatical bold',int(.2*int(settings.size))), bg = 'teal', fg = 'black')
-            arg.config(width=int(.25*1.3*int(settings.size)), height=int(.1*1.3*int(settings.size)),font=('Helvatical bold',int(.2*int(settings.size))), bg = 'teal', fg = 'black')
-            
-        for x in range(8):
-            for y in range(8):
-                board_of_buttons[x][y].config(image = board[x-1][y-1].image)
-                
 def check_if_promoting():
     if board[position_start[0]][position_start[1]].name == 'white_pawn' or board[position_start[0]][position_start[1]].name == 'black_pawn':
         if board[position_start[0]][position_start[1]].promoted == True:
@@ -205,7 +211,8 @@ def check_if_promoting():
                 board[position_start[0]][position_start[1]] = Queen(board[position_start[0]][position_start[1]].color)
             else:
                 #open promotion window Here
-                pass
+                board[position_start[0]][position_start[1]] = Queen(board[position_start[0]][position_start[1]].color)
+                print("NO INSTRUCTION FOR NON AUTO QUEEN PROMOTION")
 
 def check_if_castling():
         #if your moving a king piece 2 square to either side
