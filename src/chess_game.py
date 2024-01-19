@@ -26,7 +26,7 @@ from chess_classes import *
 
 r = tk.Tk() 
 r.title('Chess') 
-r.geometry('800x600+0+0')
+r.geometry('800x600-0+0')
 r.config(bg = 'white')
 
 # r.overrideredirect(True)
@@ -176,24 +176,28 @@ def show_legal_moves(board, position_start):
             if board[position_start[0]][position_start[1]].is_legal(whites_turn, board, position_start, temp_position_end) == True:
                 board_of_buttons[x][y].config(image=board[x][y].show_legal_move_img)
     
-def exit_settings(r,s):
+def exit_settings(r, s):
+    r.overrideredirect(settings.display == 'full_screen')
     if settings.display == 'full_screen':
-        r.overrideredirect(True)
+        # Set the main window's geometry directly for full-screen
+        r.geometry(f'{s.winfo_width()}x{s.winfo_height()}+0+0')
         r.state('zoomed')
-        # r.geometry(f'{s.winfo_width()}x{s.winfo_height()}+{int(s.winfo_rootx())-8}+{int(s.winfo_rooty())}')
     else:
-        r.overrideredirect(False)
-        # r.geometry('500x500+300+0')
-        print(f'{s.winfo_width()}x{s.winfo_height()}+{int(s.winfo_rootx())}+{int(s.winfo_rooty())}')
-        print(s.geometry())
-        r.geometry(s.geometry())
-        print(f'\n{r.winfo_width()}x{r.winfo_height()}+{int(r.winfo_rootx())}+{int(r.winfo_rooty())}')
-        print(r.geometry())
-        r.lift()
+        # Set the main window's geometry for windowed mode
+        print(f"{s.geometry()=}")
+        print(f"{r.geometry()=}")
+        r.geometry(str(s.geometry()))
+        print(f"{r.geometry()=}")
         r.state('normal')
-    s.destroy()
+        print(f"{r.geometry()=}")
+    print(f"{r.geometry()=}")
+    r.lift()
+    print(f"{r.geometry()=}")
     for button in lyst_of_every_button:
         button.config(state=NORMAL)
+    print(f"{r.geometry()=}")
+    s.destroy()
+    print(f"{r.geometry()=}")
 
 
         
