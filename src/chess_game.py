@@ -24,13 +24,13 @@ show/hide opponents colors/skins (maybe add to settings)
 from chess_classes import *
 
 
-r = tk.Tk() 
-r.title('Chess') 
-r.geometry('800x600-0+0')
-r.config(bg = 'white')
+root = tk.Tk() 
+root.title('Chess') 
+root.geometry('800x600-0+0')
+root.config(bg = 'grey')
 
-# r.overrideredirect(True)
-# r.state('zoomed')
+# root.overrideredirect(True)
+# root.state('zoomed')
 
 position_start = []
 position_end = []
@@ -177,36 +177,23 @@ def show_legal_moves(board, position_start):
                 board_of_buttons[x][y].config(image=board[x][y].show_legal_move_img)
     
 def exit_settings(r, s):
-    r.overrideredirect(settings.display == 'full_screen')
+    root.overrideredirect(settings.display == 'full_screen')
     if settings.display == 'full_screen':
-        # Set the main window's geometry directly for full-screen
-        r.geometry(f'{s.winfo_width()}x{s.winfo_height()}+0+0')
-        r.state('zoomed')
-    else:
-        # Set the main window's geometry for windowed mode
-        print(f"{s.geometry()=}")
-        print(f"{r.geometry()=}")
-        r.geometry(str(s.geometry()))
-        print(f"{r.geometry()=}")
-        r.state('normal')
-        print(f"{r.geometry()=}")
-    print(f"{r.geometry()=}")
-    r.lift()
-    print(f"{r.geometry()=}")
-    for button in lyst_of_every_button:
+        root.state('zoomed')
+    
+    r.lift(s)
+
+    for button in lyst_of_game_buttons:
         button.config(state=NORMAL)
-    print(f"{r.geometry()=}")
-    s.destroy()
-    print(f"{r.geometry()=}")
-
-
-        
     
 
-def open_settings(r, rgb_to_hex, exit_settings, pixel):
-    for button in lyst_of_every_button:
+def open_settings(r, s, lyst_of_game_buttons, button_stop):
+    for button in lyst_of_game_buttons:    
         button.config(state=DISABLED)
-    settings.open_settings_window(r, rgb_to_hex, exit_settings, pixel)
+    button_stop.config(state=NORMAL)
+
+    s.lift(r)
+    
 
 def check_if_promoting():
     if board[position_start[0]][position_start[1]].name == 'white_pawn' or board[position_start[0]][position_start[1]].name == 'black_pawn':
@@ -379,11 +366,21 @@ def pressed(a, b, position_start, position_end, board):
 
 
 #tracks the screen size
-tracker = WindowTracker(r)
+tracker = WindowTracker(root)
 tracker.bind_config(board)
 
 #used to make buttons with text resize according to pixels not text
 pixel = PhotoImage(width=1, height=1)
+
+#make the main frame (r) for the game
+r = tk.Frame(root, bg="blue")
+r.place(relwidth=1, relheight=1)  # Filling the entire window
+
+#initialize settings Frame
+s = settings.init_settings_frame(root, r, rgb_to_hex, exit_settings, pixel)
+
+#moves the settings frame behind the game frame
+r.lift(s)
 
 #game is made of 3 main frames: left, right, and center
 left_frame = Frame(r, bg = rgb_to_hex(settings.left_side_bar_bg_color))
@@ -433,22 +430,22 @@ bottom_bar = Label(center_frame, bg = rgb_to_hex(settings.bottom_bottom_bar_bg_c
 bottom_bar.grid(column=0, row=9, columnspan=8, sticky=NSEW)
 
 #stuff inside left side bar: exit game, setting, and ...
-button_stop = Button(left_frame, text='Exit',width=100-2,padx=0, pady=10, border=0, font=('Helvatical bold',int(10)), bg = rgb_to_hex(settings.menu_button_color), fg = 'black', image=pixel, compound="c", command=r.destroy) 
+button_stop = Button(left_frame, text='Exit',width=100-2,padx=0, pady=10, border=0, font=('Helvatical bold',int(10)), bg = rgb_to_hex(settings.menu_button_color), fg = 'black', image=pixel, compound="c", command=root.destroy) 
 button_stop.grid(row=0, column=0, sticky="nsew") 
 button_stop.bind('<Enter>', lambda event: enter(event, button_stop))             
 button_stop.bind('<Leave>', lambda event: exit_(event, button_stop))
 
-button_setting = Button(left_frame, text='Settings', width=100-2,padx=0, pady=10, border=0, font=('Helvatical bold',int(10)), bg = rgb_to_hex(settings.menu_button_color), fg = 'black', image=pixel, compound="c", command= lambda: open_settings(r, rgb_to_hex, exit_settings, pixel)) 
+button_setting = Button(left_frame, text='Settings', width=100-2,padx=0, pady=10, border=0, font=('Helvatical bold',int(10)), bg = rgb_to_hex(settings.menu_button_color), fg = 'black', image=pixel, compound="c", command= lambda: open_settings(r,s,lyst_of_game_buttons, button_stop)) 
 button_setting.grid(row=1, column=0, sticky="nsew") 
 button_setting.bind('<Enter>', lambda event: enter(event, button_setting))             
 button_setting.bind('<Leave>', lambda event: exit_(event, button_setting))
 
 #usefull when i need to modify every single button
-lyst_of_every_button = [button_stop, button_setting]
+lyst_of_game_buttons = [button_stop, button_setting]
 for x in board_of_buttons:
     for y in x:
-        lyst_of_every_button.append(y)
+        lyst_of_game_buttons.append(y)
 
 
-r.mainloop() 
+root.mainloop() 
 

@@ -20,6 +20,7 @@ class Settings():
 
 
         
+        """=====COLOR SETTINGS===="""
 
         #board interaction colors
         self.dark_square_color = (119, 153, 84)
@@ -44,24 +45,12 @@ class Settings():
     #state = 'normal', 'iconic', 'withdrawn', or 'zoomed'
    
 
-    def open_settings_window(self, r, from_rgb, exit_settings, pixel):
-        global pixeling
-        pixeling = PhotoImage(width=1,height=1)
-        # r.state('iconic')
-        
-        s = tk.Toplevel(r) 
-        s.title('Settings')
-        if self.display == 'full_screen':
-            s.geometry(f'{r.winfo_width()}x{r.winfo_height()}+{int(r.winfo_rootx())-8}+{int(r.winfo_rooty())}')
-        else:
-            s.geometry(f'{r.winfo_width()}x{r.winfo_height()}+{int(r.winfo_rootx())-8}+{int(r.winfo_rooty())-30}')
+    def init_settings_frame(self, root, r, from_rgb, exit_settings, pixel):        
+        s = Frame(root, bg = 'black')
+        s.place(relwidth=1, relheight=1)
+    
 
-        # print(f"root window = {int(r.winfo_rootx())}+{int(r.winfo_rooty())}")
-        # print(f"settings window = {int(s.winfo_rootx())}+{int(s.winfo_rooty())}")
-            
-        s.config(bg = 'black')
-
-        s.protocol("WM_DELETE_WINDOW", lambda: exit_settings(r,s))
+        # s.protocol("WM_DELETE_WINDOW", lambda: exit_settings(r,s))
 
         bg_color = [169,169,169]
 
@@ -169,6 +158,8 @@ class Settings():
         setting_lbl.pack(side=LEFT)
         bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
 
+        return s
+
 
     def change_color(self, color):
         if color == [120,120,120]:
@@ -195,10 +186,7 @@ class SettingsWindowTracker():
 
     def __init__(self, root, my_canvas, main_frame):
         self.root = root
-        self.width, self.height = root.winfo_width(), root.winfo_height()
-        self._func_id = None
-        
-
+        self.width, self.height = root.winfo_width(), root.winfo_height()        
         self._func_id = self.root.bind("<Configure>", lambda event: self.resize(event, my_canvas, main_frame))
 
 
