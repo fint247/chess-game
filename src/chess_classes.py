@@ -7,9 +7,6 @@ from chess_setting import *
 settings = Settings()
 
 
-
-
-
 class Piece():
     def __init__(self, color):
         self.ampasant = False

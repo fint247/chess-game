@@ -13,6 +13,14 @@ click show legal moves - hover show legal moves - dont show legal moves (setting
 auto flip (settings - local games only)
 show/hide opponents colors/skins (maybe add to settings)
 
+--STORE DATA--
+username
+password
+email/phone number
+all of their settings (color, display prefrence, etc)
+game history
+
+
 """
 
 

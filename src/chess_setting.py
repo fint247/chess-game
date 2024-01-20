@@ -4,10 +4,21 @@
 #add verification when person enters email,phone number, or disord
 
 
-from tkinter import *
-from tkinter import ttk
-import tkinter as tk                                                      
-from PIL import Image, ImageTk, ImageDraw
+"""
+Saturation:
+New Value = Current Value (+) or (-) (Saturation Percentage * (Max Value - Current Value))
+
+Brightness:
+New Value = Current Value (+) or (-) (Brightness Percentage * (Max Value - Current Value))
+
+
+"""
+
+from chess_color_picker import *
+
+
+
+
 
 
 
@@ -41,6 +52,9 @@ class Settings():
         self.right_side_bar_bg_color = (128, 128, 128)
         self.top_top_bar_bg_color = (64, 64 ,64)
         self.bottom_bottom_bar_bg_color = (64, 64 ,64)
+        
+        #settings Colors
+        self.setting_header = (220,100,170)
 
     #state = 'normal', 'iconic', 'withdrawn', or 'zoomed'
    
@@ -115,48 +129,58 @@ class Settings():
         windowed_b2.pack(side=LEFT, padx=5)
 
 
-        setting_frame3 = Frame(main_frame, bg = from_rgb(bg_color),bd = 10)
+        setting_frame3 = Frame(main_frame, bg = from_rgb(self.setting_header),bd = 10)
         setting_frame3.pack(side=TOP, fill=X)
-
-        setting_lbl = Label(setting_frame3, text = f"{'COLOR'}: ", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
-        setting_lbl.pack(side=LEFT)
-        bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
-
+        setting_lbl = Label(setting_frame3, text = f"COLOR SETTINGS", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(self.setting_header),fg = 'black', pady = 10)
+        setting_lbl.pack()
         
 
-
-
-
-
+        
         setting_frame4 = Frame(main_frame, bg = from_rgb(bg_color),bd = 10)
         setting_frame4.pack(side=TOP, fill=X)
-
-        setting_lbl = Label(setting_frame4, text = f"{'one'}: ", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
+        setting_lbl = Label(setting_frame4, text = f"light square", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
         setting_lbl.pack(side=LEFT)
         bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
 
-        setting_frame5= Frame(main_frame, bg = from_rgb(bg_color),bd = 10)
-        setting_frame5.pack(side=TOP, fill=X)
 
-        setting_lbl = Label(setting_frame5, text = f"{'two'}: ", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
+        setting_frame5 = Frame(main_frame, bg = from_rgb(bg_color),bd = 10)
+        setting_frame5.pack(side=TOP, fill=X)
+        setting_lbl = Label(setting_frame5, text = f"dark square", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
         setting_lbl.pack(side=LEFT)
         bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
 
 
         setting_frame6 = Frame(main_frame, bg = from_rgb(bg_color),bd = 10)
         setting_frame6.pack(side=TOP, fill=X)
-
-        setting_lbl = Label(setting_frame6, text = f"{'three'}: ", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
+        setting_lbl = Label(setting_frame6, text = f"highlight square", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
         setting_lbl.pack(side=LEFT)
         bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
 
 
         setting_frame7 = Frame(main_frame, bg = from_rgb(bg_color),bd = 10)
         setting_frame7.pack(side=TOP, fill=X)
-
-        setting_lbl = Label(setting_frame7, text = f"{'Done'}: ", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
+        setting_lbl = Label(setting_frame7, text = f"primary move", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
         setting_lbl.pack(side=LEFT)
         bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
+
+
+        setting_frame8 = Frame(main_frame, bg = from_rgb(bg_color),bd = 10)
+        setting_frame8.pack(side=TOP, fill=X)
+        setting_lbl = Label(setting_frame8, text = f"secondary move", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
+        setting_lbl.pack(side=LEFT)
+        custum_color_b5 = Button(setting_frame8, text = 'custom color', width=int(9), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10)
+        custum_color_b5.config(command=lambda: create_color_picker_frame(root, self.secondary_move_color, custum_color_b5))
+        custum_color_b5.pack(side = RIGHT)
+        bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
+
+
+
+
+        # dark_square color
+        # light_square color
+        # highlight_square color
+        # primary_move color
+        # secondary_move color
 
         return s
 
