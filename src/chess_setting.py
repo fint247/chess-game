@@ -141,6 +141,9 @@ class Settings():
         setting_lbl = Label(setting_frame4, text = f"light square", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
         setting_lbl.pack(side=LEFT)
         bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
+        custum_color_b1 = Button(setting_frame4, text = 'custom color', width=int(11), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10)
+        custum_color_b1.config(command=lambda: create_color_picker_frame(root, self.light_square_color, custum_color_b1))
+        custum_color_b1.pack(side = RIGHT)
 
 
         setting_frame5 = Frame(main_frame, bg = from_rgb(bg_color),bd = 10)
@@ -148,6 +151,9 @@ class Settings():
         setting_lbl = Label(setting_frame5, text = f"dark square", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
         setting_lbl.pack(side=LEFT)
         bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
+        custum_color_b2 = Button(setting_frame5, text = 'custom color', width=int(11), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10)
+        custum_color_b2.config(command=lambda: create_color_picker_frame(root, self.dark_square_color, custum_color_b2))
+        custum_color_b2.pack(side = RIGHT)
 
 
         setting_frame6 = Frame(main_frame, bg = from_rgb(bg_color),bd = 10)
@@ -155,6 +161,9 @@ class Settings():
         setting_lbl = Label(setting_frame6, text = f"highlight square", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
         setting_lbl.pack(side=LEFT)
         bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
+        custum_color_b3 = Button(setting_frame6, text = 'custom color', width=int(11), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10)
+        custum_color_b3.config(command=lambda: create_color_picker_frame(root, self.highlight_square_color, custum_color_b3))
+        custum_color_b3.pack(side = RIGHT)
 
 
         setting_frame7 = Frame(main_frame, bg = from_rgb(bg_color),bd = 10)
@@ -162,13 +171,16 @@ class Settings():
         setting_lbl = Label(setting_frame7, text = f"primary move", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
         setting_lbl.pack(side=LEFT)
         bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
+        custum_color_b4 = Button(setting_frame7, text = 'custom color', width=int(11), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10)
+        custum_color_b4.config(command=lambda: create_color_picker_frame(root, self.primary_move_color, custum_color_b4))
+        custum_color_b4.pack(side = RIGHT)
 
 
         setting_frame8 = Frame(main_frame, bg = from_rgb(bg_color),bd = 10)
         setting_frame8.pack(side=TOP, fill=X)
         setting_lbl = Label(setting_frame8, text = f"secondary move", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
         setting_lbl.pack(side=LEFT)
-        custum_color_b5 = Button(setting_frame8, text = 'custom color', width=int(9), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10)
+        custum_color_b5 = Button(setting_frame8, text = 'custom color', width=int(11), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10)
         custum_color_b5.config(command=lambda: create_color_picker_frame(root, self.secondary_move_color, custum_color_b5))
         custum_color_b5.pack(side = RIGHT)
         bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
