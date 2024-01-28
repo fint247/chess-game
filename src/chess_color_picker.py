@@ -9,7 +9,7 @@ from colorsys import hls_to_rgb as convert_hls_to_rgb
 
 def create_color_picker_frame(master, setting, button):
     color_picker_frame = Frame(master)
-    color_picker_frame.place(x=50,y=50)
+    color_picker_frame.place(x=100,y=100)
 
     hue_var = tk.DoubleVar()
     saturation_var = tk.DoubleVar()
@@ -23,19 +23,19 @@ def create_color_picker_widgets(frame, hue_var, saturation_var, lightness_var, s
     color_preview.grid(row=3, columnspan=2, padx=10, pady=10)
 
     # Hue Scale
-    hue_label = Label(frame, text="Hue:")
+    hue_label = ttk.Label(frame, text="Hue:")
     hue_label.grid(row=0, column=0, padx=10, pady=10)
     hue_scale = ttk.Scale(frame, from_=0, to=1, variable=hue_var, orient="horizontal", command=lambda _: update_color(frame, hue_var, saturation_var, lightness_var, color_preview))
     hue_scale.grid(row=0, column=1, padx=10, pady=10)
 
     # Saturation Scale
-    saturation_label = Label(frame, text="Saturation:")
+    saturation_label = ttk.Label(frame, text="Saturation:")
     saturation_label.grid(row=1, column=0, padx=10, pady=10)
     saturation_scale = ttk.Scale(frame, from_=0, to=1, variable=saturation_var, orient="horizontal", command=lambda _: update_color(frame, hue_var, saturation_var, lightness_var, color_preview))
     saturation_scale.grid(row=1, column=1, padx=10, pady=10)
 
     # Lightness Scale
-    lightness_label = Label(frame, text="Lightness:")
+    lightness_label = ttk.Label(frame, text="Lightness:")
     lightness_label.grid(row=2, column=0, padx=10, pady=10)
     lightness_scale = ttk.Scale(frame, from_=0, to=1, variable=lightness_var, orient="horizontal", command=lambda _: update_color(frame, hue_var, saturation_var, lightness_var, color_preview))
     lightness_scale.grid(row=2, column=1, padx=10, pady=10)
