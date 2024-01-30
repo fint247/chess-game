@@ -34,7 +34,7 @@ from chess_classes import *
 
 root = tk.Tk() 
 root.title('Chess') 
-root.geometry('800x600-0+0')
+root.geometry('900x600-0+0')
 root.config(bg = 'grey')
 
 # root.overrideredirect(True)
@@ -193,6 +193,8 @@ def exit_settings(r, s):
 
     for button in lyst_of_game_buttons:
         button.config(state=NORMAL)
+
+    reset_board_bg()
     
 
 def open_settings(r, s, lyst_of_game_buttons, button_stop):

@@ -7,38 +7,38 @@ from colorsys import hls_to_rgb as convert_hls_to_rgb
 
 
 
-def create_color_picker_frame(master, setting, button):
-    color_picker_frame = Frame(master)
-    color_picker_frame.place(x=100,y=100)
+def create_color_picker_frame(master, setting, attribute):
+    color_picker_frame = Frame(master, bg=master['bg'])
+    color_picker_frame.pack(side=RIGHT)
 
-    hue_var = tk.DoubleVar()
-    saturation_var = tk.DoubleVar()
-    lightness_var = tk.DoubleVar()
+    hue_var = tk.DoubleVar(value=0.5)
+    saturation_var = tk.DoubleVar(value=1)
+    lightness_var = tk.DoubleVar(value=0.5)
 
-    create_color_picker_widgets(color_picker_frame, hue_var, saturation_var, lightness_var, setting, button)
+    create_color_picker_widgets(color_picker_frame, hue_var, saturation_var, lightness_var, setting, attribute)
 
-def create_color_picker_widgets(frame, hue_var, saturation_var, lightness_var, setting, button):
+def create_color_picker_widgets(frame, hue_var, saturation_var, lightness_var, setting, attribute):
     # Color Preview
-    color_preview = tk.Button(frame, text=f"move sliders\nfor custom\ncolor", bg="light grey", width=20, height=5, command= lambda: get_rgb(frame, hue_var, saturation_var, lightness_var, setting, button))
-    color_preview.grid(row=3, columnspan=2, padx=10, pady=10)
+    color_preview = tk.Button(frame, text=f"use custom\ncolor", bg="light grey", width=20, height=5, command= lambda: get_rgb(frame, hue_var, saturation_var, lightness_var, setting, attribute))
+    color_preview.grid(row=0, rowspan=2, column=3, padx=(5,15), pady=2)
 
     # Hue Scale
-    hue_label = ttk.Label(frame, text="Hue:")
-    hue_label.grid(row=0, column=0, padx=10, pady=10)
+    hue_label = Label(frame, text="Hue:", bg=frame['bg'])
+    hue_label.grid(row=0, column=0, padx=10, pady=2)
     hue_scale = ttk.Scale(frame, from_=0, to=1, variable=hue_var, orient="horizontal", command=lambda _: update_color(frame, hue_var, saturation_var, lightness_var, color_preview))
-    hue_scale.grid(row=0, column=1, padx=10, pady=10)
+    hue_scale.grid(row=1, column=0, padx=10, pady=2)
 
     # Saturation Scale
-    saturation_label = ttk.Label(frame, text="Saturation:")
-    saturation_label.grid(row=1, column=0, padx=10, pady=10)
+    saturation_label = Label(frame, text="Saturation:", bg=frame['bg'])
+    saturation_label.grid(row=0, column=1, padx=10, pady=2)
     saturation_scale = ttk.Scale(frame, from_=0, to=1, variable=saturation_var, orient="horizontal", command=lambda _: update_color(frame, hue_var, saturation_var, lightness_var, color_preview))
-    saturation_scale.grid(row=1, column=1, padx=10, pady=10)
+    saturation_scale.grid(row=1, column=1, padx=10, pady=2)
 
     # Lightness Scale
-    lightness_label = ttk.Label(frame, text="Lightness:")
-    lightness_label.grid(row=2, column=0, padx=10, pady=10)
+    lightness_label = Label(frame, text="Lightness:", bg=frame['bg'])
+    lightness_label.grid(row=0, column=2, padx=10, pady=2)
     lightness_scale = ttk.Scale(frame, from_=0, to=1, variable=lightness_var, orient="horizontal", command=lambda _: update_color(frame, hue_var, saturation_var, lightness_var, color_preview))
-    lightness_scale.grid(row=2, column=1, padx=10, pady=10)
+    lightness_scale.grid(row=1, column=2, padx=10, pady=2)
 
     # # Get RGB Button
     # rgb_button = ttk.Button(frame, text="Get RGB", command=lambda: get_rgb(frame, hue_var, saturation_var, lightness_var))
@@ -61,7 +61,7 @@ def hls_to_rgb(h, l, s):
 def rgb_to_hex(rgb):
     return "#{:02x}{:02x}{:02x}".format(rgb[0], rgb[1], rgb[2])
 
-def get_rgb(frame, hue_var, saturation_var, lightness_var, setting, button):
+def get_rgb(frame, hue_var, saturation_var, lightness_var, setting, attribute):
     hue = hue_var.get()
     saturation = saturation_var.get()
     lightness = lightness_var.get()
@@ -69,10 +69,8 @@ def get_rgb(frame, hue_var, saturation_var, lightness_var, setting, button):
 
     rgb_color = hls_to_rgb(hue, lightness, saturation)
     print(f"RGB: {rgb_color}")
-
-    setting = rgb_color
-    button.config(bg=rgb_to_hex(rgb_color))
-    frame.destroy()
+    setattr(setting, attribute, rgb_color)
+    # button.config(bg=rgb_to_hex(rgb_color))
 
 # def create_main_window():
 

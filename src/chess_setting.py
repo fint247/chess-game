@@ -15,6 +15,7 @@ New Value = Current Value (+) or (-) (Brightness Percentage * (Max Value - Curre
 """
 
 from chess_color_picker import *
+from chess_themes import *
 
 
 
@@ -24,8 +25,8 @@ from chess_color_picker import *
 
 
 class Settings():
-    def __init__(self):
-        self.size = 40
+    def __init__(self, theme):
+        self.size = 40 
         self.auto_queen = True #change default to False later
         self.display = 'window'
 
@@ -34,24 +35,24 @@ class Settings():
         """=====COLOR SETTINGS===="""
 
         #board interaction colors
-        self.dark_square_color = (119, 153, 84)
-        self.light_square_color = (233, 237, 204)
-        self.highlight_square_color = (188, 188, 160)
-        self.primary_move_color = (244, 246, 128)
-        self.secondary_move_color = (187, 204, 68)
+        self.dark_square_color = theme.dark_square_color
+        self.light_square_color = theme.light_square_color
+        self.highlight_square_color = theme.highlight_square_color
+        self.primary_move_color = theme.primary_move_color
+        self.secondary_move_color = theme.secondary_move_color
 
         #menu button colors
-        self.menu_button_color = (128, 128, 128)
-        self.menu_button_highlight_color = (128, 100, 100)
+        self.menu_button_color = theme.menu_button_color
+        self.menu_button_highlight_color = theme.menu_button_highlight_color
         #maybe add a activebackground color for these menu buttons
         #activebackground is the color of the button when you click and hold
     
 
         #back ground colors
-        self.left_side_bar_bg_color = (128, 128, 128)
-        self.right_side_bar_bg_color = (128, 128, 128)
-        self.top_top_bar_bg_color = (64, 64 ,64)
-        self.bottom_bottom_bar_bg_color = (64, 64 ,64)
+        self.left_side_bar_bg_color = theme.left_side_bar_bg_color
+        self.right_side_bar_bg_color = theme.right_side_bar_bg_color
+        self.top_top_bar_bg_color = theme.top_top_bar_bg_color
+        self.bottom_bottom_bar_bg_color = theme.bottom_bottom_bar_bg_color
         
         #settings Colors
         self.setting_header = (100,150,255)
@@ -113,7 +114,7 @@ class Settings():
         setting_lbl.pack(side=LEFT)
         bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
         auto_queen_b1 = tk.Button(setting_frame1, text = 'On', width=int(9), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10, command=lambda: self.change_auto_queen(True))
-        auto_queen_b1.pack(side=RIGHT, padx=5)
+        auto_queen_b1.pack(side=RIGHT, padx=(5,20))
         auto_queen_b2 = tk.Button(setting_frame1, text = 'Off', width=int(9), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10, command=lambda: self.change_auto_queen(False))
         auto_queen_b2.pack(side=RIGHT, padx=5)
 
@@ -139,12 +140,15 @@ class Settings():
         setting_frame3.pack(side=TOP, fill=X)
         setting_lbl = Label(setting_frame3, text = f"Themes", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(self.setting_header),fg = 'black', pady = 10)
         setting_lbl.pack()
+        
 
 
         setting_frame10 = Frame(main_frame, bg = from_rgb(bg_color),bd = 10)
         setting_frame10.pack(side=TOP, fill=X)
         setting_lbl = Label(setting_frame10, text = f"Chess.com", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
         setting_lbl.pack(side=LEFT)
+        chess_com_b1 = tk.Button(setting_frame10, text = 'use chess.com theme', width=int(19), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10)
+        chess_com_b1.pack(side=RIGHT, padx=(5,20))
         bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
 
 
@@ -152,6 +156,8 @@ class Settings():
         setting_frame11.pack(side=TOP, fill=X)
         setting_lbl = Label(setting_frame11, text = f"Grey Scale", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
         setting_lbl.pack(side=LEFT)
+        grey_scale_b1 = tk.Button(setting_frame11, text = 'use grey scale theme', width=int(19), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10)
+        grey_scale_b1.pack(side=RIGHT, padx=(5,20))
         bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
 
 
@@ -166,9 +172,7 @@ class Settings():
         setting_lbl = Label(setting_frame4, text = f"Light Square", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
         setting_lbl.pack(side=LEFT)
         bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
-        custum_color_b1 = Button(setting_frame4, text = 'custom color', width=int(11), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10)
-        custum_color_b1.config(command=lambda: create_color_picker_frame(root, self.light_square_color, custum_color_b1))
-        custum_color_b1.pack(side = RIGHT, padx=(5,20))
+        create_color_picker_frame(setting_frame4, self, 'light_square_color')
 
 
         setting_frame5 = Frame(main_frame, bg = from_rgb(bg_color),bd = 10)
@@ -176,9 +180,7 @@ class Settings():
         setting_lbl = Label(setting_frame5, text = f"Dark Square", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
         setting_lbl.pack(side=LEFT)
         bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
-        custum_color_b2 = Button(setting_frame5, text = 'custom color', width=int(11), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10)
-        custum_color_b2.config(command=lambda: create_color_picker_frame(root, self.dark_square_color, custum_color_b2))
-        custum_color_b2.pack(side = RIGHT, padx=(5,20))
+        create_color_picker_frame(setting_frame5, self, 'dark_square_color')
 
 
         setting_frame6 = Frame(main_frame, bg = from_rgb(bg_color),bd = 10)
@@ -186,9 +188,8 @@ class Settings():
         setting_lbl = Label(setting_frame6, text = f"Highlight Square", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
         setting_lbl.pack(side=LEFT)
         bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
-        custum_color_b3 = Button(setting_frame6, text = 'custom color', width=int(11), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10)
-        custum_color_b3.config(command=lambda: create_color_picker_frame(root, self.highlight_square_color, custum_color_b3))
-        custum_color_b3.pack(side = RIGHT, padx=(5,20))
+        create_color_picker_frame(setting_frame6, self, 'highlight_square_color')
+
 
 
         setting_frame7 = Frame(main_frame, bg = from_rgb(bg_color),bd = 10)
@@ -196,19 +197,16 @@ class Settings():
         setting_lbl = Label(setting_frame7, text = f"Primary Move", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
         setting_lbl.pack(side=LEFT)
         bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
-        custum_color_b4 = Button(setting_frame7, text = 'custom color', width=int(11), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10)
-        custum_color_b4.config(command=lambda: create_color_picker_frame(root, self.primary_move_color, custum_color_b4))
-        custum_color_b4.pack(side = RIGHT, padx=(5,20))
+        create_color_picker_frame(setting_frame7, self, 'primary_move_color')
+
 
 
         setting_frame8 = Frame(main_frame, bg = from_rgb(bg_color),bd = 10)
         setting_frame8.pack(side=TOP, fill=X)
         setting_lbl = Label(setting_frame8, text = f"Secondary Move", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
         setting_lbl.pack(side=LEFT)
-        custum_color_b5 = Button(setting_frame8, text = 'custom color', width=int(11), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10)
-        custum_color_b5.config(command=lambda: create_color_picker_frame(root, self.secondary_move_color, custum_color_b5))
-        custum_color_b5.pack(side = RIGHT, padx=(5,20))
         bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
+        create_color_picker_frame(setting_frame8, self, 'secondary_move_color')
 
 
 

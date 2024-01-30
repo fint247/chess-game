@@ -3,8 +3,11 @@
 
 from chess_setting import *
 
+default_theme = ChessDotCom()
+# default_theme = Grey_Scale()
 
-settings = Settings()
+settings = Settings(default_theme)  
+#maybe change where the .size var is stored so the settings instance isn't made in the chess_classes.py file
 
 
 class Piece():
