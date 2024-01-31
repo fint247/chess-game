@@ -19,8 +19,10 @@ def create_color_picker_frame(master, setting, attribute):
 
 def create_color_picker_widgets(frame, hue_var, saturation_var, lightness_var, setting, attribute):
     # Color Preview
-    color_preview = tk.Button(frame, text=f"use custom\ncolor", bg="light grey", width=20, height=5, command= lambda: get_rgb(frame, hue_var, saturation_var, lightness_var, setting, attribute))
+    color_preview = tk.Button(frame, text=f"custom color\nselector", bg="light grey", width=20, height=5)
+    color_preview.config(command= lambda: get_rgb(color_preview, hue_var, saturation_var, lightness_var, setting, attribute))
     color_preview.grid(row=0, rowspan=2, column=3, padx=(5,15), pady=2)
+    setting.lyst_of_custom_color.append(color_preview)
 
     # Hue Scale
     hue_label = Label(frame, text="Hue:", bg=frame['bg'])
@@ -40,9 +42,7 @@ def create_color_picker_widgets(frame, hue_var, saturation_var, lightness_var, s
     lightness_scale = ttk.Scale(frame, from_=0, to=1, variable=lightness_var, orient="horizontal", command=lambda _: update_color(frame, hue_var, saturation_var, lightness_var, color_preview))
     lightness_scale.grid(row=1, column=2, padx=10, pady=2)
 
-    # # Get RGB Button
-    # rgb_button = ttk.Button(frame, text="Get RGB", command=lambda: get_rgb(frame, hue_var, saturation_var, lightness_var))
-    # rgb_button.grid(row=4, columnspan=2, pady=10)
+
 
 def update_color(frame, hue_var, saturation_var, lightness_var, color_preview):
     hue = hue_var.get()
@@ -52,7 +52,7 @@ def update_color(frame, hue_var, saturation_var, lightness_var, color_preview):
     rgb_color = hls_to_rgb(hue, lightness, saturation)
     hex_color = rgb_to_hex(rgb_color)
 
-    color_preview.config(background=hex_color, text = f"Use Color\n{rgb_color}")
+    color_preview.config(background=hex_color, text = f"Use Color\n{rgb_color}", state=NORMAL)
 
 def hls_to_rgb(h, l, s):
     r, g, b = convert_hls_to_rgb(h, l, s)
@@ -61,33 +61,15 @@ def hls_to_rgb(h, l, s):
 def rgb_to_hex(rgb):
     return "#{:02x}{:02x}{:02x}".format(rgb[0], rgb[1], rgb[2])
 
-def get_rgb(frame, hue_var, saturation_var, lightness_var, setting, attribute):
+def get_rgb(button, hue_var, saturation_var, lightness_var, setting, attribute):
     hue = hue_var.get()
     saturation = saturation_var.get()
     lightness = lightness_var.get()
     
 
     rgb_color = hls_to_rgb(hue, lightness, saturation)
-    print(f"RGB: {rgb_color}")
+    # print(f"RGB: {rgb_color}")
+
     setattr(setting, attribute, rgb_color)
-    # button.config(bg=rgb_to_hex(rgb_color))
+    button.config(bg=rgb_to_hex(rgb_color), text=f"Using Color\n{rgb_color}",state=DISABLED)
 
-# def create_main_window():
-
-
-#     command=lambda: create_color_picker_frame(main_window)
-    
-
-#     main_window = tk.Tk()
-#     main_window.title("Main Window")
-
-#     color_picker_frame = ttk.Frame(main_window)
-#     color_picker_frame.pack(pady=20)
-
-#     open_picker_button = ttk.Button(main_window, text="Open Color Picker", command=lambda: create_color_picker_frame(main_window))
-#     open_picker_button.pack(pady=20)
-
-#     main_window.mainloop()
-
-# if __name__ == "__main__":
-#     create_main_window()

@@ -1,25 +1,10 @@
-#change this to be a text file so it remembers you settings
 #add users so the settings can be save to users
-#maybe add passwords and look into encryption
-#add verification when person enters email,phone number, or disord
+#maybe add passwords and encryption
+#maybe add verification when person enters email,phone number, or disord
 
-
-"""
-Saturation:
-New Value = Current Value (+) or (-) (Saturation Percentage * (Max Value - Current Value))
-
-Brightness:
-New Value = Current Value (+) or (-) (Brightness Percentage * (Max Value - Current Value))
-
-
-"""
 
 from chess_color_picker import *
 from chess_themes import *
-
-
-
-
 
 
 
@@ -29,33 +14,11 @@ class Settings():
         self.size = 40 
         self.auto_queen = True #change default to False later
         self.display = 'window'
+        self.lyst_of_custom_color = []
+        self.lyst_of_themes = []
 
 
-        
-        """=====COLOR SETTINGS===="""
-
-        #board interaction colors
-        self.dark_square_color = theme.dark_square_color
-        self.light_square_color = theme.light_square_color
-        self.highlight_square_color = theme.highlight_square_color
-        self.primary_move_color = theme.primary_move_color
-        self.secondary_move_color = theme.secondary_move_color
-
-        #menu button colors
-        self.menu_button_color = theme.menu_button_color
-        self.menu_button_highlight_color = theme.menu_button_highlight_color
-        #maybe add a activebackground color for these menu buttons
-        #activebackground is the color of the button when you click and hold
-    
-
-        #back ground colors
-        self.left_side_bar_bg_color = theme.left_side_bar_bg_color
-        self.right_side_bar_bg_color = theme.right_side_bar_bg_color
-        self.top_top_bar_bg_color = theme.top_top_bar_bg_color
-        self.bottom_bottom_bar_bg_color = theme.bottom_bottom_bar_bg_color
-        
-        #settings Colors
-        self.setting_header = (100,150,255)
+        self.change_theme(theme)
 
     #state = 'normal', 'iconic', 'withdrawn', or 'zoomed'
    
@@ -112,11 +75,22 @@ class Settings():
         setting_frame1.pack(side=TOP, fill=X)
         setting_lbl = Label(setting_frame1, text = f"{'Auto Queen'}: ", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
         setting_lbl.pack(side=LEFT)
-        bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
         auto_queen_b1 = tk.Button(setting_frame1, text = 'On', width=int(9), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10, command=lambda: self.change_auto_queen(True))
         auto_queen_b1.pack(side=RIGHT, padx=(5,20))
         auto_queen_b2 = tk.Button(setting_frame1, text = 'Off', width=int(9), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10, command=lambda: self.change_auto_queen(False))
         auto_queen_b2.pack(side=RIGHT, padx=5)
+        bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
+
+
+        setting_frame13 = Frame(main_frame, bg = from_rgb(bg_color),bd = 10)
+        setting_frame13.pack(side=TOP, fill=X)
+        setting_lbl = Label(setting_frame13, text = f"{'Show Legal Moves'}: ", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
+        setting_lbl.pack(side=LEFT)
+        show_moves_b1 = tk.Button(setting_frame13, text = 'On', width=int(9), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10, command=lambda: self.change_auto_queen(True))
+        show_moves_b1.pack(side=RIGHT, padx=(5,20))
+        show_moves_b2 = tk.Button(setting_frame13, text = 'Off', width=int(9), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10, command=lambda: self.change_auto_queen(False))
+        show_moves_b2.pack(side=RIGHT, padx=5)
+        bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
 
 
         setting_frame12 = Frame(main_frame, bg = from_rgb(self.setting_header),bd = 10)
@@ -145,19 +119,34 @@ class Settings():
 
         setting_frame10 = Frame(main_frame, bg = from_rgb(bg_color),bd = 10)
         setting_frame10.pack(side=TOP, fill=X)
-        setting_lbl = Label(setting_frame10, text = f"Chess.com", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
-        setting_lbl.pack(side=LEFT)
-        chess_com_b1 = tk.Button(setting_frame10, text = 'use chess.com theme', width=int(19), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10)
+        chess_com_lbl = Label(setting_frame10, text = f"Chess.com", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
+        chess_com_lbl.pack(side=LEFT)
+        chess_com_b1 = tk.Button(setting_frame10, text = 'Chess.com Theme', width=int(19), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10)
+        chess_com_b1.config(command= lambda: self.change_theme(ChessDotCom, chess_com_b1))
         chess_com_b1.pack(side=RIGHT, padx=(5,20))
+        self.lyst_of_themes.append(chess_com_b1)
         bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
 
 
         setting_frame11 = Frame(main_frame, bg = from_rgb(bg_color),bd = 10)
         setting_frame11.pack(side=TOP, fill=X)
-        setting_lbl = Label(setting_frame11, text = f"Grey Scale", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
-        setting_lbl.pack(side=LEFT)
-        grey_scale_b1 = tk.Button(setting_frame11, text = 'use grey scale theme', width=int(19), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10)
+        grey_scale_lbl = Label(setting_frame11, text = f"Grey Scale", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
+        grey_scale_lbl.pack(side=LEFT)
+        grey_scale_b1 = tk.Button(setting_frame11, text = 'Grey Scale Theme', width=int(19), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10)
+        grey_scale_b1.config(command= lambda: self.change_theme(GreyScale, grey_scale_b1))
         grey_scale_b1.pack(side=RIGHT, padx=(5,20))
+        self.lyst_of_themes.append(grey_scale_b1)
+        bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
+
+
+        setting_frame12 = Frame(main_frame, bg = from_rgb(bg_color),bd = 10)
+        setting_frame12.pack(side=TOP, fill=X)
+        blissful_blues_lbl = Label(setting_frame12, text = f"Blissful Blues", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
+        blissful_blues_lbl.pack(side=LEFT)
+        blissful_blues_b1 = tk.Button(setting_frame12, text = 'Blissful Blues Theme', width=int(19), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10)
+        blissful_blues_b1.config(command= lambda: self.change_theme(BlissfulBlues, blissful_blues_b1))
+        blissful_blues_b1.pack(side=RIGHT, padx=(5,20))
+        self.lyst_of_themes.append(blissful_blues_b1)
         bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
 
 
@@ -237,7 +226,37 @@ class Settings():
         elif display_type == "window":
             self.display = 'window'
         print(self.display)
+
+    def change_theme(self, theme, button=''):
+        #board interaction colors
+        self.dark_square_color = theme.dark_square_color
+        self.light_square_color = theme.light_square_color
+        self.highlight_square_color = theme.highlight_square_color
+        self.primary_move_color = theme.primary_move_color
+        self.secondary_move_color = theme.secondary_move_color
+
+        #menu button colors
+        self.menu_button_color = theme.menu_button_color
+        self.menu_button_highlight_color = theme.menu_button_highlight_color
+        #maybe add a activebackground color for these menu buttons
+        #activebackground is the color of the button when you click and hold
+    
+
+        #back ground colors
+        self.left_side_bar_bg_color = theme.left_side_bar_bg_color
+        self.right_side_bar_bg_color = theme.right_side_bar_bg_color
+        self.top_top_bar_bg_color = theme.top_top_bar_bg_color
+        self.bottom_bottom_bar_bg_color = theme.bottom_bottom_bar_bg_color
         
+        #settings Colors
+        self.setting_header = (100,150,255)
+
+        if button != '':
+            for b in self.lyst_of_themes:
+                if button == b:
+                    b.config(state=DISABLED)
+                else:
+                    b.config(state=NORMAL)
 
 
 class SettingsWindowTracker():
