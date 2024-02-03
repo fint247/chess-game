@@ -36,7 +36,10 @@ class Piece():
         circle_radius = self.scaled_image.size[0] // 5
 
         # Draw a circle with X % transparency
-        circle_color = (255, 0, 255, int(255 * 0.5))  # RGBA format (red, green, blue, alpha)
+        if self.color == 'black':
+            circle_color = (255, 255, 255, int(255 * 0.2))  # RGBA format (red, green, blue, alpha)
+        else:
+            circle_color = (0, 0, 0, int(255 * 0.2))  # RGBA format (red, green, blue, alpha)
         draw.ellipse(
             [
                 circle_center[0] - circle_radius,
@@ -263,7 +266,10 @@ class Pawn(Piece):
         
         if not(pos_neg + position_end[0] < 0 or  pos_neg + position_end[0] > 7):#fix to a pawn bug due to pos_neg variable
             if board[position_end[0]+pos_neg][position_end[1]].name == 'white_pawn' and self.color != board[position_end[0]+pos_neg][position_end[1]].color or board[position_end[0]+pos_neg][position_end[1]].name == 'black_pawn' and self.color != board[position_end[0]+pos_neg][position_end[1]].color:
+                print('one')
                 if board[position_end[0]+pos_neg][position_end[1]].ampasant == True and abs(position_start[1] - position_end[1]) == 1 and position_start[0] - position_end[0] == 1*pos_neg:
+                    print(position_start,position_end)
+                    print(board[position_end[0]+pos_neg][position_end[1]].name,board[position_end[0]][position_end[1]].name)
                     board[position_end[0]+pos_neg][position_end[1]] = board[position_end[0]][position_end[1]]
                 else:
                     valid_move = False  
@@ -286,7 +292,7 @@ class Pawn(Piece):
             pass
         else:
             valid_move = False
-            return valid_move
+
         return valid_move
     
     def is_queening(self, valid_move, whites_turn, board, position_start, position_end):

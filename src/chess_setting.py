@@ -13,11 +13,18 @@ class Settings():
     def __init__(self, theme):
         self.size = 40 
         self.auto_queen = True #change default to False later
+        self.lyst_of_auto_queen_buttons = []
+
         self.display = 'window'
+        self.lyst_of_display_buttons = []
+
+        self.show_legal_moves = True
+        self.lyst_of_legal_moves_buttons = []
+
         self.lyst_of_custom_color = []
         self.lyst_of_themes = []
 
-
+        self.theme = theme
         self.change_theme(theme)
 
     #state = 'normal', 'iconic', 'withdrawn', or 'zoomed'
@@ -75,10 +82,14 @@ class Settings():
         setting_frame1.pack(side=TOP, fill=X)
         setting_lbl = Label(setting_frame1, text = f"{'Auto Queen'}: ", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
         setting_lbl.pack(side=LEFT)
-        auto_queen_b1 = tk.Button(setting_frame1, text = 'On', width=int(9), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10, command=lambda: self.change_auto_queen(True))
+        auto_queen_b1 = tk.Button(setting_frame1, text = 'On', width=int(9), height=int(.5),font=('Helvatical bold', 25, 'bold' if self.auto_queen == True else 'normal'), bg = 'teal', fg = 'black', pady = 10)
+        auto_queen_b1.config(command=lambda: self.change_auto_queen(True, auto_queen_b1))
         auto_queen_b1.pack(side=RIGHT, padx=(5,20))
-        auto_queen_b2 = tk.Button(setting_frame1, text = 'Off', width=int(9), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10, command=lambda: self.change_auto_queen(False))
+        self.lyst_of_auto_queen_buttons.append(auto_queen_b1)
+        auto_queen_b2 = tk.Button(setting_frame1, text = 'Off', width=int(9), height=int(.5),font=('Helvatical bold', 25, 'bold' if self.auto_queen == False else 'normal'), bg = 'teal', fg = 'black', pady = 10)
+        auto_queen_b2.config(command=lambda: self.change_auto_queen(False, auto_queen_b2))
         auto_queen_b2.pack(side=RIGHT, padx=5)
+        self.lyst_of_auto_queen_buttons.append(auto_queen_b2)
         bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
 
 
@@ -86,10 +97,14 @@ class Settings():
         setting_frame13.pack(side=TOP, fill=X)
         setting_lbl = Label(setting_frame13, text = f"{'Show Legal Moves'}: ", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
         setting_lbl.pack(side=LEFT)
-        show_moves_b1 = tk.Button(setting_frame13, text = 'On', width=int(9), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10, command=lambda: self.change_auto_queen(True))
+        show_moves_b1 = tk.Button(setting_frame13, text = 'On', width=int(9), height=int(.5),font=('Helvatical bold',25, 'bold' if self.show_legal_moves == True else 'normal'), bg = 'teal', fg = 'black', pady = 10)
+        show_moves_b1.config(command=lambda: self.change_show_moves(True, show_moves_b1))
         show_moves_b1.pack(side=RIGHT, padx=(5,20))
-        show_moves_b2 = tk.Button(setting_frame13, text = 'Off', width=int(9), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10, command=lambda: self.change_auto_queen(False))
+        self.lyst_of_legal_moves_buttons.append(show_moves_b1)
+        show_moves_b2 = tk.Button(setting_frame13, text = 'Off', width=int(9), height=int(.5),font=('Helvatical bold',25, 'bold' if self.show_legal_moves == False else 'normal'), bg = 'teal', fg = 'black', pady = 10)
+        show_moves_b2.config(command=lambda: self.change_show_moves(False, show_moves_b2))
         show_moves_b2.pack(side=RIGHT, padx=5)
+        self.lyst_of_legal_moves_buttons.append(show_moves_b2)
         bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
 
 
@@ -104,10 +119,14 @@ class Settings():
         setting_lbl = Label(setting_frame2, text = f"{'Display type'}: ", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)#, image=pixeling, compound="c")
         setting_lbl.pack(side=LEFT)
         bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
-        windowed_b1 = tk.Button(setting_frame2, text = 'Window', width=int(9), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10, command=lambda: self.change_display('window'))
+        windowed_b1 = tk.Button(setting_frame2, text = 'Window', width=int(9), height=int(.5),font=('Helvatical bold',25, 'bold' if self.display == 'window' else 'normal'), bg = 'teal', fg = 'black', pady = 10)
+        windowed_b1.config(command=lambda: self.change_display('window', windowed_b1))
         windowed_b1.pack(side=RIGHT, padx=(5,20))
-        windowed_b2 = tk.Button(setting_frame2, text = 'Full Screen', width=int(9), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10, command=lambda: self.change_display('full_screen'))
+        self.lyst_of_display_buttons.append(windowed_b1)
+        windowed_b2 = tk.Button(setting_frame2, text = 'Full Screen', width=int(9), height=int(.5),font=('Helvatical bold',25, 'bold' if self.display == 'full_screen' else 'normal'), bg = 'teal', fg = 'black', pady = 10)
+        windowed_b2.config(command=lambda: self.change_display('full_screen', windowed_b2))
         windowed_b2.pack(side=RIGHT, padx=5)
+        self.lyst_of_display_buttons.append(windowed_b2)
 
 
         setting_frame3 = Frame(main_frame, bg = from_rgb(self.setting_header),bd = 10)
@@ -121,7 +140,7 @@ class Settings():
         setting_frame10.pack(side=TOP, fill=X)
         chess_com_lbl = Label(setting_frame10, text = f"Chess.com", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
         chess_com_lbl.pack(side=LEFT)
-        chess_com_b1 = tk.Button(setting_frame10, text = 'Chess.com Theme', width=int(19), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10)
+        chess_com_b1 = tk.Button(setting_frame10, text = 'Chess.com Theme', width=int(19), height=int(.5),font=('Helvatical bold',25, 'bold' if self.theme.name == 'chess_dot_com' else 'normal'), bg = 'teal', fg = 'black', pady = 10)
         chess_com_b1.config(command= lambda: self.change_theme(ChessDotCom, chess_com_b1))
         chess_com_b1.pack(side=RIGHT, padx=(5,20))
         self.lyst_of_themes.append(chess_com_b1)
@@ -130,7 +149,7 @@ class Settings():
 
         setting_frame11 = Frame(main_frame, bg = from_rgb(bg_color),bd = 10)
         setting_frame11.pack(side=TOP, fill=X)
-        grey_scale_lbl = Label(setting_frame11, text = f"Grey Scale", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
+        grey_scale_lbl = Label(setting_frame11, text = f"Grey Scale", width=int(15), height=int(2),font=('Helvatical bold',25, 'bold' if self.theme.name == 'grey_scale' else 'normal'), bg = from_rgb(bg_color),fg = 'black', pady = 10)
         grey_scale_lbl.pack(side=LEFT)
         grey_scale_b1 = tk.Button(setting_frame11, text = 'Grey Scale Theme', width=int(19), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10)
         grey_scale_b1.config(command= lambda: self.change_theme(GreyScale, grey_scale_b1))
@@ -141,7 +160,7 @@ class Settings():
 
         setting_frame12 = Frame(main_frame, bg = from_rgb(bg_color),bd = 10)
         setting_frame12.pack(side=TOP, fill=X)
-        blissful_blues_lbl = Label(setting_frame12, text = f"Blissful Blues", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(bg_color),fg = 'black', pady = 10)
+        blissful_blues_lbl = Label(setting_frame12, text = f"Blissful Blues", width=int(15), height=int(2),font=('Helvatical bold',25, 'bold' if self.theme.name == 'blissful_blues' else 'normal'), bg = from_rgb(bg_color),fg = 'black', pady = 10)
         blissful_blues_lbl.pack(side=LEFT)
         blissful_blues_b1 = tk.Button(setting_frame12, text = 'Blissful Blues Theme', width=int(19), height=int(.5),font=('Helvatical bold',int(25)), bg = 'teal', fg = 'black', pady = 10)
         blissful_blues_b1.config(command= lambda: self.change_theme(BlissfulBlues, blissful_blues_b1))
@@ -216,16 +235,32 @@ class Settings():
             color = [120,120,120]
         return color[0], color[1], color[2]
 
-    def change_auto_queen(self, on_off):
+    def change_auto_queen(self, on_off, button=''):
         self.auto_queen = on_off
-        print(self.auto_queen)
+        if button != '':
+            for b in self.lyst_of_auto_queen_buttons:
+                if button == b:
+                    b.config(font=('Helvatical bold',25, 'bold'))
+                else:
+                    b.config(font=('Helvatical bold',25, 'normal'))
 
-    def change_display(self, display_type):
-        if display_type == "full_screen":
-            self.display = 'full_screen'
-        elif display_type == "window":
-            self.display = 'window'
-        print(self.display)
+    def change_show_moves(self, on_off, button=''):
+        self.show_legal_moves = on_off
+        if button != '':
+            for b in self.lyst_of_legal_moves_buttons:
+                if button == b:
+                    b.config(font=('Helvatical bold',25, 'bold'))
+                else:
+                    b.config(font=('Helvatical bold',25, 'normal'))
+
+    def change_display(self, display_type, button=''):
+        self.display = display_type
+        if button != '':
+            for b in self.lyst_of_display_buttons:
+                if button == b:
+                    b.config(font=('Helvatical bold',25, 'bold'))
+                else:
+                    b.config(font=('Helvatical bold',25, 'normal'))
 
     def change_theme(self, theme, button=''):
         #board interaction colors
@@ -254,9 +289,9 @@ class Settings():
         if button != '':
             for b in self.lyst_of_themes:
                 if button == b:
-                    b.config(state=DISABLED)
+                    b.config(font=('Helvatical bold',25, 'bold'))
                 else:
-                    b.config(state=NORMAL)
+                    b.config(font=('Helvatical bold',25, 'normal'))
 
 
 class SettingsWindowTracker():

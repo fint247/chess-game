@@ -182,7 +182,8 @@ def show_legal_moves(board, position_start):
             #make sure function (.is_legal) doesn't manipulate any global variables
            
             if board[position_start[0]][position_start[1]].is_legal(whites_turn, board, position_start, temp_position_end) == True:
-                board_of_buttons[x][y].config(image=board[x][y].show_legal_move_img)
+                if settings.show_legal_moves == True:
+                    board_of_buttons[x][y].config(image=board[x][y].show_legal_move_img)
     
 def exit_settings(r, s):
     root.overrideredirect(settings.display == 'full_screen')
@@ -196,7 +197,6 @@ def exit_settings(r, s):
 
     reset_board_bg()
     
-
 def open_settings(r, s, lyst_of_game_buttons, button_stop):
     for button in lyst_of_game_buttons:    
         button.config(state=DISABLED)
@@ -204,7 +204,6 @@ def open_settings(r, s, lyst_of_game_buttons, button_stop):
 
     s.lift(r)
     
-
 def check_if_promoting():
     if board[position_start[0]][position_start[1]].name == 'white_pawn' or board[position_start[0]][position_start[1]].name == 'black_pawn':
         if board[position_start[0]][position_start[1]].promoted == True:
@@ -240,12 +239,12 @@ def check_if_castling():
 
 def update_ampasant():
     for x in range(8):
-        # print('')
+        print('')
         for y in range(8):
-        #     if board[x][y].ampasant == False:
-        #         print(0,end = '')
-        #     else:
-        #         print(1,end='')
+            if board[x][y].ampasant == False:
+                print(0,end = '')
+            else:
+                print(1,end='')
         
         
             if board[x][y].color == 'white' and whites_turn[0] == False:
@@ -254,7 +253,7 @@ def update_ampasant():
             elif board[x][y].color == 'black' and whites_turn[0] == True:
                 board[x][y].ampasant = False
                 
-    # print('\n')
+    print('\n')
 
 def update_board():
     for x in range(8):
@@ -291,16 +290,16 @@ def reset_board_bg(wipe=''):
             #clears everything if wipe == 'wipe' 
             if wipe == 'wipe':
                 if x%2 == 0 and y%2 == 0 or x%2 != 0 and y%2 != 0:
-                    board_of_buttons[x][y].config(bg = rgb_to_hex(settings.dark_square_color))
-                else:
                     board_of_buttons[x][y].config(bg = rgb_to_hex(settings.light_square_color))
+                else:
+                    board_of_buttons[x][y].config(bg = rgb_to_hex(settings.dark_square_color))
 
             #doesnt clear yellow highlight from moving a piece if wipe != 'wipe 
             elif not (board_of_buttons[x][y]['bg'] == rgb_to_hex(settings.primary_move_color) or board_of_buttons[x][y]['bg'] == rgb_to_hex(settings.secondary_move_color)):
                 if x%2 == 0 and y%2 == 0 or x%2 != 0 and y%2 != 0:
-                    board_of_buttons[x][y].config(bg = rgb_to_hex(settings.dark_square_color))
-                else:
                     board_of_buttons[x][y].config(bg = rgb_to_hex(settings.light_square_color))
+                else:
+                    board_of_buttons[x][y].config(bg = rgb_to_hex(settings.dark_square_color))
             
 def pressed(a, b, position_start, position_end, board):
     button = board_of_buttons[a][b]
@@ -416,9 +415,9 @@ for x in range(8):
     lyst = []
     for y in range(8):
         if x%2 == 0 and y%2 == 0 or x%2 != 0 and y%2 != 0:
-            bg_color = rgb_to_hex(settings.dark_square_color)
-        else:
             bg_color = rgb_to_hex(settings.light_square_color)
+        else:
+            bg_color = rgb_to_hex(settings.dark_square_color)
         button_on_board = tk.Button(center_frame,image = board[x][y].image, bg = bg_color, activebackground=bg_color, width = (400/8)-2, height = (400/8)-2, border=0)
         button_on_board.x, button_on_board.y = int(x), int(y)
         button_on_board.grid(row=x+1,column=y)
@@ -440,12 +439,12 @@ bottom_bar = Label(center_frame, bg = rgb_to_hex(settings.bottom_bottom_bar_bg_c
 bottom_bar.grid(column=0, row=9, columnspan=8, sticky=NSEW)
 
 #stuff inside left side bar: exit game, setting, and ...
-button_stop = Button(left_frame, text='Exit',width=100-2,padx=0, pady=10, border=0, font=('Helvatical bold',int(10)), bg = rgb_to_hex(settings.menu_button_color), fg = 'black', image=pixel, compound="c", command=root.destroy) 
+button_stop = Button(left_frame, text='Exit',width=100-2,padx=0, pady=10, border=0, font=('Helvatical bold', 10), bg = rgb_to_hex(settings.menu_button_color), fg = 'black', image=pixel, compound="c", command=root.destroy) 
 button_stop.grid(row=0, column=0, sticky="nsew") 
 button_stop.bind('<Enter>', lambda event: enter(event, button_stop))             
 button_stop.bind('<Leave>', lambda event: exit_(event, button_stop))
 
-button_setting = Button(left_frame, text='Settings', width=100-2,padx=0, pady=10, border=0, font=('Helvatical bold',int(10)), bg = rgb_to_hex(settings.menu_button_color), fg = 'black', image=pixel, compound="c", command= lambda: open_settings(r,s,lyst_of_game_buttons, button_stop)) 
+button_setting = Button(left_frame, text='Settings', width=100-2,padx=0, pady=10, border=0, font=('Helvatical bold', 10), bg = rgb_to_hex(settings.menu_button_color), fg = 'black', image=pixel, compound="c", command= lambda: open_settings(r,s,lyst_of_game_buttons, button_stop)) 
 button_setting.grid(row=1, column=0, sticky="nsew") 
 button_setting.bind('<Enter>', lambda event: enter(event, button_setting))             
 button_setting.bind('<Leave>', lambda event: exit_(event, button_setting))
@@ -458,4 +457,3 @@ for x in board_of_buttons:
 
 
 root.mainloop() 
-

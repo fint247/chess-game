@@ -1,12 +1,22 @@
-class ClassA:
-    common_attribute = "Attribute from ClassA"
+class Setting():
+    def __init__(self):
+        self.auto_queen = True
 
-class ClassB:
-    common_attribute = "Attribute from ClassB"
 
-# Accessing class attributes
-print(ClassA.common_attribute)  # Output: Attribute from ClassA
-print(ClassB.common_attribute)  # Output: Attribute from ClassB
+setting = Setting()
+
+font = 'bold' if setting.auto_queen == True else 'normal'
+print(font)
+
+
+
+
+
+
+
+
+
+
 # def new_color(setting, attribute,color):
 #     setattr(setting, attribute, color)
 

@@ -1,6 +1,7 @@
 """CHESS THEMES"""
 
 class ChessDotCom():
+    name = 'chess_dot_com'
     #board interaction colors
     dark_square_color = (119, 153, 84)
     light_square_color = (233, 237, 204)
@@ -26,6 +27,7 @@ class ChessDotCom():
 
 
 class GreyScale():
+    name = 'grey_scale'
     #board interaction colors
     dark_square_color = (200, 200, 200)
     light_square_color = (100, 100, 100)
@@ -50,6 +52,7 @@ class GreyScale():
     # setting_header = (100,150,255)
 
 class BlissfulBlues():
+    name = 'blissful_blues'
     #board interaction colors
     dark_square_color = (0, 180, 255)
     light_square_color = (0, 255, 255)
