@@ -18,6 +18,9 @@ def create_color_picker_frame(master, setting, attribute):
     create_color_picker_widgets(color_picker_frame, hue_var, saturation_var, lightness_var, setting, attribute)
 
 def create_color_picker_widgets(frame, hue_var, saturation_var, lightness_var, setting, attribute):
+    # Set the theme
+    style = ttk.Style()
+    style.theme_use('clam')
     # Color Preview
     color_preview = tk.Button(frame, text=f"custom color\nselector", bg="light grey", width=20, height=5)
     color_preview.config(command= lambda: get_rgb(color_preview, hue_var, saturation_var, lightness_var, setting, attribute))

@@ -1,47 +1,24 @@
-class Setting():
-    def __init__(self):
-        self.auto_queen = True
+import tkinter as tk
+from tkinter import ttk
 
+root = tk.Tk()
 
-setting = Setting()
+# Set the theme to 'clam'
+style = ttk.Style()
+style.theme_use('default')
 
-font = 'bold' if setting.auto_queen == True else 'normal'
-print(font)
+# Create a DoubleVar to store the scale value
+scale_var = tk.DoubleVar()
 
+# Create a ttk.Scale widget
+scale = ttk.Scale(root, from_=0, to=100, variable=scale_var, orient="horizontal", length=200)
+scale.pack()
 
+# Function to print the scale value when it changes
+def scale_changed(value):
+    print("Scale value:", value)
 
+# Set the command to call scale_changed function when the scale value changes
+scale.config(command=lambda value: scale_changed(scale_var.get()))
 
-
-
-
-
-
-
-# def new_color(setting, attribute,color):
-#     setattr(setting, attribute, color)
-
-# class Setting():
-#     def __init__(self):
-#         self.color = (255,255,255)
-#         self.color2 = (100,100,100)
-    
-#     def change_color(self, attribute, color):
-#         new_color(self, attribute, color)
-#         # new_color(self.color2, color)
-
-# set = Setting()
-# print(set.color)
-
-# set.change_color('color',(0,0,5))
-# print(set.color)
-
-# # # Python code for accessing attributes of class  
-# # class emp:  
-# #     name='Harsh'
-# #     salary='25000'
-# #     def show(self):  
-# #         print (self.name)  
-# #         print (self.salary)  
-# # e1 = emp()  
-# # # Use getattr instead of e1.name  
-# # print (getattr(e1,'salary'))  
+root.mainloop()

@@ -11,7 +11,7 @@ class ChessDotCom():
 
     #menu button colors
     menu_button_color = (128, 128, 128)
-    menu_button_highlight_color = (128, 100, 100)
+    menu_button_highlight_color = (100, 100, 100)
     #maybe add a activebackground color for these menu buttons
     #activebackground is the color of the button when you click and hold
 

@@ -43,6 +43,7 @@ root.config(bg = 'grey')
 position_start = []
 position_end = []
 whites_turn= [True]
+move_history = []
 
 
 list_of_pieces_classes = [Rook, Knight, Bishop, Queen, King, Pawn, EmptySquare]
@@ -239,21 +240,21 @@ def check_if_castling():
 
 def update_ampasant():
     for x in range(8):
-        print('')
+        # print('')
         for y in range(8):
-            if board[x][y].ampasant == False:
-                print(0,end = '')
-            else:
-                print(1,end='')
+        #     if board[x][y].can_be_taken_by_ampasant == False:
+        #         print(0,end = '')
+        #     else:
+        #         print(1,end='')
         
         
             if board[x][y].color == 'white' and whites_turn[0] == False:
-                board[x][y].ampasant = False
+                board[x][y].can_be_taken_by_ampasant = False
                 
             elif board[x][y].color == 'black' and whites_turn[0] == True:
-                board[x][y].ampasant = False
+                board[x][y].can_be_taken_by_ampasant = False
                 
-    print('\n')
+    # print('\n')
 
 def update_board():
     for x in range(8):
@@ -301,6 +302,26 @@ def reset_board_bg(wipe=''):
                 else:
                     board_of_buttons[x][y].config(bg = rgb_to_hex(settings.dark_square_color))
             
+
+def move_piece(board, position_start, position_end):
+    #extra command if pawn is taking using ampasant
+    if board[position_start[0]][position_start[1]].is_taking_by_ampasant[0] == True:
+        board[position_end[0]+board[position_start[0]][position_start[1]].is_taking_by_ampasant[1]][position_end[1]] = board[position_end[0]][position_end[1]]
+        
+    board[position_end[0]][position_end[1]] = board[position_start[0]][position_start[1]]
+    board[position_start[0]][position_start[1]] = empty_square
+    
+    board[position_end[0]][position_end[1]].has_moved = True
+
+    
+    move_start = chr(position_start[1]+97) + str(8-position_start[0]) 
+    move_end = chr(position_end[1]+97) + str(8-position_end[0])
+
+    text = f"{move_start} --> {move_end}\n"
+    text_widget.config(state=NORMAL)
+    text_widget.insert(tk.END, text)
+    text_widget.config(state=DISABLED)
+    
 def pressed(a, b, position_start, position_end, board):
     button = board_of_buttons[a][b]
 
@@ -329,16 +350,13 @@ def pressed(a, b, position_start, position_end, board):
 
         #print(board[position_start[0]][position_start[1]].name)
         valid_move = board[position_start[0]][position_start[1]].is_legal(whites_turn, board, position_start, position_end)
-        
+
         if valid_move == True:
             check_if_promoting()
             check_if_castling()
             update_ampasant()
 
-            board[position_end[0]][position_end[1]] = board[position_start[0]][position_start[1]]
-            board[position_start[0]][position_start[1]] = empty_square
-            
-            board[position_end[0]][position_end[1]].has_moved = True
+            move_piece(board, position_start, position_end)
 
             reset_board_bg('wipe')
 
@@ -382,30 +400,29 @@ tracker.bind_config(board)
 pixel = PhotoImage(width=1, height=1)
 
 #make the main frame (r) for the game
-r = tk.Frame(root, bg="blue")
-r.place(relwidth=1, relheight=1)  # Filling the entire window
+home = tk.Frame(root, bg="blue")
+home.place(relwidth=1, relheight=1)  # Filling the entire window
 
 #initialize settings Frame
-s = settings.init_settings_frame(root, r, rgb_to_hex, exit_settings, pixel)
+s = settings.init_settings_frame(root, home, rgb_to_hex, exit_settings, pixel)
 
 #moves the settings frame behind the game frame
-r.lift(s)
+home.lift(s)
 
 #game is made of 3 main frames: left, right, and center
-left_frame = Frame(r, bg = rgb_to_hex(settings.left_side_bar_bg_color))
+left_frame = Frame(home, bg = rgb_to_hex(settings.left_side_bar_bg_color))
 left_frame.place(x=0, y=0, width=100, height=600)
 
-right_frame = Frame(r, bg = rgb_to_hex(settings.right_side_bar_bg_color))
+right_frame = Frame(home, bg = rgb_to_hex(settings.right_side_bar_bg_color))
 right_frame.place(x=500, y=0, width=100, height=600)
 
-center_frame = Frame(r)
+center_frame = Frame(home)
 center_frame.place(x=100, y=0, width=400, height=600)
 
 #stuff inside center frame: chess board, opponents username, and users name
 center_frame.rowconfigure(0, weight=1)
 top_bar = Label(center_frame, bg = rgb_to_hex(settings.top_top_bar_bg_color))
 top_bar.grid(column=0, row=0, columnspan=8, sticky=NSEW)
-
 
 
 
@@ -444,10 +461,43 @@ button_stop.grid(row=0, column=0, sticky="nsew")
 button_stop.bind('<Enter>', lambda event: enter(event, button_stop))             
 button_stop.bind('<Leave>', lambda event: exit_(event, button_stop))
 
-button_setting = Button(left_frame, text='Settings', width=100-2,padx=0, pady=10, border=0, font=('Helvatical bold', 10), bg = rgb_to_hex(settings.menu_button_color), fg = 'black', image=pixel, compound="c", command= lambda: open_settings(r,s,lyst_of_game_buttons, button_stop)) 
+button_setting = Button(left_frame, text='Settings', width=100-2,padx=0, pady=10, border=0, font=('Helvatical bold', 10), bg = rgb_to_hex(settings.menu_button_color), fg = 'black', image=pixel, compound="c", command= lambda: open_settings(home,s,lyst_of_game_buttons, button_stop)) 
 button_setting.grid(row=1, column=0, sticky="nsew") 
 button_setting.bind('<Enter>', lambda event: enter(event, button_setting))             
 button_setting.bind('<Leave>', lambda event: exit_(event, button_setting))
+
+button_play_online = Button(left_frame, text='Play Online', width=100-2,padx=0, pady=10, border=0, font=('Helvatical bold', 10), bg = rgb_to_hex(settings.menu_button_color), fg = 'black', image=pixel, compound="c")#, command= lambda: open_settings(home,s,lyst_of_game_buttons, button_stop)) 
+button_play_online.grid(row=2, column=0, sticky="nsew") 
+button_play_online.bind('<Enter>', lambda event: enter(event, button_play_online))             
+button_play_online.bind('<Leave>', lambda event: exit_(event, button_play_online))
+button_play_online.config(state='disabled')
+
+button_play_local = Button(left_frame, text='Play Local', width=100-2,padx=0, pady=10, border=0, font=('Helvatical bold', 10), bg = rgb_to_hex(settings.menu_button_color), fg = 'black', image=pixel, compound="c")#, command= lambda: open_settings(home,s,lyst_of_game_buttons, button_stop)) 
+button_play_local.grid(row=3, column=0, sticky="nsew") 
+button_play_local.bind('<Enter>', lambda event: enter(event, button_play_local))             
+button_play_local.bind('<Leave>', lambda event: exit_(event, button_play_local))
+button_play_local.config(state='disabled')
+
+button_play_bot = Button(left_frame, text='Play Computer', width=100-2,padx=0, pady=10, border=0, font=('Helvatical bold', 10), bg = rgb_to_hex(settings.menu_button_color), fg = 'black', image=pixel, compound="c")#, command= lambda: open_settings(home,s,lyst_of_game_buttons, button_stop)) 
+button_play_bot.grid(row=4, column=0, sticky="nsew") 
+button_play_bot.bind('<Enter>', lambda event: enter(event, button_play_bot))             
+button_play_bot.bind('<Leave>', lambda event: exit_(event, button_play_bot))
+button_play_bot.config(state='disabled')
+
+#stuff inside right side bar: move history, and ...
+move_history_frame = Frame(right_frame, bg=rgb_to_hex(settings.menu_button_highlight_color))
+move_history_frame.pack(fill="both", expand=True, padx=20, pady=(300, 100))
+
+# Create a Text widget
+text_widget = tk.Text(move_history_frame, wrap="word", state=tk.DISABLED, bg='grey', width=1,height=1)
+text_widget.pack(side="left", fill="both", expand=True, pady=(0,50))
+
+# Create a Scrollbar widget and attach it to the Text widget
+scrollbar = ttk.Scrollbar(move_history_frame, command=text_widget.yview)
+scrollbar.pack(side="right", fill="y", pady=(0,50))
+text_widget.config(yscrollcommand=scrollbar.set)
+# text_widget.insert(tk.END, text)
+
 
 #usefull when i need to modify every single button
 lyst_of_game_buttons = [button_stop, button_setting]
