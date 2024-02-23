@@ -29,7 +29,7 @@ game history
 # from PIL import Image, ImageTk
 
 
-from chess_classes import *
+from chess_pieces import *
 
 
 root = tk.Tk() 
@@ -42,8 +42,8 @@ root.config(bg = 'grey')
 
 position_start = []
 position_end = []
-whites_turn= [True]
-move_history = []
+
+
 
 
 list_of_pieces_classes = [Rook, Knight, Bishop, Queen, King, Pawn, EmptySquare]
@@ -105,6 +105,57 @@ h = [w_rook1, w_knigt1, w_bishop1, w_queen, w_king, w_bishop2, w_knigt2, w_rook2
 
 board = [a,b,c,d,e,f,g,h]
 
+class GameStateTracker():
+    def __init__(self):
+        self.master_move_history = []
+        self.move_count = 0
+        self.current_displayed_move = 0
+        self.whites_turn = True
+
+        self.master_move_history.append([])
+        for x in range(8):
+            self.master_move_history[-1].append([])
+            for y in range(8):
+                self.master_move_history[-1][-1].append(board[x][y])
+    
+    def piece_was_moved(self):
+        self.move_count += 1
+        self.current_displayed_move = self.move_count
+        update_board(board)
+        
+        if self.move_count % 2 == 0:
+            self.whites_turn = True
+        else:
+            self.whites_turn = False
+
+        self.master_move_history.append([])
+        for x in range(8):
+            self.master_move_history[-1].append([])
+            for y in range(8):
+                self.master_move_history[-1][-1].append(board[x][y])
+
+        # count=0
+        # print('-----------------------')
+        # for z in self.master_move_history:
+        #     print()
+        #     for y in z:
+        #         for x in y:
+        #             count+=1
+        #             print(x.char_name,end=' ')
+        #             if count % 8 == 0:
+        #                 print()
+    
+    def show_previous_move(self):
+        if self.current_displayed_move > 0:
+            self.current_displayed_move += -1
+            update_board(self.master_move_history[self.current_displayed_move])
+            print(self.current_displayed_move)
+    
+    def show_next_move(self):
+        if self.current_displayed_move < self.move_count:
+            self.current_displayed_move += 1
+            update_board(self.master_move_history[self.current_displayed_move])
+            print(self.current_displayed_move)
 
 
 class WindowTracker():
@@ -124,7 +175,7 @@ class WindowTracker():
             self._func_id = None
 
     def resize(self, event, board):
-        if(event.widget == self.root and
+        if( event.widget == self.root and
            (self.width != event.width or self.height != event.height)):
             # print(f'{event.height}, {event.width}')
             self.width, self.height = event.width, event.height
@@ -132,20 +183,20 @@ class WindowTracker():
 
             # scale = min(self.width, self.height)
             if self.width*(8/12) >= self.height*(8/12):
-                chess_board_width = self.height * (10/12)
-                side_bar_width = (self.width-chess_board_width)/2
-                settings.size = int(chess_board_width*(1/10))
+                self.chess_board_width = self.height * (10/12)
+                self.side_bar_width = (self.width-self.chess_board_width)/2
+                settings.size = int(self.chess_board_width*(1/10))
 
 
             elif self.width*(8/12) < self.height*(8/12):
-                chess_board_width = self.width * (10/12)
-                side_bar_width = (self.width-chess_board_width)/2
-                settings.size = int(chess_board_width*(1/10))
+                self.chess_board_width = self.width * (10/12)
+                self.side_bar_width = (self.width-self.chess_board_width)/2
+                settings.size = int(self.chess_board_width*(1/10))
 
             else:
                 print('something else')
 
-            rescale_game(board,int(side_bar_width), int(chess_board_width))
+            rescale_game(board,int(self.side_bar_width), int(self.chess_board_width))
 
 def rescale_game(board,side_bar_width,chess_board_width):
     left_frame.place(x=0, y=0, width=side_bar_width, height=tracker.height)
@@ -164,7 +215,7 @@ def rescale_game(board,side_bar_width,chess_board_width):
                 board_of_buttons[x][y].config(width=int(chess_board_width*(1/8))-1, height=int(chess_board_width*(1/8)), image=board[x][y].rescale_img())
             else:
                 board_of_buttons[x][y].config(width=int(chess_board_width*(1/8))-1, height=int(chess_board_width*(1/8)), image=board[x][y].image)
-
+    
     # print(f"{tracker.width=}")
 
 def enter(event, button): # function to be called when mouse enters in a frame
@@ -180,9 +231,8 @@ def show_legal_moves(board, position_start):
         for y in range(8):
             
             temp_position_end = [x,y]
-            #make sure function (.is_legal) doesn't manipulate any global variables
            
-            if board[position_start[0]][position_start[1]].is_legal(whites_turn, board, position_start, temp_position_end) == True:
+            if board[position_start[0]][position_start[1]].is_legal(game_state.whites_turn, board, position_start, temp_position_end) == True:
                 if settings.show_legal_moves == True:
                     board_of_buttons[x][y].config(image=board[x][y].show_legal_move_img)
     
@@ -248,25 +298,21 @@ def update_ampasant():
         #         print(1,end='')
         
         
-            if board[x][y].color == 'white' and whites_turn[0] == False:
+            if board[x][y].color == 'white' and game_state.whites_turn == False:
                 board[x][y].can_be_taken_by_ampasant = False
                 
-            elif board[x][y].color == 'black' and whites_turn[0] == True:
+            elif board[x][y].color == 'black' and game_state.whites_turn == True:
                 board[x][y].can_be_taken_by_ampasant = False
                 
     # print('\n')
 
-def update_board():
+def update_board(board_state):
+    resized_empty_square = 0
     for x in range(8):
         for y in range(8):
-            board_of_buttons[x][y].config(image = board[x][y].image)
-
-def update_turn():
-    if whites_turn[0] == True:
-        whites_turn[0] = False
-    elif whites_turn[0] == False:
-        whites_turn[0] = True
-
+            board_of_buttons[x][y].config(image = board_state[x][y].image)
+    
+           
 def rgb_to_hex(rgb):
     """
     translates an rgb tuple of int to hexadecimal: a tkinter friendly color code
@@ -304,6 +350,16 @@ def reset_board_bg(wipe=''):
             
 
 def move_piece(board, position_start, position_end):
+    move_start = chr(position_start[1]+97) + str(8-position_start[0]) 
+    move_end = chr(position_end[1]+97) + str(8-position_end[0])
+    
+    text = f"{board[position_start[0]][position_start[1]].annotated_name[1]}{move_start}{'x' if board[position_end[0]][position_end[1]].name != 'empty_square' else ''}{board[position_end[0]][position_end[1]].annotated_name[1]}{move_end}"
+    text = f"{text:<8}"
+    text_widget.config(state=NORMAL)
+    text_widget.insert(tk.END, text)
+    text_widget.insert(tk.END, '\n\n' if game_state.whites_turn == False else '  ')
+    text_widget.config(state=DISABLED)
+    
     #extra command if pawn is taking using ampasant
     if board[position_start[0]][position_start[1]].is_taking_by_ampasant[0] == True:
         board[position_end[0]+board[position_start[0]][position_start[1]].is_taking_by_ampasant[1]][position_end[1]] = board[position_end[0]][position_end[1]]
@@ -314,13 +370,9 @@ def move_piece(board, position_start, position_end):
     board[position_end[0]][position_end[1]].has_moved = True
 
     
-    move_start = chr(position_start[1]+97) + str(8-position_start[0]) 
-    move_end = chr(position_end[1]+97) + str(8-position_end[0])
-
-    text = f"{move_start} --> {move_end}\n"
-    text_widget.config(state=NORMAL)
-    text_widget.insert(tk.END, text)
-    text_widget.config(state=DISABLED)
+        
+    
+    
     
 def pressed(a, b, position_start, position_end, board):
     button = board_of_buttons[a][b]
@@ -331,7 +383,7 @@ def pressed(a, b, position_start, position_end, board):
     #highlights the square you clicked on
     button.config(bg = rgb_to_hex(settings.highlight_square_color))
 
-    if board[a][b].color == 'white' and whites_turn[0] == True or board[a][b].color == 'black' and whites_turn[0] == False:
+    if board[a][b].color == 'white' and game_state.whites_turn == True or board[a][b].color == 'black' and game_state.whites_turn == False:
         for i in range(len(position_start)):
             position_start.pop(0)
 
@@ -349,7 +401,7 @@ def pressed(a, b, position_start, position_end, board):
         # print('position end after = ',position_end)
 
         #print(board[position_start[0]][position_start[1]].name)
-        valid_move = board[position_start[0]][position_start[1]].is_legal(whites_turn, board, position_start, position_end)
+        valid_move = board[position_start[0]][position_start[1]].is_legal(game_state.whites_turn, board, position_start, position_end)
 
         if valid_move == True:
             check_if_promoting()
@@ -370,8 +422,8 @@ def pressed(a, b, position_start, position_end, board):
             else:
                 board_of_buttons[position_start[0]][position_start[1]].config(bg = rgb_to_hex(settings.primary_move_color))
 
-            update_board()
-            update_turn()
+            update_board(board)
+            game_state.piece_was_moved()
 
         else:
             pass
@@ -391,6 +443,8 @@ def pressed(a, b, position_start, position_end, board):
     
     # print(f"row = {a}, col = {b}")
 
+#tracks vaiables and different game states
+game_state = GameStateTracker()
 
 #tracks the screen size
 tracker = WindowTracker(root)
@@ -486,17 +540,28 @@ button_play_bot.config(state='disabled')
 
 #stuff inside right side bar: move history, and ...
 move_history_frame = Frame(right_frame, bg=rgb_to_hex(settings.menu_button_highlight_color))
-move_history_frame.pack(fill="both", expand=True, padx=20, pady=(300, 100))
+move_history_frame.pack(fill="both", expand=True, padx=20, pady=(150, 250))
 
+move_history_text_frame = Frame(move_history_frame,bg='green')
+move_history_text_frame.pack(side=TOP, fill=BOTH, expand=True, ipady=50)
 # Create a Text widget
-text_widget = tk.Text(move_history_frame, wrap="word", state=tk.DISABLED, bg='grey', width=1,height=1)
-text_widget.pack(side="left", fill="both", expand=True, pady=(0,50))
+text_widget = tk.Text(move_history_text_frame, font=("Helvetica", 12), wrap="word", state=tk.DISABLED, bg='grey', width=1,height=1)
+text_widget.pack(side=LEFT, fill=BOTH, expand=True)
 
 # Create a Scrollbar widget and attach it to the Text widget
-scrollbar = ttk.Scrollbar(move_history_frame, command=text_widget.yview)
-scrollbar.pack(side="right", fill="y", pady=(0,50))
+scrollbar = ttk.Scrollbar(move_history_text_frame, command=text_widget.yview)
+scrollbar.pack(side="right", fill="y")
 text_widget.config(yscrollcommand=scrollbar.set)
-# text_widget.insert(tk.END, text)
+
+# create a forward and back button for move history
+move_history_button_frame = Frame(move_history_frame, bg = 'blue')
+move_history_button_frame.pack(side=BOTTOM, fill=BOTH, expand=True)
+
+move_back_history = Button(move_history_button_frame,text='Back', width=1, height=1,border=1, relief=SOLID, font=('Helvatical bold', 10), bg = rgb_to_hex(settings.menu_button_color), fg = 'black', image=pixel, compound="c", command= lambda: game_state.show_previous_move())
+move_back_history.pack(side=LEFT, padx=0, pady=0, fill=BOTH, expand=True)
+
+move_forward_history = Button(move_history_button_frame,text='Forward', width=1, height=1, border=1, relief=SOLID, font=('Helvatical bold', 10), bg = rgb_to_hex(settings.menu_button_color), fg = 'black', image=pixel, compound="c", command= lambda: game_state.show_next_move())
+move_forward_history.pack(side=RIGHT, padx=0, pady=0, fill=BOTH, expand=True)
 
 
 #usefull when i need to modify every single button

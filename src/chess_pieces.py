@@ -74,15 +74,16 @@ class Piece():
     
    
     def is_pieces_turn(self, valid_move, whites_turn):
-        if whites_turn[0] == True and self.color == 'white' and valid_move == True:
+        if whites_turn == True and self.color == 'white' and valid_move == True:
             return valid_move
 
-        elif whites_turn[0] == False and self.color == 'black' and valid_move == True:
+        elif whites_turn == False and self.color == 'black' and valid_move == True:
             return valid_move
 
         else:
             if valid_move == True:
                 print(f"Its not your turn")
+                print(f"{whites_turn=}")
             valid_move = False
             return valid_move
         
@@ -97,7 +98,7 @@ class Piece():
         if depth >= 1 and valid_move == True:
             temp_empty_square = EmptySquare()
             temp_board = [ row.copy() for row in board]
-            temp_whites_turn = whites_turn.copy()
+            temp_whites_turn = bool(whites_turn)
 
             #extra line that only runs if taking thru ampasant
             if board[position_start[0]][position_start[1]].is_taking_by_ampasant[0] == True:
@@ -117,11 +118,11 @@ class Piece():
             
             for i in range(8):
                 for j in range(8):
-                    if temp_board[i][j].name == 'black_king' and temp_whites_turn == [False] or temp_board[i][j].name == 'white_king' and temp_whites_turn == [True]:
+                    if temp_board[i][j].name == 'black_king' and temp_whites_turn == False or temp_board[i][j].name == 'white_king' and temp_whites_turn == True:
                         temp_position_end = [i,j]
                         
             #flip var from True to False or False to True
-            temp_whites_turn[0] = not temp_whites_turn[0]
+            temp_whites_turn = not temp_whites_turn
             depth += -1
             for x in range(8):
                 for y in range(8):
@@ -142,6 +143,7 @@ class EmptySquare(Piece):
     def __init__(self):
         self.name = 'empty_square'
         self.char_name = '☐'
+        self.annotated_name = ['','']
         self.color = 'None'
 
         super().__init__(self.color)
@@ -159,8 +161,10 @@ class King(Piece):
         self.name = f"{color}_king"
         if color == 'white':
             self.char_name = '♚'
+            self.annotated_name = ['♚','K']
         else:
             self.char_name = '♔'
+            self.annotated_name = ['♔','K']
         super().__init__(color)
 
     
@@ -181,7 +185,7 @@ class King(Piece):
             temp_valid_move = bool(valid_move)
             if abs(position_start[1] - position_end[1]) == 2 and position_start[0] - position_end[0] == 0:
                 rook_pos = []
-                if whites_turn[0] == True:
+                if whites_turn == True:
                     colors_row = 7
                 else:
                     colors_row = 0
@@ -197,7 +201,7 @@ class King(Piece):
                     for x in rook_pos:
                         if position_end[1] < position_start[1] and x < king_pos:
                             for y in range(x+1, king_pos):
-                                print(y,':',board[colors_row][y].name)
+                                # print(y,':',board[colors_row][y].name)
                                 if board[colors_row][y].name != 'empty_square':
                                     # print('Rule Break: cant castle thru ',board[colors_row][y].name)
                                     temp_valid_move = False
@@ -239,8 +243,10 @@ class Pawn(Piece):
 
         if color == 'white':
             self.char_name = '♟'
+            self.annotated_name = ['♟','']
         else:
             self.char_name = '♙'
+            self.annotated_name = ['♙','']
 
         super().__init__(color)
 
@@ -328,8 +334,10 @@ class Rook(Piece):
 
         if color == 'white':
             self.char_name = '♜'
+            self.annotated_name = ['♜','R']
         else:
             self.char_name = '♖'
+            self.annotated_name = ['♖','R']
 
         super().__init__(color)
 
@@ -395,8 +403,10 @@ class Bishop(Piece):
 
         if color == 'white':
             self.char_name = '♝'
+            self.annotated_name = ['♝','B']
         else:
             self.char_name = '♗'
+            self.annotated_name = ['♗','B']
 
         super().__init__(color)
 
@@ -463,8 +473,10 @@ class Queen(Rook, Bishop):
 
         if color == 'white':
             self.char_name = '♛'
+            self.annotated_name = ['♛','Q']
         else:
             self.char_name = '♕'
+            self.annotated_name = ['♕','Q']
 
         Piece.__init__(self, color)
 
@@ -495,8 +507,10 @@ class Knight(Piece):
 
         if color == 'white':
             self.char_name = '♞'
+            self.annotated_name = ['♞','N']
         else:
             self.char_name = '♘'
+            self.annotated_name = ['♘','N']
 
         super().__init__(color)
 
