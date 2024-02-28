@@ -44,95 +44,100 @@ position_start = []
 position_end = []
 
 
-
-
 list_of_pieces_classes = [Rook, Knight, Bishop, Queen, King, Pawn, EmptySquare]
 
 empty_square = EmptySquare()
 
-b_rook1 = Rook('black')
-b_knigt1 = Knight('black')
-b_bishop1 = Bishop('black')
-b_queen = Queen('black')
-b_king = King('black')
-b_bishop2 = Bishop('black')
-b_knigt2 = Knight('black')
-b_rook2 = Rook('black')
-b_pawn1 = Pawn('black')
-b_pawn2 = Pawn('black')
-b_pawn3 = Pawn('black')
-b_pawn4 = Pawn('black')
-b_pawn5 = Pawn('black')
-b_pawn6 = Pawn('black')
-b_pawn7 = Pawn('black')
-b_pawn8 = Pawn('black')
-w_rook1 = Rook('white')
+# b_rook1 = Rook('black')
+# b_knigt1 = Knight('black')
+# b_bishop1 = Bishop('black')
+# b_queen = Queen('black')
+# b_king = King('black')
+# b_bishop2 = Bishop('black')
+# b_knigt2 = Knight('black')
+# b_rook2 = Rook('black')
+# b_pawn1 = Pawn('black')
+# b_pawn2 = Pawn('black')
+# b_pawn3 = Pawn('black')
+# b_pawn4 = Pawn('black')
+# b_pawn5 = Pawn('black')
+# b_pawn6 = Pawn('black')
+# b_pawn7 = Pawn('black')
+# b_pawn8 = Pawn('black')
+# w_rook1 = Rook('white')
 
-w_knigt1 = Knight('white')
-w_bishop1 = Bishop('white')
-w_queen = Queen('white')
-w_king = King('white')
-w_bishop2 = Bishop('white')
-w_knigt2 = Knight('white')
-w_rook2 = Rook('white')
-w_pawn1 = Pawn('white')
-w_pawn2 = Pawn('white')
-w_pawn3 = Pawn('white')
-w_pawn4 = Pawn('white')
-w_pawn5 = Pawn('white')
-w_pawn6 = Pawn('white')
-w_pawn7 = Pawn('white')
-w_pawn8 = Pawn('white')
-
-
-# a = [empty_square, empty_square, empty_square, b_queen, b_king, b_bishop2, b_knigt2, b_rook2]
-# b = [b_pawn1, b_pawn2, b_pawn3, empty_square, empty_square, empty_square, empty_square, empty_square]
-# c = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
-# d = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
-# e = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
-# f = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
-# g = [w_pawn1, w_pawn2, w_pawn3, empty_square, empty_square, empty_square, empty_square, empty_square]
-# h = [empty_square, empty_square, empty_square, w_queen, w_king, w_bishop2, w_knigt2, w_rook2]
-
-a = [b_rook1, b_knigt1, b_bishop1, b_queen, b_king, b_bishop2, b_knigt2, b_rook2]
-b = [b_pawn1, b_pawn2, b_pawn3, b_pawn4, b_pawn5, b_pawn6, b_pawn7, b_pawn8]
-c = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
-d = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
-e = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
-f = [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square]
-g = [w_pawn1, w_pawn2, w_pawn3, w_pawn4, w_pawn5, w_pawn6, w_pawn7, w_pawn8]
-h = [w_rook1, w_knigt1, w_bishop1, w_queen, w_king, w_bishop2, w_knigt2, w_rook2]
-
-board = [a,b,c,d,e,f,g,h]
+# w_knigt1 = Knight('white')
+# w_bishop1 = Bishop('white')
+# w_queen = Queen('white')
+# w_king = King('white')
+# w_bishop2 = Bishop('white')
+# w_knigt2 = Knight('white')
+# w_rook2 = Rook('white')
+# w_pawn1 = Pawn('white')
+# w_pawn2 = Pawn('white')
+# w_pawn3 = Pawn('white')
+# w_pawn4 = Pawn('white')
+# w_pawn5 = Pawn('white')
+# w_pawn6 = Pawn('white')
+# w_pawn7 = Pawn('white')
+# w_pawn8 = Pawn('white')
 
 class GameStateTracker():
+    def create_new_board(self):
+    
+        self.board = [
+        [Rook('black'), Knight('black'), Bishop('black'), Queen('black'), King('black'), Bishop('black'), Knight('black'), Rook('black')],
+        [Pawn('black'), Pawn('black'), Pawn('black'), Pawn('black'), Pawn('black'), Pawn('black'), Pawn('black'), Pawn('black')],
+        [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square],
+        [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square],
+        [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square],
+        [empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square, empty_square],
+        [Pawn('white'), Pawn('white'), Pawn('white'), Pawn('white'), Pawn('white'), Pawn('white'), Pawn('white'), Pawn('white')],
+        [Rook('white'), Knight('white'), Bishop('white'), Queen('white'), King('white'), Bishop('white'), Knight('white'), Rook('white')]
+            ]
+        try:
+            if board_of_buttons and text_widget:
+                pass
+        except:
+            pass
+        else:
+                update_board(self.board)
+                reset_board_bg('wipe')
+                clear_text_widget(text_widget)
+
+                
+        
+
     def __init__(self):
         self.master_move_history = []
         self.move_count = 0
         self.current_displayed_move = 0
         self.whites_turn = True
 
+        self.create_new_board()
+
         self.master_move_history.append([])
         for x in range(8):
             self.master_move_history[-1].append([])
             for y in range(8):
-                self.master_move_history[-1][-1].append(board[x][y])
+                self.master_move_history[-1][-1].append(self.board[x][y])
     
     def piece_was_moved(self):
         self.move_count += 1
         self.current_displayed_move = self.move_count
-        update_board(board)
+        update_board(self.board)
         
         if self.move_count % 2 == 0:
             self.whites_turn = True
         else:
             self.whites_turn = False
 
+        #stores the current position of each piece into a list of positions
         self.master_move_history.append([])
         for x in range(8):
             self.master_move_history[-1].append([])
             for y in range(8):
-                self.master_move_history[-1][-1].append(board[x][y])
+                self.master_move_history[-1][-1].append(self.board[x][y])
 
         # count=0
         # print('-----------------------')
@@ -157,7 +162,6 @@ class GameStateTracker():
             update_board(self.master_move_history[self.current_displayed_move])
             print(self.current_displayed_move)
 
-
 class WindowTracker():
     """ windows resize event tracker """
 
@@ -166,15 +170,15 @@ class WindowTracker():
         self.width, self.height = root.winfo_width(), root.winfo_height()
         self._func_id = None
 
-    def bind_config(self, board):
-        self._func_id = self.root.bind("<Configure>", lambda event: self.resize(event, board))
+    def bind_config(self, game_state):
+        self._func_id = self.root.bind("<Configure>", lambda event: self.resize(event, game_state))
 
     def unbind_config(self):  # Untested.
         if self._func_id: 
             self.root.unbind("<Configure>", self._func_id)
             self._func_id = None
 
-    def resize(self, event, board):
+    def resize(self, event, game_state):
         if( event.widget == self.root and
            (self.width != event.width or self.height != event.height)):
             # print(f'{event.height}, {event.width}')
@@ -196,9 +200,9 @@ class WindowTracker():
             else:
                 print('something else')
 
-            rescale_game(board,int(self.side_bar_width), int(self.chess_board_width))
+            rescale_game(game_state,int(self.side_bar_width), int(self.chess_board_width))
 
-def rescale_game(board,side_bar_width,chess_board_width):
+def rescale_game(game_state,side_bar_width,chess_board_width):
     left_frame.place(x=0, y=0, width=side_bar_width, height=tracker.height)
     right_frame.place(x=side_bar_width+chess_board_width, y=0, width=side_bar_width+3, height=tracker.height)
     center_frame.place(x=side_bar_width, y=0, width=chess_board_width, height=tracker.height)
@@ -209,12 +213,12 @@ def rescale_game(board,side_bar_width,chess_board_width):
     resized_empty_square = 0
     for x in range(8):
         for y in range(8):
-            if board[x][y].name == 'empty_square':
+            if game_state.board[x][y].name == 'empty_square':
                 resized_empty_square += 1
-            if board[x][y].name != 'empty_square' or resized_empty_square == 1:
-                board_of_buttons[x][y].config(width=int(chess_board_width*(1/8))-1, height=int(chess_board_width*(1/8)), image=board[x][y].rescale_img())
+            if game_state.board[x][y].name != 'empty_square' or resized_empty_square == 1:
+                board_of_buttons[x][y].config(width=int(chess_board_width*(1/8))-1, height=int(chess_board_width*(1/8)), image=game_state.board[x][y].rescale_img())
             else:
-                board_of_buttons[x][y].config(width=int(chess_board_width*(1/8))-1, height=int(chess_board_width*(1/8)), image=board[x][y].image)
+                board_of_buttons[x][y].config(width=int(chess_board_width*(1/8))-1, height=int(chess_board_width*(1/8)), image=game_state.board[x][y].image)
     
     # print(f"{tracker.width=}")
 
@@ -226,15 +230,13 @@ def exit_(event, button): # function to be called when mouse exits the frame
     button.config(bg=rgb_to_hex(settings.menu_button_color))
 	# print('Button-3 pressed at x = % d, y = % d'%(event.x, event.y))  
 
-def show_legal_moves(board, position_start):
+def show_legal_moves(game_state, position_start):
     for x in range(8):
         for y in range(8):
-            
             temp_position_end = [x,y]
-           
-            if board[position_start[0]][position_start[1]].is_legal(game_state.whites_turn, board, position_start, temp_position_end) == True:
+            if game_state.board[position_start[0]][position_start[1]].is_legal(bool(game_state.whites_turn),game_state, position_start, temp_position_end) == True:
                 if settings.show_legal_moves == True:
-                    board_of_buttons[x][y].config(image=board[x][y].show_legal_move_img)
+                    board_of_buttons[x][y].config(image=game_state.board[x][y].show_legal_move_img)
     
 def exit_settings(r, s):
     root.overrideredirect(settings.display == 'full_screen')
@@ -256,37 +258,37 @@ def open_settings(r, s, lyst_of_game_buttons, button_stop):
     s.lift(r)
     
 def check_if_promoting():
-    if board[position_start[0]][position_start[1]].name == 'white_pawn' or board[position_start[0]][position_start[1]].name == 'black_pawn':
-        if board[position_start[0]][position_start[1]].promoted == True:
+    if game_state.board[position_start[0]][position_start[1]].name == 'white_pawn' or game_state.board[position_start[0]][position_start[1]].name == 'black_pawn':
+        if game_state.board[position_start[0]][position_start[1]].promoted == True:
             if settings.auto_queen == True:
-                board[position_start[0]][position_start[1]] = Queen(board[position_start[0]][position_start[1]].color)
+                game_state.board[position_start[0]][position_start[1]] = Queen(game_state.board[position_start[0]][position_start[1]].color)
             else:
                 #open promotion window Here
-                board[position_start[0]][position_start[1]] = Queen(board[position_start[0]][position_start[1]].color)
+                game_state.board[position_start[0]][position_start[1]] = Queen(game_state.board[position_start[0]][position_start[1]].color)
                 print("NO INSTRUCTION FOR NON AUTO QUEEN PROMOTION")
 
 def check_if_castling():
         #if your moving a king piece 2 square to either side
-        if (board[position_start[0]][position_start[1]].name == 'white_king' and abs(position_start[1] - position_end[1]) == 2
-            or board[position_start[0]][position_start[1]].name == 'black_king' and abs(position_start[1] - position_end[1]) == 2):
+        if (game_state.board[position_start[0]][position_start[1]].name == 'white_king' and abs(position_start[1] - position_end[1]) == 2
+            or game_state.board[position_start[0]][position_start[1]].name == 'black_king' and abs(position_start[1] - position_end[1]) == 2):
 
             #if you castling to the right
             if position_start[1] > position_end[1]:
                 for i in range(0, position_end[1]):
                     #if the for loop finds a rook, break
-                    if board[position_start[0]][i].name == 'black_rook' and board[position_start[0]][position_start[1]].name == 'black_king' or board[position_start[0]][i].name == 'white_rook' and board[position_start[0]][position_start[1]].name == 'white_king':
+                    if game_state.board[position_start[0]][i].name == 'black_rook' and game_state.board[position_start[0]][position_start[1]].name == 'black_king' or game_state.board[position_start[0]][i].name == 'white_rook' and game_state.board[position_start[0]][position_start[1]].name == 'white_king':
                         break
 
-                board[position_end[0]][position_end[1]+1] = board[position_start[0]][i]
-                board[position_start[0]][i] = empty_square
+                game_state.board[position_end[0]][position_end[1]+1] = game_state.board[position_start[0]][i]
+                game_state.board[position_start[0]][i] = empty_square
 
             elif position_start[1] < position_end[1]:
                 for i in range(7, position_end[1], -1):
-                    if board[position_start[0]][i].name == 'black_rook' and board[position_start[0]][position_start[1]].name == 'black_king' or board[position_start[0]][i].name == 'white_rook' and board[position_start[0]][position_start[1]].name == 'white_king':
+                    if game_state.board[position_start[0]][i].name == 'black_rook' and game_state.board[position_start[0]][position_start[1]].name == 'black_king' or game_state.board[position_start[0]][i].name == 'white_rook' and game_state.board[position_start[0]][position_start[1]].name == 'white_king':
                         break
                     
-                board[position_end[0]][position_end[1]-1] = board[position_start[0]][i]
-                board[position_start[0]][i] = empty_square
+                game_state.board[position_end[0]][position_end[1]-1] = game_state.board[position_start[0]][i]
+                game_state.board[position_start[0]][i] = empty_square
 
 def update_ampasant():
     for x in range(8):
@@ -298,11 +300,11 @@ def update_ampasant():
         #         print(1,end='')
         
         
-            if board[x][y].color == 'white' and game_state.whites_turn == False:
-                board[x][y].can_be_taken_by_ampasant = False
+            if game_state.board[x][y].color == 'white' and game_state.whites_turn == False:
+                game_state.board[x][y].can_be_taken_by_ampasant = False
                 
-            elif board[x][y].color == 'black' and game_state.whites_turn == True:
-                board[x][y].can_be_taken_by_ampasant = False
+            elif game_state.board[x][y].color == 'black' and game_state.whites_turn == True:
+                game_state.board[x][y].can_be_taken_by_ampasant = False
                 
     # print('\n')
 
@@ -311,8 +313,7 @@ def update_board(board_state):
     for x in range(8):
         for y in range(8):
             board_of_buttons[x][y].config(image = board_state[x][y].image)
-    
-           
+         
 def rgb_to_hex(rgb):
     """
     translates an rgb tuple of int to hexadecimal: a tkinter friendly color code
@@ -332,7 +333,7 @@ def reset_board_bg(wipe=''):
         # print('\n')
         for y in range(8):
             #clears all overlays
-            board_of_buttons[x][y].config(image=board[x][y].image)
+            board_of_buttons[x][y].config(image=game_state.board[x][y].image)
 
             #clears everything if wipe == 'wipe' 
             if wipe == 'wipe':
@@ -348,12 +349,26 @@ def reset_board_bg(wipe=''):
                 else:
                     board_of_buttons[x][y].config(bg = rgb_to_hex(settings.dark_square_color))
             
+def flip_board(settings, board_of_buttons):
+    settings.whites_perspective = not settings.whites_perspective
+    for x in range(8):
+        for y in range(8):
+            # print(board_of_buttons[x][y])
+            if settings.whites_perspective == True:
+                board_of_buttons[x][y].grid(row=x+1, column=y)
+            else:
+                board_of_buttons[x][y].grid(row=7-x+1, column=y)
 
-def move_piece(board, position_start, position_end):
+def clear_text_widget(text_widget):
+    text_widget.config(state=NORMAL)
+    text_widget.delete(1.0, tk.END)  # Clear from start (1.0) to end (tk.END)
+    text_widget.config(state=DISABLED)
+
+def move_piece(game_state, position_start, position_end):
     move_start = chr(position_start[1]+97) + str(8-position_start[0]) 
     move_end = chr(position_end[1]+97) + str(8-position_end[0])
     
-    text = f"{board[position_start[0]][position_start[1]].annotated_name[1]}{move_start}{'x' if board[position_end[0]][position_end[1]].name != 'empty_square' else ''}{board[position_end[0]][position_end[1]].annotated_name[1]}{move_end}"
+    text = f"{game_state.board[position_start[0]][position_start[1]].annotated_name[1]}{move_start}{'x' if game_state.board[position_end[0]][position_end[1]].name != 'empty_square' else ''}{game_state.board[position_end[0]][position_end[1]].annotated_name[1]}{move_end}"
     text = f"{text:<8}"
     text_widget.config(state=NORMAL)
     text_widget.insert(tk.END, text)
@@ -361,20 +376,15 @@ def move_piece(board, position_start, position_end):
     text_widget.config(state=DISABLED)
     
     #extra command if pawn is taking using ampasant
-    if board[position_start[0]][position_start[1]].is_taking_by_ampasant[0] == True:
-        board[position_end[0]+board[position_start[0]][position_start[1]].is_taking_by_ampasant[1]][position_end[1]] = board[position_end[0]][position_end[1]]
+    if game_state.board[position_start[0]][position_start[1]].is_taking_by_ampasant[0] == True:
+        game_state.board[position_end[0]+game_state.board[position_start[0]][position_start[1]].is_taking_by_ampasant[1]][position_end[1]] = game_state.board[position_end[0]][position_end[1]]
         
-    board[position_end[0]][position_end[1]] = board[position_start[0]][position_start[1]]
-    board[position_start[0]][position_start[1]] = empty_square
+    game_state.board[position_end[0]][position_end[1]] = game_state.board[position_start[0]][position_start[1]]
+    game_state.board[position_start[0]][position_start[1]] = empty_square
     
-    board[position_end[0]][position_end[1]].has_moved = True
-
-    
-        
-    
-    
-    
-def pressed(a, b, position_start, position_end, board):
+    game_state.board[position_end[0]][position_end[1]].has_moved = True
+         
+def pressed(a, b, position_start, position_end, game_state):
     button = board_of_buttons[a][b]
 
     #resets the boards backgrounds to remove button click highlights
@@ -383,7 +393,7 @@ def pressed(a, b, position_start, position_end, board):
     #highlights the square you clicked on
     button.config(bg = rgb_to_hex(settings.highlight_square_color))
 
-    if board[a][b].color == 'white' and game_state.whites_turn == True or board[a][b].color == 'black' and game_state.whites_turn == False:
+    if game_state.board[a][b].color == 'white' and game_state.whites_turn == True or game_state.board[a][b].color == 'black' and game_state.whites_turn == False:
         for i in range(len(position_start)):
             position_start.pop(0)
 
@@ -393,7 +403,7 @@ def pressed(a, b, position_start, position_end, board):
             position_start.append(b)
             # print('position start after = ',position_start)
 
-            show_legal_moves(board, position_start)
+            show_legal_moves(game_state, position_start)
         
     elif len(position_start) == 2:
         position_end.append(a)
@@ -401,14 +411,14 @@ def pressed(a, b, position_start, position_end, board):
         # print('position end after = ',position_end)
 
         #print(board[position_start[0]][position_start[1]].name)
-        valid_move = board[position_start[0]][position_start[1]].is_legal(game_state.whites_turn, board, position_start, position_end)
+        valid_move = game_state.board[position_start[0]][position_start[1]].is_legal(bool(game_state.whites_turn), game_state, position_start, position_end)
 
         if valid_move == True:
             check_if_promoting()
             check_if_castling()
             update_ampasant()
 
-            move_piece(board, position_start, position_end)
+            move_piece(game_state, position_start, position_end)
 
             reset_board_bg('wipe')
 
@@ -422,7 +432,7 @@ def pressed(a, b, position_start, position_end, board):
             else:
                 board_of_buttons[position_start[0]][position_start[1]].config(bg = rgb_to_hex(settings.primary_move_color))
 
-            update_board(board)
+            update_board(game_state.board)
             game_state.piece_was_moved()
 
         else:
@@ -446,9 +456,11 @@ def pressed(a, b, position_start, position_end, board):
 #tracks vaiables and different game states
 game_state = GameStateTracker()
 
+game_state.create_new_board()
+
 #tracks the screen size
 tracker = WindowTracker(root)
-tracker.bind_config(board)
+tracker.bind_config(game_state)
 
 #used to make buttons with text resize according to pixels not text
 pixel = PhotoImage(width=1, height=1)
@@ -482,6 +494,7 @@ top_bar.grid(column=0, row=0, columnspan=8, sticky=NSEW)
 
 board_of_buttons = []
 
+
 for x in range(8):
     lyst = []
     for y in range(8):
@@ -489,20 +502,19 @@ for x in range(8):
             bg_color = rgb_to_hex(settings.light_square_color)
         else:
             bg_color = rgb_to_hex(settings.dark_square_color)
-        button_on_board = tk.Button(center_frame,image = board[x][y].image, bg = bg_color, activebackground=bg_color, width = (400/8)-2, height = (400/8)-2, border=0)
+        button_on_board = tk.Button(center_frame,image = game_state.board[x][y].image, bg = bg_color, activebackground=bg_color, width = (400/8)-2, height = (400/8)-2, border=0)
         button_on_board.x, button_on_board.y = int(x), int(y)
-        button_on_board.grid(row=x+1,column=y)
+        if settings.whites_perspective == True:
+            button_on_board.grid(row=x+1,column=y)
+        else:
+            button_on_board.grid(row=x+1,column=y)
 
         lyst.append(button_on_board)
     board_of_buttons.append(list(lyst))
 
 for x in range(8):
     for y in range(8):
-        # print(int(board_of_buttons[x][y].x), int(board_of_buttons[x][y].y))
-        board_of_buttons[x][y].config(command= lambda x=x, y=y: pressed(x, y, position_start, position_end, board))
-
-
-
+        board_of_buttons[x][y].config(command= lambda x=x, y=y: pressed(x, y, position_start, position_end, game_state))
 
 
 center_frame.rowconfigure(9, weight=1)
@@ -539,14 +551,25 @@ button_play_bot.bind('<Leave>', lambda event: exit_(event, button_play_bot))
 button_play_bot.config(state='disabled')
 
 #stuff inside right side bar: move history, and ...
+reset_board_button = Button(right_frame, text='Reset Board', width=100-2,padx=0, pady=10, border=0, font=('Helvatical bold', 10), bg = rgb_to_hex(settings.menu_button_color), fg = 'black', image=pixel, compound="c", command= lambda: game_state.create_new_board())
+reset_board_button.pack(side=TOP, fill=X) 
+reset_board_button.bind('<Enter>', lambda event: enter(event, reset_board_button))             
+reset_board_button.bind('<Leave>', lambda event: exit_(event, reset_board_button))
+
+flip_board_button = Button(right_frame, text='Flip Board', width=100-2,padx=0, pady=10, border=0, font=('Helvatical bold', 10), bg = rgb_to_hex(settings.menu_button_color), fg = 'black', image=pixel, compound="c", command= lambda: flip_board(settings, board_of_buttons)) 
+flip_board_button.pack(side=TOP, fill=X) 
+flip_board_button.bind('<Enter>', lambda event: enter(event, flip_board_button))             
+flip_board_button.bind('<Leave>', lambda event: exit_(event, flip_board_button))
+
+
 move_history_frame = Frame(right_frame, bg=rgb_to_hex(settings.menu_button_highlight_color))
 move_history_frame.pack(fill="both", expand=True, padx=20, pady=(150, 250))
 
-move_history_text_frame = Frame(move_history_frame,bg='green')
-move_history_text_frame.pack(side=TOP, fill=BOTH, expand=True, ipady=50)
+move_history_text_frame = Frame(move_history_frame, bg='green')
+move_history_text_frame.grid(row=0, column=0, sticky="nsew")
 # Create a Text widget
-text_widget = tk.Text(move_history_text_frame, font=("Helvetica", 12), wrap="word", state=tk.DISABLED, bg='grey', width=1,height=1)
-text_widget.pack(side=LEFT, fill=BOTH, expand=True)
+text_widget = tk.Text(move_history_text_frame, font=("Helvetica", 12), wrap="word", state=tk.DISABLED, bg=rgb_to_hex(settings.menu_button_highlight_color), width=1,height=1)
+text_widget.pack(side=LEFT, fill="both", expand=True)
 
 # Create a Scrollbar widget and attach it to the Text widget
 scrollbar = ttk.Scrollbar(move_history_text_frame, command=text_widget.yview)
@@ -554,18 +577,23 @@ scrollbar.pack(side="right", fill="y")
 text_widget.config(yscrollcommand=scrollbar.set)
 
 # create a forward and back button for move history
-move_history_button_frame = Frame(move_history_frame, bg = 'blue')
-move_history_button_frame.pack(side=BOTTOM, fill=BOTH, expand=True)
+move_history_button_frame = Frame(move_history_frame, bg='blue')
+move_history_button_frame.grid(row=1, column=0, sticky="nsew")
 
-move_back_history = Button(move_history_button_frame,text='Back', width=1, height=1,border=1, relief=SOLID, font=('Helvatical bold', 10), bg = rgb_to_hex(settings.menu_button_color), fg = 'black', image=pixel, compound="c", command= lambda: game_state.show_previous_move())
-move_back_history.pack(side=LEFT, padx=0, pady=0, fill=BOTH, expand=True)
+move_back_history = Button(move_history_button_frame, text='Back', width=1, height=1, border=1, relief=SOLID, font=('Helvatical bold', 10), bg=rgb_to_hex(settings.menu_button_highlight_color), fg='black', image=pixel, compound="c", command=lambda: game_state.show_previous_move())
+move_back_history.pack(side=LEFT, padx=0, pady=0, fill="both", expand=True)
 
-move_forward_history = Button(move_history_button_frame,text='Forward', width=1, height=1, border=1, relief=SOLID, font=('Helvatical bold', 10), bg = rgb_to_hex(settings.menu_button_color), fg = 'black', image=pixel, compound="c", command= lambda: game_state.show_next_move())
-move_forward_history.pack(side=RIGHT, padx=0, pady=0, fill=BOTH, expand=True)
+move_forward_history = Button(move_history_button_frame, text='Forward', width=1, height=1, border=1, relief=SOLID, font=('Helvatical bold', 10), bg=rgb_to_hex(settings.menu_button_highlight_color), fg='black', image=pixel, compound="c", command=lambda: game_state.show_next_move())
+move_forward_history.pack(side=RIGHT, padx=0, pady=0, fill="both", expand=True)
+
+# Configure row and column weights to make both frames take equal space
+move_history_frame.grid_rowconfigure(0, weight=3)
+move_history_frame.grid_rowconfigure(1, weight=1)
+move_history_frame.grid_columnconfigure(0, weight=1)
 
 
 #usefull when i need to modify every single button
-lyst_of_game_buttons = [button_stop, button_setting]
+lyst_of_game_buttons = [button_stop, button_setting, button_play_local, button_play_online, button_play_bot, reset_board_button, flip_board_button]
 for x in board_of_buttons:
     for y in x:
         lyst_of_game_buttons.append(y)

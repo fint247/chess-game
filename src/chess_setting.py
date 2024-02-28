@@ -15,6 +15,9 @@ class Settings():
         self.auto_queen = True #change default to False later
         self.lyst_of_auto_queen_buttons = []
 
+        # 0 = whites perspective and -7 = blacks perspective
+        self.whites_perspective = True
+
         self.display = 'window'
         self.lyst_of_display_buttons = []
 
