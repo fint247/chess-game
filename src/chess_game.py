@@ -46,40 +46,6 @@ list_of_pieces_classes = [Rook, Knight, Bishop, Queen, King, Pawn, EmptySquare]
 
 empty_square = EmptySquare()
 
-# b_rook1 = Rook('black')
-# b_knigt1 = Knight('black')
-# b_bishop1 = Bishop('black')
-# b_queen = Queen('black')
-# b_king = King('black')
-# b_bishop2 = Bishop('black')
-# b_knigt2 = Knight('black')
-# b_rook2 = Rook('black')
-# b_pawn1 = Pawn('black')
-# b_pawn2 = Pawn('black')
-# b_pawn3 = Pawn('black')
-# b_pawn4 = Pawn('black')
-# b_pawn5 = Pawn('black')
-# b_pawn6 = Pawn('black')
-# b_pawn7 = Pawn('black')
-# b_pawn8 = Pawn('black')
-# w_rook1 = Rook('white')
-
-# w_knigt1 = Knight('white')
-# w_bishop1 = Bishop('white')
-# w_queen = Queen('white')
-# w_king = King('white')
-# w_bishop2 = Bishop('white')
-# w_knigt2 = Knight('white')
-# w_rook2 = Rook('white')
-# w_pawn1 = Pawn('white')
-# w_pawn2 = Pawn('white')
-# w_pawn3 = Pawn('white')
-# w_pawn4 = Pawn('white')
-# w_pawn5 = Pawn('white')
-# w_pawn6 = Pawn('white')
-# w_pawn7 = Pawn('white')
-# w_pawn8 = Pawn('white')
-
 class GameStateTracker():
     def create_new_board(self, position_start, position_end):
         self.__init__()
@@ -225,6 +191,9 @@ def rescale_game(game_state,game_widgets, side_bar_width,chess_board_width):
             else:
                 game_widgets.board_of_buttons[x][y].config(width=int(chess_board_width*(1/8))-1, height=int(chess_board_width*(1/8)), image=game_state.board[x][y].image)
     
+    game_widgets.text_widget.config(font=("Helvetica", side_bar_width//20))
+
+
     # print(f"{tracker.width=}")
 
 def enter(event, button): # function to be called when mouse enters in a frame
@@ -573,12 +542,12 @@ class GameWidgets():
 
     def make_move_history(self):
         self.move_history_frame = Frame(self.right_frame, bg=rgb_to_hex(settings.menu_button_highlight_color))
-        self.move_history_frame.pack()
+        self.move_history_frame.pack(pady=(10,0))
 
         self.move_history_text_frame = Frame(self.move_history_frame, bg='green')
         self.move_history_text_frame.grid(row=0, column=0, sticky="nsew")
         # Create a Text widget
-        self.text_widget = tk.Text(self.move_history_text_frame,width=settings.size//2, height=settings.size//5, font=("Helvetica", 12), wrap="word", state=tk.DISABLED, bg=rgb_to_hex(settings.menu_button_highlight_color))
+        self.text_widget = tk.Text(self.move_history_text_frame,width=int(settings.size//2.1), height=settings.size//5, font=("Helvetica", 12), wrap="word", state=tk.DISABLED, bg=rgb_to_hex(settings.menu_button_highlight_color))
         self.text_widget.pack(side=LEFT, fill="both", expand=True)
 
         # Create a Scrollbar widget and attach it to the Text widget
@@ -603,10 +572,10 @@ class GameWidgets():
 
     def make1_lyst_of_game_buttons(self):
         #usefull when i need to modify every single button
-        lyst_of_game_buttons = [self.button_stop, self.button_setting, self.button_play_local, self.button_play_online, self.button_play_bot, self.reset_board_button, self.flip_board_button]
+        self.lyst_of_game_buttons = [self.button_stop, self.button_setting, self.button_play_local, self.button_play_online, self.button_play_bot, self.reset_board_button, self.flip_board_button]
         for x in self.board_of_buttons:
             for y in x:
-                lyst_of_game_buttons.append(y)
+                self.lyst_of_game_buttons.append(y)
 
 
 #tracks vaiables and different game states
