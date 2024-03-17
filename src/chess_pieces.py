@@ -96,6 +96,7 @@ class Piece():
             # print(board[position_start[0]][position_start[1]].name)
             valid_move = False
         return valid_move
+    
     def is_king_in_check(self, valid_move, whites_turn, game_state, position_start, position_end, depth):
         if depth >= 1 and valid_move == True:
             temp_board = TempBoardClass()
@@ -104,8 +105,8 @@ class Piece():
             temp_whites_turn = bool(whites_turn)
 
             #extra line that only runs if taking thru ampasant
-            if game_state.board[position_start[0]][position_start[1]].is_taking_by_ampasant[0] == True:
-                game_state.board[position_end[0]+game_state.board[position_start[0]][position_start[1]].is_taking_by_ampasant[1]][position_end[1]] = game_state.board[position_end[0]][position_end[1]]
+            if temp_board.board[position_start[0]][position_start[1]].is_taking_by_ampasant[0] == True:
+                temp_board.board[position_end[0]+temp_board.board[position_start[0]][position_start[1]].is_taking_by_ampasant[1]][position_end[1]] = temp_board.board[position_end[0]][position_end[1]]
         
             temp_board.board[position_end[0]][position_end[1]] = temp_board.board[position_start[0]][position_start[1]]
             temp_board.board[position_start[0]][position_start[1]] = temp_empty_square
