@@ -258,8 +258,8 @@ class Pawn(Piece):
         temp_valid_move = bool(valid_move)
         #check if moving two squares forward
         if position_start[0] == 1 and position_end[0] == 3 and self.color == 'black' and position_start[1] - position_end[1] == 0 and game_state.board[position_start[0]-pos_neg][position_start[1]].name == 'empty_square' and game_state.board[position_start[0]-pos_neg-pos_neg][position_start[1]].name == 'empty_square' or position_start[0] == 6 and position_end[0] == 4 and self.color == 'white' and position_start[1] - position_end[1] == 0 and game_state.board[position_start[0]-pos_neg][position_start[1]].name == 'empty_square' and game_state.board[position_start[0]-pos_neg-pos_neg][position_start[1]].name == 'empty_square':
-            self.can_be_taken_by_ampasant = True
-           
+            if game_state.in_simulation == False:
+                self.can_be_taken_by_ampasant = True
         #check if moving one square forward   
         elif position_start[0] - position_end[0] == 1*pos_neg and position_start[1] - position_end[1] == 0 and game_state.board[position_end[0]][position_end[1]].name == 'empty_square':
             pass
@@ -284,8 +284,14 @@ class Pawn(Piece):
         if not(pos_neg + position_end[0] < 0 or  pos_neg + position_end[0] > 7):#fixed a pawn bug due to pos_neg variable
             if game_state.board[position_end[0]+pos_neg][position_end[1]].name == 'white_pawn' and self.color != game_state.board[position_end[0]+pos_neg][position_end[1]].color or game_state.board[position_end[0]+pos_neg][position_end[1]].name == 'black_pawn' and self.color != game_state.board[position_end[0]+pos_neg][position_end[1]].color:
                 if game_state.board[position_end[0]+pos_neg][position_end[1]].can_be_taken_by_ampasant == True and abs(position_start[1] - position_end[1]) == 1 and position_start[0] - position_end[0] == 1*pos_neg:
-                    # print(position_start,position_end)
-                    # print(game_state.board[position_end[0]+pos_neg][position_end[1]].name,game_state.board[position_end[0]][position_end[1]].name)
+                    # print('')
+                    # print(game_state.board[position_end[0]+pos_neg][position_end[1]].name)
+                    # print(position_start)
+                    # print(position_end)
+                    # print(pos_neg)
+                    # print(game_state.board[position_end[0]+pos_neg][position_end[1]].can_be_taken_by_ampasant)
+                    # print(abs(position_start[1] - position_end[1]))
+                    # print(position_start[0] - position_end[0])
                     self.is_taking_by_ampasant = (True,pos_neg)
                 else:
                     valid_move = False  

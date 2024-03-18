@@ -43,7 +43,7 @@ class Settings():
         bg_color = [169,169,169]
 
 
-        top_frame = Label(s, bg = from_rgb((100,200,100)),bd = 10)
+        top_frame = Label(s, bg = from_rgb(self.setting_header),bd = 10)
         top_frame.pack(side=TOP, fill=X)
 
         exit_button = Button(top_frame, text='Save and Exit', width=7, height=3,font=('Helvatical bold',20), bg = 'teal', fg = 'black', command= lambda: exit_settings(r,s)) 
@@ -94,6 +94,7 @@ class Settings():
         auto_queen_b2.pack(side=RIGHT, padx=5)
         self.lyst_of_auto_queen_buttons.append(auto_queen_b2)
         bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
+        auto_queen_b2.config(state=DISABLED)
 
 
         setting_frame13 = Frame(main_frame, bg = from_rgb(bg_color),bd = 10)
@@ -111,9 +112,9 @@ class Settings():
         bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
 
 
-        setting_frame12 = Frame(main_frame, bg = from_rgb(self.setting_header),bd = 10)
+        setting_frame12 = Frame(main_frame, bg = from_rgb(self.setting_sub_header),bd = 10)
         setting_frame12.pack(side=TOP, fill=X)
-        setting_lbl = Label(setting_frame12, text = f"Display", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(self.setting_header),fg = 'black', pady = 10)
+        setting_lbl = Label(setting_frame12, text = f"Display", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(self.setting_sub_header),fg = 'black', pady = 10)
         setting_lbl.pack()
 
 
@@ -132,9 +133,9 @@ class Settings():
         self.lyst_of_display_buttons.append(windowed_b2)
 
 
-        setting_frame3 = Frame(main_frame, bg = from_rgb(self.setting_header),bd = 10)
+        setting_frame3 = Frame(main_frame, bg = from_rgb(self.setting_sub_header),bd = 10)
         setting_frame3.pack(side=TOP, fill=X)
-        setting_lbl = Label(setting_frame3, text = f"Themes", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(self.setting_header),fg = 'black', pady = 10)
+        setting_lbl = Label(setting_frame3, text = f"Themes", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(self.setting_sub_header),fg = 'black', pady = 10)
         setting_lbl.pack()
         
 
@@ -172,9 +173,9 @@ class Settings():
         bg_color[0], bg_color[1], bg_color[2] = self.change_color(bg_color)
 
 
-        setting_frame9 = Frame(main_frame, bg = from_rgb(self.setting_header),bd = 10)
+        setting_frame9 = Frame(main_frame, bg = from_rgb(self.setting_sub_header),bd = 10)
         setting_frame9.pack(side=TOP, fill=X)
-        setting_lbl = Label(setting_frame9, text = f"Custom Theme", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(self.setting_header),fg = 'black', pady = 10)
+        setting_lbl = Label(setting_frame9, text = f"Custom Theme", width=int(15), height=int(2),font=('Helvatical bold',int(25)), bg = from_rgb(self.setting_sub_header),fg = 'black', pady = 10)
         setting_lbl.pack()
 
 
@@ -287,8 +288,11 @@ class Settings():
         self.bottom_bottom_bar_bg_color = theme.bottom_bottom_bar_bg_color
         
         #settings Colors
-        self.setting_header = (100,150,255)
-
+        self.setting_header = (150, 145, 135)
+        # self.setting_sub_header = (100, 110, 120)
+        self.setting_sub_header = (115, 125, 140)
+        # self.setting_sub_header = (170, 190, 200)
+        
         if button != '':
             for b in self.lyst_of_themes:
                 if button == b:

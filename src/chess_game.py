@@ -42,7 +42,7 @@ position_start = []
 position_end = []
 
 
-list_of_pieces_classes = [Rook, Knight, Bishop, Queen, King, Pawn, EmptySquare]
+# list_of_pieces_classes = [Rook, Knight, Bishop, Queen, King, Pawn, EmptySquare]
 
 empty_square = EmptySquare()
 
@@ -73,6 +73,7 @@ class GameStateTracker():
         self.move_count = 0
         self.current_displayed_move = 0
         self.whites_turn = True
+        self.in_simulation = False
 
         self.board = [
         [Rook('black'), Knight('black'), Bishop('black'), Queen('black'), King('black'), Bishop('black'), Knight('black'), Rook('black')],
@@ -205,12 +206,14 @@ def exit_(event, button): # function to be called when mouse exits the frame
 	# print('Button-3 pressed at x = % d, y = % d'%(event.x, event.y))  
 
 def show_legal_moves(game_state,game_widgets, position_start):
+    game_state.in_simulation = True
     for x in range(8):
         for y in range(8):
             temp_position_end = [x,y]
             if game_state.board[position_start[0]][position_start[1]].is_legal(bool(game_state.whites_turn),game_state, position_start, temp_position_end) == True:
                 if settings.show_legal_moves == True:
                     game_widgets.board_of_buttons[x][y].config(image=game_state.board[x][y].show_legal_move_img)
+    game_state.in_simulation = False
     
 def exit_settings(r, s):
     root.overrideredirect(settings.display == 'full_screen')
@@ -218,17 +221,9 @@ def exit_settings(r, s):
         root.state('zoomed')
     
     r.lift(s)
-
-    for button in game_widgets.lyst_of_game_buttons:
-        button.config(state=NORMAL)
-
     reset_board_bg()
     
 def open_settings(r, s, lyst_of_game_buttons, button_stop):
-    for button in lyst_of_game_buttons:    
-        button.config(state=DISABLED)
-    button_stop.config(state=NORMAL)
-
     s.lift(r)
     
 def check_if_promoting():
@@ -279,6 +274,7 @@ def update_ampasant():
                 
             elif game_state.board[x][y].color == 'black' and game_state.whites_turn == True:
                 game_state.board[x][y].can_be_taken_by_ampasant = False
+            
                 
     # print('\n')
 
@@ -352,6 +348,7 @@ def move_piece(game_state, position_start, position_end):
     #extra command if pawn is taking using ampasant
     
     if game_state.board[position_start[0]][position_start[1]].is_taking_by_ampasant[0] == True:
+        game_state.board[position_start[0]][position_start[1]].is_taking_by_ampasant = (False, False) #resets value to avoid bug
         game_state.board[position_end[0]+game_state.board[position_start[0]][position_start[1]].is_taking_by_ampasant[1]][position_end[1]] = game_state.board[position_end[0]][position_end[1]]
         
     game_state.board[position_end[0]][position_end[1]] = game_state.board[position_start[0]][position_start[1]]
