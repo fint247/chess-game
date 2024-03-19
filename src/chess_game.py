@@ -172,6 +172,53 @@ class WindowTracker():
 
             rescale_game(game_state, game_widgets, int(self.side_bar_width), int(self.chess_board_width))
 
+def time_control_picker(contianer):
+    time_control_bg_color = (150, 145, 135)
+
+    time_control_frame = Frame(contianer, bg=rgb_to_hex(time_control_bg_color))
+    time_control_frame.place(relx=0, rely=0, relwidth=1, relheight=1)
+
+    time_control_menu_frame = Frame(time_control_frame, bg=rgb_to_hex(time_control_bg_color))
+    time_control_menu_frame.place(relx=0,rely=0,relwidth=1,relheight=.1)
+
+    
+
+
+
+    bullet_frame = Frame(time_control_frame, bg=rgb_to_hex(time_control_bg_color))
+    bullet_frame.place(relx=0,rely=.1,relwidth=1,relheight=0.25)
+
+    bullet_lbl = Label(bullet_frame,text='Bullet:')
+    bullet_lbl.pack(fill=BOTH, side=LEFT)
+
+    bullet_button_3 = Button(bullet_frame, text='2|1')
+    bullet_button_3.pack(fill=BOTH,side=RIGHT)
+    bullet_button_2 = Button(bullet_frame, text='1|1')
+    bullet_button_2.pack(fill=BOTH,side=RIGHT)
+    bullet_button_1 = Button(bullet_frame, text='1 min')
+    bullet_button_1.pack(fill=BOTH,side=RIGHT)
+
+    blitz_frame = Frame(time_control_frame)
+
+    rapid_frame = Frame(time_control_frame)
+
+    custom_frame = Frame(time_control_frame)
+
+
+
+
+def start_local_game():
+    time_contol = time_control_picker(game_widgets.center_frame)
+
+
+
+    game_widgets.reset_board_button.config(state=DISABLED)
+    game_state.create_new_board(position_start, position_end)
+
+def start_computer_game():
+    game_widgets.reset_board_button.config(state=DISABLED)
+    game_state.create_new_board(position_start, position_end)
+
 def rescale_game(game_state,game_widgets, side_bar_width,chess_board_width):
     game_widgets.left_frame.place(x=0, y=0, width=side_bar_width, height=tracker.height)
     game_widgets.right_frame.place(x=side_bar_width+chess_board_width, y=0, width=side_bar_width+3, height=tracker.height)
@@ -507,23 +554,23 @@ class GameWidgets():
         self.button_setting.bind('<Enter>', lambda event: enter(event, self.button_setting))             
         self.button_setting.bind('<Leave>', lambda event: exit_(event, self.button_setting))
 
-        self.button_play_online = Button(self.left_frame, text='Play Online', width=100-2,padx=0, pady=10, border=0, font=('Helvatical bold', 10), bg = rgb_to_hex(settings.menu_button_color), fg = 'black', image=pixel, compound="c")#, command= lambda: open_settings(home,s,lyst_of_game_buttons, button_stop)) 
-        self.button_play_online.grid(row=2, column=0, sticky="nsew") 
+        self.button_play_local = Button(self.left_frame, text='Play Local', width=100-2,padx=0, pady=10, border=0, font=('Helvatical bold', 10), bg = rgb_to_hex(settings.menu_button_color), fg = 'black', image=pixel, compound="c", command= lambda: start_local_game()) 
+        self.button_play_local.grid(row=2, column=0, sticky="nsew") 
+        self.button_play_local.bind('<Enter>', lambda event: enter(event, self.button_play_local))             
+        self.button_play_local.bind('<Leave>', lambda event: exit_(event, self.button_play_local))
+
+        self.button_play_bot = Button(self.left_frame, text='Play Computer', width=100-2,padx=0, pady=10, border=0, font=('Helvatical bold', 10), bg = rgb_to_hex(settings.menu_button_color), fg = 'black', image=pixel, compound="c", command= lambda: start_computer_game()) 
+        self.button_play_bot.grid(row=3, column=0, sticky="nsew") 
+        self.button_play_bot.bind('<Enter>', lambda event: enter(event, self.button_play_bot))             
+        self.button_play_bot.bind('<Leave>', lambda event: exit_(event, self.button_play_bot))
+        self.button_play_bot.config(state='disabled')
+
+        self.button_play_online = Button(self.left_frame, text='Play Online', width=100-2,padx=0, pady=10, border=0, font=('Helvatical bold', 10), bg = rgb_to_hex(settings.menu_button_color), fg = 'black', image=pixel, compound="c")#, command= lambda: start_online_game()) 
+        self.button_play_online.grid(row=4, column=0, sticky="nsew") 
         self.button_play_online.bind('<Enter>', lambda event: enter(event, self.button_play_online))             
         self.button_play_online.bind('<Leave>', lambda event: exit_(event, self.button_play_online))
         self.button_play_online.config(state='disabled')
 
-        self.button_play_local = Button(self.left_frame, text='Play Local', width=100-2,padx=0, pady=10, border=0, font=('Helvatical bold', 10), bg = rgb_to_hex(settings.menu_button_color), fg = 'black', image=pixel, compound="c")#, command= lambda: open_settings(home,s,lyst_of_game_buttons, button_stop)) 
-        self.button_play_local.grid(row=3, column=0, sticky="nsew") 
-        self.button_play_local.bind('<Enter>', lambda event: enter(event, self.button_play_local))             
-        self.button_play_local.bind('<Leave>', lambda event: exit_(event, self.button_play_local))
-        self.button_play_local.config(state='disabled')
-
-        self.button_play_bot = Button(self.left_frame, text='Play Computer', width=100-2,padx=0, pady=10, border=0, font=('Helvatical bold', 10), bg = rgb_to_hex(settings.menu_button_color), fg = 'black', image=pixel, compound="c")#, command= lambda: open_settings(home,s,lyst_of_game_buttons, button_stop)) 
-        self.button_play_bot.grid(row=4, column=0, sticky="nsew") 
-        self.button_play_bot.bind('<Enter>', lambda event: enter(event, self.button_play_bot))             
-        self.button_play_bot.bind('<Leave>', lambda event: exit_(event, self.button_play_bot))
-        self.button_play_bot.config(state='disabled')
 
     def make_game_interface_buttons(self):
         #stuff inside right side bar: move history, and ...
@@ -577,7 +624,6 @@ class GameWidgets():
 
 #tracks vaiables and different game states
 game_state = GameStateTracker()
-
 game_state.create_new_board(position_start, position_end)
 
 #used to make buttons with text resize according to pixels not text
