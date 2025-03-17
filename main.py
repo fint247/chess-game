@@ -3,7 +3,11 @@ from algorithm_bot import Bot
 
 
 def main():
-    pass
+    bot = Bot()
+    gui = GUI()
+
+    gui.add_bot(bot)
+
 
 
 if __name__ == "__main__":
