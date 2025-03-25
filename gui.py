@@ -99,10 +99,12 @@ class GUI():
             row = []
             for x in range(8):
                 button = tk.Button(frame, image=gameState.display_board.board[x][y].image, border=0, bg=GUI.theme.light_square if (x + y) % 2 == 0 else GUI.theme.dark_square)
-                button.pos = f"{chr(97+x)}{8-y}"
+                button.pos = f"{chr(97+y)}{8-x}"
+                print(button.pos)
                 button.config(command=lambda pos=button.pos: GUIController.display_pos(pos))
                 row.append(button)
             GUI.chess_buttons.append(row)
+            
 
         # Bind the resize event to dynamically adjust button sizes
         frame.bind("<Configure>", lambda event: UpdateBoard.resize_board(event, frame))
@@ -226,11 +228,10 @@ class UpdateBoard(GameState):
                 GUI.root.after_cancel(UpdateBoard.resize_timer)
 
             # Schedule the resize handling to occur after 100ms
-            UpdateBoard.resize_timer = GUI.root.after(50, lambda: UpdateBoard.rescale_img(event, gameState))
+            UpdateBoard.resize_timer = GUI.root.after(20, lambda: UpdateBoard.rescale_img(event, gameState))
 
     def rescale_img(event, gameState):
         size = min(GUI.game_f.winfo_width(), GUI.game_f.winfo_height()) // 8
-        print(size, UpdateBoard.img_size)
         if(size != UpdateBoard.img_size):
             if size > 0:
                 UpdateBoard.img_size = size
