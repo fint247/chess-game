@@ -46,7 +46,7 @@ class GUI():
     def create_left_content(frame):
         left_widgets = []
 
-        button_stop = tk.Button(frame, text='Exit', command= lambda: GUI_action.destroy_root(GUI.root), border=0, font=GUI.fonts.default_font, bg = GUI.theme.button_color, fg=GUI.theme.text_color, pady=10) 
+        button_stop = tk.Button(frame, text='Exit', command= lambda: GUIController.destroy_root(GUI.root), border=0, font=GUI.fonts.default_font, bg = GUI.theme.button_color, fg=GUI.theme.text_color, pady=10) 
         left_widgets.append(button_stop)
         
         button_setting = tk.Button(frame, text='Settings', border=0, font=GUI.fonts.default_font, bg=GUI.theme.button_color, fg=GUI.theme.text_color, pady=10) 
@@ -66,23 +66,23 @@ class GUI():
         # Packing widgets to the left frame and binding hover events
         for widget in left_widgets:
             widget.pack(side='top', fill="x")
-            widget.bind('<Enter>', lambda event, widget=widget: GUI_action.on_hover(event, widget))
-            widget.bind('<Leave>', lambda event, widget=widget: GUI_action.on_leave(event, widget))
+            widget.bind('<Enter>', lambda event, widget=widget: GUIController.on_hover(event, widget))
+            widget.bind('<Leave>', lambda event, widget=widget: GUIController.on_leave(event, widget))
             
     def create_right_content(frame, gameState):
         right_widgets = []
 
-        reset_button = tk.Button(frame, text='Reset', command=lambda : GUI_action.reset_game(gameState), border=0, font=GUI.fonts.default_font, bg=GUI.theme.button_color, fg=GUI.theme.text_color, pady=10)
+        reset_button = tk.Button(frame, text='Reset', command=lambda : GUIController.reset_game(gameState), border=0, font=GUI.fonts.default_font, bg=GUI.theme.button_color, fg=GUI.theme.text_color, pady=10)
         right_widgets.append(reset_button)
 
-        flip_button = tk.Button(frame, text='Flip', command=lambda: GUI_action.toggle_perspective(), border=0, font=GUI.fonts.default_font, bg=GUI.theme.button_color, fg=GUI.theme.text_color, pady=10)
+        flip_button = tk.Button(frame, text='Flip', command=lambda: GUIController.toggle_perspective(), border=0, font=GUI.fonts.default_font, bg=GUI.theme.button_color, fg=GUI.theme.text_color, pady=10)
         right_widgets.append(flip_button)
 
         # Packing widgets to the right frame and binding hover events
         for widget in right_widgets:
             widget.pack(side='top', fill="x")
-            widget.bind('<Enter>', lambda event, widget=widget: GUI_action.on_hover(event, widget))
-            widget.bind('<Leave>', lambda event, widget=widget: GUI_action.on_leave(event, widget))
+            widget.bind('<Enter>', lambda event, widget=widget: GUIController.on_hover(event, widget))
+            widget.bind('<Leave>', lambda event, widget=widget: GUIController.on_leave(event, widget))
 
     def create_opponent_content(frame):
         tk.Label(frame, text="Opponent", font=GUI.fonts.default_font, bg=GUI.theme.opp_header, fg=GUI.theme.text_color).pack(fill='both', expand=True)
@@ -145,7 +145,7 @@ class GUI():
     def create_setting_layout(frame):
         pass
 
-class GUI_action():
+class GUIController():
     def on_hover(event, button):
         button.config(bg=GUI.theme.button_highlight_color)
 
