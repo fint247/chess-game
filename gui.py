@@ -3,15 +3,15 @@ from gui_settings import *
 from game import GameState
 
 class GUI():
-    def start(gameState = None):   # main function for the GUI
+    def start():   # main function for the GUI
         """Main function to initialize and run the Tkinter GUI"""
         GUI.root = tk.Tk() 
         GUI.root.title('Chess') 
         GUI.root.geometry('900x600-0+0')    # "-0+0" puts window in top right corner
         GUI.root.is_destroying = False
-
-        if gameState is None:
-            gameState = GameState()
+                                                                
+        gameState = GameState()
+        
 
         GUI.theme = DefaultTheme()
         GUI.fonts = defaultFonts()
@@ -34,6 +34,10 @@ class GUI():
         GUI.create_right_content(right_f, gameState)
         GUI.create_opponent_content(opp_f)
         GUI.create_player_content(player_f)
+
+        # Defer the binding until the root and widgets are fully initialized
+        GUI.root.after(0, lambda: GUI.root.bind("<Configure>", lambda event: UpdateBoard.resize_handler(event, gameState)))
+        GUI.root.after(0, lambda: UpdateBoard.resize_handler(None, gameState))
         
         GUI.root.mainloop()
 
@@ -91,10 +95,12 @@ class GUI():
         GUI.chess_buttons = []
 
         # Create the 8x8 chessboard buttons
-        for x in range(8):
+        for y in range(8):
             row = []
-            for y in range(8):
-                button = tk.Button(frame, border=0, bg=GUI.theme.light_square if (x + y) % 2 == 0 else GUI.theme.dark_square)
+            for x in range(8):
+                button = tk.Button(frame, image=gameState.display_board.board[x][y].image, border=0, bg=GUI.theme.light_square if (x + y) % 2 == 0 else GUI.theme.dark_square)
+                button.pos = f"{chr(97+x)}{8-y}"
+                button.config(command=lambda pos=button.pos: GUIController.display_pos(pos))
                 row.append(button)
             GUI.chess_buttons.append(row)
 
@@ -170,8 +176,12 @@ class GUIController():
         gameSettings.perspective = not gameSettings.perspective
         UpdateBoard.resize_board(None, GUI.game_f)
         
+    def display_pos(pos):
+        print(pos)
 
 class UpdateBoard(GameState):
+    img_size = 61
+    resize_timer = None
     def update_board(): # updates everything
         UpdateBoard.board_size()
         UpdateBoard.square_color()
@@ -209,8 +219,29 @@ class UpdateBoard(GameState):
                         height=square_size
                     )
 
+    def resize_handler(event, gameState):
+        if event == None or event.widget == GUI.root:
+            # Cancel any previously scheduled resize handling
+            if UpdateBoard.resize_timer is not None:
+                GUI.root.after_cancel(UpdateBoard.resize_timer)
+
+            # Schedule the resize handling to occur after 100ms
+            UpdateBoard.resize_timer = GUI.root.after(50, lambda: UpdateBoard.rescale_img(event, gameState))
+
+    def rescale_img(event, gameState):
+        size = min(GUI.game_f.winfo_width(), GUI.game_f.winfo_height()) // 8
+        print(size, UpdateBoard.img_size)
+        if(size != UpdateBoard.img_size):
+            if size > 0:
+                UpdateBoard.img_size = size
+            for y in range(8):
+                for x in range(8):
+                    gameState.display_board.board[x][y].rescale_img(UpdateBoard.img_size)
+                    GUI.chess_buttons[7-y][7-x].config(image=gameState.display_board.board[x][y].image)
+          
 def main():
     GUI.start()
+    
 
 if __name__ == "__main__":
     main()

@@ -1,27 +1,24 @@
 import chess
+from display_board import Piece, CustomBoard
+
+
+ 
 
 
 class GameState():
     def __init__(self):
         self.board = chess.Board()
-        # self.move_history = []
-        # self.move_count = 0
+        self.display_board = CustomBoard(self.get_position())
 
-    def make_move(self, move):
+    def move(self, move):
         self.board.push(move)
-        # self.move_history.append(move)
-        # self.move_count += 1
-
+        
     def undo_move(self):
         self.board.pop()
-        # self.move_history.pop()
-        # self.move_count -= 1
-
+       
     def reset_game(self):
         self.board.reset()
-        # self.move_history = []
-        # self.move_count = 0
-
+       
     def get_legal_moves(self):
         return self.board.legal_moves
 
@@ -49,4 +46,15 @@ class GameState():
         return None
 
     def get_position(self):
-        return self.board.fen()
+        board_str = ""
+        for rank in range(7, -1, -1):  # Iterate from rank 8 to rank 1
+            for file in range(8):  # Iterate from file 'a' to 'h'
+                square = chess.square(file, rank)  # Get the square index
+                piece = self.board.piece_at(square)
+                if piece:
+                    board_str += piece.symbol()  # Add the piece symbol (e.g., 'p', 'P', 'r', etc.)
+                else:
+                    board_str += "."  # Add a special character for empty squares
+            # board_str += "\n"  # Add a newline after each rank
+        return board_str
+    
