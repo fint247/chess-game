@@ -26,9 +26,9 @@ class DefaultTheme():
     # Background colors
     left_header = rgb_2_hex(150, 150, 150)
     right_header = rgb_2_hex(150, 150, 150)
-    opp_header = rgb_2_hex(200, 200, 200)
+    opp_header = rgb_2_hex(100, 100, 100)
     game_header = rgb_2_hex(100, 100, 100)
-    player_header = rgb_2_hex(200, 200, 200)
+    player_header = rgb_2_hex(100, 100, 100)
     setting_header = rgb_2_hex(150, 150, 150)
     settings_content_frame = rgb_2_hex(100, 100, 100)
 

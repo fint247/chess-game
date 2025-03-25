@@ -6,7 +6,7 @@ class GUI():
     def start(gameState = None):   # main function for the GUI
         """Main function to initialize and run the Tkinter GUI"""
         GUI.root = tk.Tk() 
-        GUI.root.title('UVSim') 
+        GUI.root.title('Chess') 
         GUI.root.geometry('900x600-0+0')    # "-0+0" puts window in top right corner
         GUI.root.is_destroying = False
 
@@ -23,13 +23,13 @@ class GUI():
         # List to contain a refrence to every single widget
         GUI.widgets = [GUI.root_frames, GUI.main_frames, GUI.setting_frames]
 
-        setting_f, set_cont_f, right_f, left_f, opp_f, game_f, player_f = GUI.create_frame_layout(GUI.root)
+        setting_f, set_cont_f, right_f, left_f, opp_f, GUI.game_f, player_f = GUI.create_frame_layout(GUI.root)
         
         GUI.create_setting_header_content(setting_f)
         GUI.create_setting_content(set_cont_f)
 
         # game_content must be called before left_content and right_content
-        GUI.create_game_content(game_f, gameState)
+        GUI.create_game_content(GUI.game_f, gameState)
         GUI.create_left_content(left_f)
         GUI.create_right_content(right_f, gameState)
         GUI.create_opponent_content(opp_f)
@@ -75,7 +75,7 @@ class GUI():
         reset_button = tk.Button(frame, text='Reset', command=lambda : GUI_action.reset_game(gameState), border=0, font=GUI.fonts.default_font, bg=GUI.theme.button_color, fg=GUI.theme.text_color, pady=10)
         right_widgets.append(reset_button)
 
-        flip_button = tk.Button(frame, text='Flip', command=lambda: UpdateBoard.toggle_perspective(), border=0, font=GUI.fonts.default_font, bg=GUI.theme.button_color, fg=GUI.theme.text_color, pady=10)
+        flip_button = tk.Button(frame, text='Flip', command=lambda: GUI_action.toggle_perspective(), border=0, font=GUI.fonts.default_font, bg=GUI.theme.button_color, fg=GUI.theme.text_color, pady=10)
         right_widgets.append(flip_button)
 
         # Packing widgets to the right frame and binding hover events
@@ -89,16 +89,21 @@ class GUI():
 
     def create_game_content(frame, gameState):
         GUI.chess_buttons = []
-        for x in range(8): # 8x8 chess board
+
+        # Create the 8x8 chessboard buttons
+        for x in range(8):
             row = []
             for y in range(8):
-                button = tk.Button(frame, border=0)#image=gameState.img(gameState.piece(x,y)), border=0) 
-                # TODO add image
-                # TODO fix button sizes to be square
-                button.place(relx=x/8, rely=y/8, relwidth=1/8, relheight=1/8)
+                button = tk.Button(frame, border=0, bg=GUI.theme.light_square if (x + y) % 2 == 0 else GUI.theme.dark_square)
                 row.append(button)
             GUI.chess_buttons.append(row)
-        UpdateBoard.update_board()
+
+        # Bind the resize event to dynamically adjust button sizes
+        frame.bind("<Configure>", lambda event: UpdateBoard.resize_board(event, frame))
+
+        # Trigger the initial resize to set up the buttons
+        frame.update_idletasks()
+        UpdateBoard.resize_board(None, frame)
             
     def create_player_content(frame):
         tk.Label(frame, text="You", font=GUI.fonts.default_font, bg=GUI.theme.player_header, fg=GUI.theme.text_color).pack(fill='both', expand=True)
@@ -161,19 +166,15 @@ class GUI_action():
         gameState.reset_game()
         UpdateBoard.update_board()
 
+    def toggle_perspective():
+        gameSettings.perspective = not gameSettings.perspective
+        UpdateBoard.resize_board(None, GUI.game_f)
+        
+
 class UpdateBoard(GameState):
     def update_board(): # updates everything
         UpdateBoard.board_size()
         UpdateBoard.square_color()
-
-    def toggle_perspective():
-        gameSettings.perspective = not gameSettings.perspective
-        for x in range(8):
-            for y in range(8):
-                if gameSettings.perspective:
-                    GUI.chess_buttons[x][y].place(relx=x/8, rely=y/8, relwidth=1/8, relheight=1/8)
-                else:
-                    GUI.chess_buttons[x][y].place(relx=x/8, rely=(7-y)/8, relwidth=1/8, relheight=1/8)
 
     def board_size():
         pass
@@ -185,6 +186,28 @@ class UpdateBoard(GameState):
                     square.config(bg=GUI.theme.light_square)
                 else:
                     square.config(bg=GUI.theme.dark_square)
+
+    def resize_board(event, frame):
+            # Get the current width and height of the frame
+            frame_width = frame.winfo_width()
+            frame_height = frame.winfo_height()
+
+            # Calculate the size of each square (button)
+            square_size = min(frame_width, frame_height) // 8
+
+            offset_x = (frame_width - square_size * 8) / 2
+            offset_y = (frame_height - square_size * 8) / 2
+
+            # Update the position and size of each button
+            for x in range(8):
+                for y in range(8):
+                    button = GUI.chess_buttons[x][y if gameSettings.perspective == 1 else 7 - y]
+                    button.place(
+                        x=x * square_size + offset_x,
+                        y=y * square_size + offset_y,
+                        width=square_size,
+                        height=square_size
+                    )
 
 def main():
     GUI.start()
