@@ -3,15 +3,16 @@ from gui_settings import *
 from game import GameState
 
 class GUI():
-    def start():   # main function for the GUI
+    def start(gs = None):   # main function for the GUI
         """Main function to initialize and run the Tkinter GUI"""
         GUI.root = tk.Tk() 
         GUI.root.title('Chess') 
         GUI.root.geometry('900x600-0+0')    # "-0+0" puts window in top right corner
         GUI.root.is_destroying = False
-                                                                
-        gameState = GameState()
-        
+
+        # GUI's refrence to the current game
+        # if game state needs changed then update the refrence and store the old game elsewhere                                                       
+        GUI.gameState = gs if gs else GameState() # Initialize game state if none provided
 
         GUI.theme = DefaultTheme()
         GUI.fonts = defaultFonts()
@@ -29,15 +30,15 @@ class GUI():
         GUI.create_setting_content(set_cont_f)
 
         # game_content must be called before left_content and right_content
-        GUI.create_game_content(GUI.game_f, gameState)
+        GUI.create_game_content(GUI.game_f)
         GUI.create_left_content(left_f)
-        GUI.create_right_content(right_f, gameState)
+        GUI.create_right_content(right_f)
         GUI.create_opponent_content(opp_f)
         GUI.create_player_content(player_f)
 
         # Defer the binding until the root and widgets are fully initialized
-        GUI.root.after(0, lambda: GUI.root.bind("<Configure>", lambda event: UpdateBoard.resize_handler(event, gameState)))
-        GUI.root.after(0, lambda: UpdateBoard.resize_handler(None, gameState))
+        GUI.root.after(0, lambda: GUI.root.bind("<Configure>", lambda event: UpdateBoard.resize_handler(event)))
+        GUI.root.after(0, lambda: UpdateBoard.resize_handler(None))
         
         GUI.root.mainloop()
 
@@ -56,12 +57,8 @@ class GUI():
         button_setting = tk.Button(frame, text='Settings', border=0, font=GUI.fonts.default_font, bg=GUI.theme.button_color, fg=GUI.theme.text_color, pady=10) 
         left_widgets.append(button_setting)
         
-        button_play_local = tk.Button(frame, text='Play Local', border=0, font=GUI.fonts.default_font, bg=GUI.theme.button_color, fg=GUI.theme.text_color, pady=10) 
+        button_play_local = tk.Button(frame, text='Play Local', command= lambda: GUIController.destroy_root(GUI.root), border=0, font=GUI.fonts.default_font, bg=GUI.theme.button_color, fg=GUI.theme.text_color, pady=10) 
         left_widgets.append(button_play_local)
-
-        button_play_bot = tk.Button(frame, text='Play Computer', border=0, font=GUI.fonts.default_font, bg=GUI.theme.button_color, fg=GUI.theme.text_color, pady=10) 
-        left_widgets.append(button_play_bot)
-        button_play_bot.config(state='disabled')
 
         button_play_online = tk.Button(frame, text='Play Online', border=0, font=GUI.fonts.default_font, bg=GUI.theme.button_color, fg=GUI.theme.text_color, pady=10) 
         left_widgets.append(button_play_online)
@@ -73,10 +70,10 @@ class GUI():
             widget.bind('<Enter>', lambda event, widget=widget: GUIController.on_hover(event, widget))
             widget.bind('<Leave>', lambda event, widget=widget: GUIController.on_leave(event, widget))
             
-    def create_right_content(frame, gameState):
+    def create_right_content(frame):
         right_widgets = []
 
-        reset_button = tk.Button(frame, text='Reset', command=lambda : GUIController.reset_game(gameState), border=0, font=GUI.fonts.default_font, bg=GUI.theme.button_color, fg=GUI.theme.text_color, pady=10)
+        reset_button = tk.Button(frame, text='Reset', command=lambda : GUIController.reset_game(), border=0, font=GUI.fonts.default_font, bg=GUI.theme.button_color, fg=GUI.theme.text_color, pady=10)
         right_widgets.append(reset_button)
 
         flip_button = tk.Button(frame, text='Flip', command=lambda: GUIController.toggle_perspective(), border=0, font=GUI.fonts.default_font, bg=GUI.theme.button_color, fg=GUI.theme.text_color, pady=10)
@@ -91,20 +88,18 @@ class GUI():
     def create_opponent_content(frame):
         tk.Label(frame, text="Opponent", font=GUI.fonts.default_font, bg=GUI.theme.opp_header, fg=GUI.theme.text_color).pack(fill='both', expand=True)
 
-    def create_game_content(frame, gameState):
+    def create_game_content(frame):
         GUI.chess_buttons = []
 
         # Create the 8x8 chessboard buttons
-        for y in range(8):
+        for x in range(8):
             row = []
-            for x in range(8):
-                button = tk.Button(frame, image=gameState.display_board.board[x][y].image, border=0, bg=GUI.theme.light_square if (x + y) % 2 == 0 else GUI.theme.dark_square)
-                button.pos = f"{chr(97+y)}{8-x}"
-                print(button.pos)
-                button.config(command=lambda pos=button.pos: GUIController.display_pos(pos))
+            for y in range(8):
+                button = tk.Button(frame, image=GUI.gameState.display_board.board[x][y].image, border=0, bg=GUI.theme.light_square if (x + y) % 2 == 0 else GUI.theme.dark_square)
+                button.pos = f"{chr(97+x)}{8-y}"
+                button.config(command=lambda pos=button.pos, y=y, x=x: GUIController.square_click(pos, y, x))
                 row.append(button)
             GUI.chess_buttons.append(row)
-            
 
         # Bind the resize event to dynamically adjust button sizes
         frame.bind("<Configure>", lambda event: UpdateBoard.resize_board(event, frame))
@@ -154,6 +149,9 @@ class GUI():
         pass
 
 class GUIController():
+    pos_start = None
+    pos_end = None
+
     def on_hover(event, button):
         button.config(bg=GUI.theme.button_highlight_color)
 
@@ -170,26 +168,42 @@ class GUIController():
             print("Exiting program...")
             root.quit()
 
-    def reset_game(gameState):
-        gameState.reset_game()
+    def reset_game():
+        GUI.gameState.reset_game()
         UpdateBoard.update_board()
 
     def toggle_perspective():
         gameSettings.perspective = not gameSettings.perspective
         UpdateBoard.resize_board(None, GUI.game_f)
         
-    def display_pos(pos):
-        print(pos)
+    def square_click(pos, y, x):
+        # print(pos)
+        if not GUIController.pos_start:
+            GUIController.pos_start = pos
+            GUI.chess_buttons[x][y].config(bg=GUI.theme.button_highlight_color)
+        else:
+            GUIController.pos_end = pos
+            move = GUIController.pos_start + GUIController.pos_end
+            # print(type(GUI.gameState.get_legal_moves()))
+            if GUI.gameState.is_legal_move(move):
+                GUI.chess_buttons[x][y].config(bg=GUI.theme.button_color)
+                GUI.gameState.move(move)  # Call the move function with the selected move
+                UpdateBoard.update_board()
+            else:
+                UpdateBoard.update_board()
+                GUIController.pos_start = pos
+                GUIController.pos_end = None
+                GUI.chess_buttons[x][y].config(bg=GUI.theme.button_highlight_color)
+            
 
-class UpdateBoard(GameState):
-    img_size = 61
+
+class UpdateBoard():
+    img_size = 61 # default size of the image based on the default window size
     resize_timer = None
     def update_board(): # updates everything
-        UpdateBoard.board_size()
+        UpdateBoard.rescale_img()
         UpdateBoard.square_color()
-
-    def board_size():
-        pass
+        # print(GUI.gameState.display_board)
 
     def square_color():
         for x, row in enumerate(GUI.chess_buttons):
@@ -221,28 +235,21 @@ class UpdateBoard(GameState):
                         height=square_size
                     )
 
-    def resize_handler(event, gameState):
+    def resize_handler(event):
         if event == None or event.widget == GUI.root:
             # Cancel any previously scheduled resize handling
             if UpdateBoard.resize_timer is not None:
                 GUI.root.after_cancel(UpdateBoard.resize_timer)
 
             # Schedule the resize handling to occur after 100ms
-            UpdateBoard.resize_timer = GUI.root.after(20, lambda: UpdateBoard.rescale_img(event, gameState))
+            UpdateBoard.resize_timer = GUI.root.after(20, lambda: UpdateBoard.rescale_img(event))
 
-    def rescale_img(event, gameState):
+    def rescale_img(event=None):
         size = min(GUI.game_f.winfo_width(), GUI.game_f.winfo_height()) // 8
-        if(size != UpdateBoard.img_size):
+        if(size != UpdateBoard.img_size) or event == None:
             if size > 0:
                 UpdateBoard.img_size = size
             for y in range(8):
                 for x in range(8):
-                    gameState.display_board.board[x][y].rescale_img(UpdateBoard.img_size)
-                    GUI.chess_buttons[7-y][7-x].config(image=gameState.display_board.board[x][y].image)
-          
-def main():
-    GUI.start()
-    
-
-if __name__ == "__main__":
-    main()
+                    GUI.gameState.display_board.board[x][y].rescale_img(UpdateBoard.img_size)
+                    GUI.chess_buttons[y][x].config(image=GUI.gameState.display_board.board[x][y].image)

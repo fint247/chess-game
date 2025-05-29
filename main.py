@@ -1,10 +1,9 @@
 from gui import GUI
+from game import GameState
 from algorithm_bot import Bot
 
 
 def main():
-    bot = Bot()
-    
     GUI.start()
 
 if __name__ == "__main__":

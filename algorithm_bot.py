@@ -65,7 +65,7 @@ class Bot:
         
         return best_weight
 
-def main():
+def main1():
     bot1 = Bot(color=True)
     bot2 = Bot(color=False)
     
@@ -90,4 +90,4 @@ def main():
         print(game)
 
 if __name__ == "__main__":
-    main()
+    main1()

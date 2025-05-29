@@ -1,17 +1,18 @@
 import chess
-from display_board import Piece, CustomBoard
-
-
- 
-
+from image_manager import Piece, DisplayBoard
 
 class GameState():
     def __init__(self):
         self.board = chess.Board()
-        self.display_board = CustomBoard(self.get_position())
+        self.display_board = DisplayBoard(self.get_position()) 
 
-    def move(self, move):
+    def move(self, move: str):
+        try:
+            move = chess.Move.from_uci(move)
+        except ValueError:
+            raise ValueError("Invalid move format. Use UCI format (e.g., 'e2e4').")
         self.board.push(move)
+        self.display_board.update_board(self.get_position())
         
     def undo_move(self):
         self.board.pop()
@@ -20,7 +21,16 @@ class GameState():
         self.board.reset()
        
     def get_legal_moves(self):
-        return self.board.legal_moves
+        # TODO return a list of legal moves in the format the GUI wants
+        print("Legal moves:", self.board.legal_moves)
+        return self.board.legal_moves()
+    
+    def is_legal_move(self, move: str):
+        try:
+            move = chess.Move.from_uci(move)
+        except:
+            return False
+        return move in self.board.legal_moves
 
     def get_board(self):
         return self.board
@@ -32,7 +42,8 @@ class GameState():
         return self.board.fullmove_number
 
     def get_turn(self):
-        return self.board.turn
+        return self.board.turn1783609
+    
 
     def get_winner(self):
         if self.board.is_checkmate():
@@ -58,3 +69,8 @@ class GameState():
             # board_str += "\n"  # Add a newline after each rank
         return board_str
     
+# def main():
+#     gameState = GameState()
+
+# if __name__ == "__main__":
+#     main()
