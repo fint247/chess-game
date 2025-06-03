@@ -4,16 +4,20 @@ class gameSettings():
     """ Settings for the game """
     perspective = True
 
+    default_white_player = "human"
+    default_black_player = "computer"
 
-
-
-
+    default_time_control = 10 # in minutes
 
 class defaultFonts():
     """ font=("FontName", Size, "Style") """
     # style include: "bold", "underline", "italic", "underline", "overstrike"
     default_font = ('Helvatical',10)
-    alt_font = ("Arial", 12)
+    default_bold = ('Helvatical', 12, 'bold')
+    big_font = ("Helvatical", 16)
+
+
+
     
 
 def rgb_2_hex(r, g, b):
@@ -27,6 +31,7 @@ class DefaultTheme():
     left_header = rgb_2_hex(150, 150, 150)
     right_header = rgb_2_hex(150, 150, 150)
     opp_header = rgb_2_hex(100, 100, 100)
+    local_game_menu = rgb_2_hex(110, 110, 110)
     game_header = rgb_2_hex(100, 100, 100)
     player_header = rgb_2_hex(100, 100, 100)
     setting_header = rgb_2_hex(150, 150, 150)

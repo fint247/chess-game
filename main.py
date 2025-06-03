@@ -1,6 +1,4 @@
 from gui import GUI
-from game import GameState
-from algorithm_bot import Bot
 
 
 def main():

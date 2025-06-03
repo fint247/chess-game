@@ -1,18 +1,44 @@
 import chess
+import algorithm_bot
+from gui_settings import gameSettings
 from image_manager import Piece, DisplayBoard
 
+# TODO turn openings into a class with a funciton that takes the position as
+#      a peramiter and deturmins if it's in libray of openings
+openings = [
+    "e2e4",
+    "d2d4"
+]
+
 class GameState():
+    bot = algorithm_bot.Bot()
     def __init__(self):
         self.board = chess.Board()
-        self.display_board = DisplayBoard(self.get_position()) 
+        self.display_board = DisplayBoard(self.get_position())
+
+        self.white_player = gameSettings.default_white_player
+        self.black_player = gameSettings.default_black_player
+        self.time_control = gameSettings.default_time_control
+
+    def is_human_turn(self):
+        return (self.board.turn and self.white_player == "human") or (not self.board.turn and self.black_player == "human")
 
     def move(self, move: str):
+        """ Moves a piece on the board. Move should be in UCI format (e.g., 'e2e4'). """
         try:
             move = chess.Move.from_uci(move)
         except ValueError:
-            raise ValueError("Invalid move format. Use UCI format (e.g., 'e2e4').")
+            return False
+            # raise ValueError("Invalid move format. Use UCI format (e.g., 'e2e4').")
         self.board.push(move)
         self.display_board.update_board(self.get_position())
+
+        if self.get_winner():
+            print(self.get_winner())
+
+        print("Move played:", move)
+        print(self.board.fen())
+        return True
         
     def undo_move(self):
         self.board.pop()
@@ -32,9 +58,6 @@ class GameState():
             return False
         return move in self.board.legal_moves
 
-    def get_board(self):
-        return self.board
-
     def get_move_history(self):
         return self.board.move_stack
 
@@ -42,9 +65,8 @@ class GameState():
         return self.board.fullmove_number
 
     def get_turn(self):
-        return self.board.turn1783609
+        return self.board.turn
     
-
     def get_winner(self):
         if self.board.is_checkmate():
             return "White Wins!" if GameState.get_turn() else "Black Wins!"
@@ -68,6 +90,7 @@ class GameState():
                     board_str += "."  # Add a special character for empty squares
             # board_str += "\n"  # Add a newline after each rank
         return board_str
+    
     
 # def main():
 #     gameState = GameState()

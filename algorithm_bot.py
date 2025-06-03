@@ -1,10 +1,11 @@
 import chess
+import chess_openings
+import random
 
 class Bot:
-    def __init__(self, color=True, depth=6):
+    def __init__(self, depth=6):
         self.depth = depth
         self.best_move = None
-        self.color = color  # True for White, False for Black
 
         self.piece_value = {
             chess.PAWN: 1,
@@ -30,7 +31,29 @@ class Bot:
             return 0
         return sorted(board.legal_moves, key=move_value, reverse=True)
 
-    def bestMove(self, board, depth, alpha=float('-inf'), beta=float('inf')):
+    def bestMove(self, board):
+        """Finds the best move for the current board state using minimax with alpha-beta pruning."""
+        self.best_move = None
+
+        # get the FEN string without the move numbers
+        fen = ' '.join(board.fen().split(' ')[:4]) 
+
+        print(f"Current board FEN: {fen}")
+        if fen in chess_openings.openings:
+            opening_moves = chess_openings.openings[fen]
+
+            # Extract moves and their probabilities
+            moves = [move[1] for move in opening_moves]  # Get the UCI moves
+            probabilities = [move[0] for move in opening_moves]  # Get the probabilities
+
+            # Use random.choices to select a move based on probabilities
+            return random.choices(moves, probabilities)[0]
+        
+        self.calcBestMove(board, self.depth)
+        return self.best_move.uci() if self.best_move else None
+
+    def calcBestMove(self, board, depth, alpha=float('-inf'), beta=float('inf')):
+        """does NOT return the best move, but the best score for the current board state"""
         if depth == 0:
             return self.evaluate_board(board)
 
@@ -44,7 +67,7 @@ class Bot:
 
         for move in self.order_moves(board):
             board.push(move)
-            score = self.bestMove(board, depth - 1, alpha, beta)
+            score = self.calcBestMove(board, depth - 1, alpha, beta)
             board.pop()
 
             if board.turn == chess.BLACK:  # Minimizing
@@ -64,15 +87,18 @@ class Bot:
                 break
         
         return best_weight
+    
+    def __str__(self):
+        return f"Bot evaluating at depth {self.depth}"
 
 def main1():
-    bot1 = Bot(color=True)
-    bot2 = Bot(color=False)
+    bot1 = Bot()
+    bot2 = Bot()
     
     game = chess.Board("r1bq1rk1/pppp1ppp/2n2n2/2b1p3/2B1P3/2N2N2/PPPP1PPP/R1BQ1RK1")
     print(game)
     
-    for _ in range(20):
+    for _ in range(4):
         bot1.bestMove(game, bot1.depth)
         if bot1.best_move is None:
             print("Game over!")
