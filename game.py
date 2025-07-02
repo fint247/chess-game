@@ -1,5 +1,5 @@
 import chess
-import algorithm_bot
+import py_engine
 from gui_settings import gameSettings
 from image_manager import Piece, DisplayBoard
 
@@ -11,7 +11,7 @@ openings = [
 ]
 
 class GameState():
-    bot = algorithm_bot.Bot()
+    bot = py_engine.Bot()
     def __init__(self):
         self.board = chess.Board()
         self.display_board = DisplayBoard(self.get_position())
@@ -36,19 +36,16 @@ class GameState():
         if self.get_winner():
             print(self.get_winner())
 
-        print("Move played:", move)
-        print(self.board.fen())
         return True
         
-    def undo_move(self):
-        self.board.pop()
+    # def undo_move(self):
+    #     self.board.pop()
        
     def reset_game(self):
         self.board.reset()
-       
+        self.display_board.update_board(self.get_position())
+
     def get_legal_moves(self):
-        # TODO return a list of legal moves in the format the GUI wants
-        print("Legal moves:", self.board.legal_moves)
         return self.board.legal_moves()
     
     def is_legal_move(self, move: str):
@@ -58,8 +55,8 @@ class GameState():
             return False
         return move in self.board.legal_moves
 
-    def get_move_history(self):
-        return self.board.move_stack
+    # def get_move_history(self):
+    #     return self.board.move_stack
 
     def get_move_count(self):
         return self.board.fullmove_number
@@ -69,7 +66,7 @@ class GameState():
     
     def get_winner(self):
         if self.board.is_checkmate():
-            return "White Wins!" if GameState.get_turn() else "Black Wins!"
+            return "White" if GameState.get_turn() else "Black"
         if self.board.is_stalemate():
             return "Stalemate"
         if self.board.is_insufficient_material():
@@ -78,7 +75,7 @@ class GameState():
             return "Draw"
         return None
 
-    def get_position(self):
+    def get_position(self):                                                        
         board_str = ""
         for rank in range(7, -1, -1):  # Iterate from rank 8 to rank 1
             for file in range(8):  # Iterate from file 'a' to 'h'

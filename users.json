@@ -1,0 +1,48 @@
+{
+  "users": {
+    "Guest": {
+      "username": "Guest",
+      "password_hash": "",
+      "nationality": "unknown",
+      "settings": {
+        "theme": "default",
+        "auto_queen": true,
+        "auto_flip": true,
+        "show_legal_moves": true
+      }
+    },
+    "alice": {
+      "username": "alice",
+      "password_hash": "pass1",
+      "nationality": "american",
+      "settings": {
+        "theme": "default",
+        "auto_queen": true,
+        "auto_flip": false,
+        "show_legal_moves": true
+      }
+    },
+    "bob": {
+      "username": "bob",
+      "password_hash": "pass2",
+      "nationality": "american",
+      "settings": {
+        "theme": "blue",
+        "auto_queen": true,
+        "auto_flip": true,
+        "show_legal_moves": false
+      }
+    },
+    "fint": {
+      "username": "fint",
+      "password_hash": "asdf1234",
+      "nationality": "unknown",
+      "settings": {
+        "theme": "default",
+        "auto_queen": true,
+        "auto_flip": true,
+        "show_legal_moves": true
+      }
+    }
+  }
+}
